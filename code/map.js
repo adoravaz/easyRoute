@@ -94,6 +94,7 @@ class Map extends THREE.Object3D {
                     console.log("cords:= ", route)
                     temp.routes.push(route);
                     temp.add(route);
+                    console.log(JSON.stringify(json));
                 })
                 .catch(function (err) {
                     let response = JSON.stringify(err, null, "\t")
@@ -115,7 +116,7 @@ class Map extends THREE.Object3D {
         this.clickedBuildings = [];
 
         this.routes.forEach((route) => {
-            console.log("hi kill me ")
+            console.log("Route cleared")
             this.remove(route);
         })
 

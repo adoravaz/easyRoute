@@ -25,7 +25,8 @@ const highwayTypes = new Set();
 
 async function createHighways() {
     try {
-        const response = await fetch('/UCSC_Highways.geojson');
+        // const response = await fetch('/UCSC_Highways.geojson');
+        const response = await fetch('/path.geojson')
         const data = await response.json();
         LoadHighways(data);
         printHighwayTypes();
