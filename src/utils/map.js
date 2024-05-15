@@ -96,6 +96,10 @@ class Map extends THREE.Object3D {
                     console.log(JSON.stringify(json));
                     // parse response into directions
                     const segments = json.features[0].properties.segments[0]; // contains distance, duration, instruction for directions
+                    console.log("segments: " + JSON.stringify(segments));
+                    // distance and duration for entire route
+                    const directionTotal = {distance: segments.distance, duration: segments.duration};
+                    // turn-by-turn directions
                     let directions = segments.steps.map((step) => ({
                         distance: step.distance,
                         duration: step.duration,

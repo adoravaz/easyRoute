@@ -53,7 +53,6 @@ const MapComponent = () => {
 
         // Init Light
         let light0 = new THREE.AmbientLight(0xfafafa, 10.25);
-
         let light1 = new THREE.PointLight(0xfafafa, 0.4);
         light1.position.set(20, 30, 10);
 
@@ -70,10 +69,15 @@ const MapComponent = () => {
         const onClick = (event) => {
             console.log("clicked");
 
+            // get bounding rectangle of the map container
+            const rect = renderer.domElement.getBoundingClientRect();
+
             // Calculate mouse position in normalized device coordinates (-1 to +1) for both components
-            mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
-            mouse.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
-            
+            // mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
+            // mouse.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
+            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+            console.log("mouse x: " + mouse.x + ", mouse y: " + mouse.y);
             // Update the picking ray with the camera and mouse position
             raycast.setFromCamera(mouse, camera);
 
@@ -102,9 +106,15 @@ const MapComponent = () => {
         document.getElementById('clearRoute').addEventListener('click', onClearRoute);
 
         const onWindowResize = () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
+            const rect = mountRef.current.getBoundingClientRect();
+
+            // update camera aspect ratio and projection matrix
+            // camera.aspect = window.innerWidth / window.innerHeight;
+            camera.aspect = rect.width / rect.height;
             camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
+            // update renderer size
+            renderer.setSize(rect.width, rect.height);
+            // renderer.setSize(window.innerWidth, window.innerHeight);
         };
         window.addEventListener('resize', onWindowResize, false);
 
