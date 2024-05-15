@@ -147,6 +147,26 @@ class Map extends THREE.Object3D {
     update(time) {
 
     }
+
+    // /*function for  search interface, when a user selects a building by clicking on a card, you should be able to call a method on the map instance to find 
+    // and highlight the corresponding building in the Three.js scene*/
+    // selectBuildingByCoordinates(coordinates) {
+    //     // Method to select a building based on coordinates
+    //     const building = this.findBuildingByCoordinates(coordinates);
+    //     if (building) {
+    //         this.selectBuilding(building);
+    //     }
+    // }
+
+    // findBuildingByCoordinates(coordinates) {
+    //     // Find the building in this.buildings that matches the coordinates
+    //     return this.buildings.children.find(b => this.coordinatesMatch(b.userData.coordinates, coordinates));
+    // }
+
+    // coordinatesMatch(coords1, coords2) {
+    //     // Determine if two sets of coordinates match
+    //     return coords1[0] === coords2[0] && coords1[1] === coords2[1]; //Comparing coordinates of the building and the selected card
+    // }
 }
 
 

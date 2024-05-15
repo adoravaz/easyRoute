@@ -57,6 +57,12 @@
     display: none;
    }
 
+/*Selected State of Card */
+.card.selected {
+    border-color: #007bff; /* Blue border for selected card */
+    background-color: #f0f9ff; /* Light blue background for visibility */
+}
+
 /* moved from the index.html for the calculate route and buttons */
 /* .container {
     position: relative;

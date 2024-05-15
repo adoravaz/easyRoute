@@ -59,6 +59,9 @@ const raycast = new THREE.Raycaster();
 const map = new Map();
 scene.add(map);
 
+// after initializing the map, exposing map to be available globally
+window.mainMap = map;
+
 renderer.domElement.addEventListener('click', (event) => {
   console.log("clicked");
 
