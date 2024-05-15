@@ -82,7 +82,7 @@ class Map extends THREE.Object3D {
 
             this.orsDirections.calculate({
                 coordinates: [from, to],
-                profile: "driving-car",
+                profile: "foot-walking",
                 format: "geojson",
                 api_version: 'v2',
             })
@@ -96,7 +96,7 @@ class Map extends THREE.Object3D {
                     console.log(JSON.stringify(json));
                     // parse response into directions
                     const segments = json.features[0].properties.segments[0]; // contains distance, duration, instruction for directions
-                    console.log("segments: " + JSON.stringify(segments));
+                    // console.log("segments: " + JSON.stringify(segments));
                     // distance and duration for entire route
                     const directionTotal = {distance: segments.distance, duration: segments.duration};
                     // turn-by-turn directions
@@ -105,7 +105,7 @@ class Map extends THREE.Object3D {
                         duration: step.duration,
                         instruction: step.instruction
                     }));
-                    console.log("directions: " + JSON.stringify(temp.directions));
+                    console.log("directions: " + JSON.stringify(directions));
                     useCallback(directions);
                 })
                 .catch(function (err) {

@@ -84,7 +84,7 @@ const MapComponent = () => {
             // console.log('map.buildings.children: ' + JSON.stringify(map.buildings.children));
             // Calculate objects intersecting the picking ray
             const intersects = raycast.intersectObjects(map.buildings.children, true); // Note this only checks if we clicked buildings
-            console.log("intersects: " + intersects);
+            // console.log("intersects: " + intersects);
             if (intersects.length > 0) {
                 map.checkIntersectedBuildings(intersects[0].object);
             }
@@ -92,6 +92,7 @@ const MapComponent = () => {
 
         const onCalcRoute = () => {
             map.generateDirections((directions) => {
+                console.log("directions before setDirections: " + JSON.stringify(directions));
                 setDirections(directions);
             });
         };
