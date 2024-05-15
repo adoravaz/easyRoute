@@ -23,11 +23,12 @@ const buildingsGroup = new THREE.Group();
 async function createBuildings() {
     try {
         // const response = await fetch('/UCSC_Buildings.geojson');
-        const response = await fetch('/buildings.geojson');
+        const response = await fetch('/../../src/assets/buildings.geojson');
         const data = await response.json();
         LoadBuildings(data);
         return buildingsGroup;
     } catch (error) {
+        console.log("create buildings error");
         throw error;
     }
 }

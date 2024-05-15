@@ -60,7 +60,6 @@ class Map extends THREE.Object3D {
             this.highways = routesGroup;
             this.highways.position.y = -0.1
             this.add(this.highways);
-
         } catch (error) {
             console.error('Failed to load buildings:', error);
         }
@@ -87,7 +86,7 @@ class Map extends THREE.Object3D {
                 format: "geojson",
                 api_version: 'v2',
             })
-                .then(function (json) {
+                .then((json) => {
 
                     const routeCoordinates = json.features.find(feature => feature.geometry.type === 'LineString').geometry.coordinates;
                     const route = makeDirection(routeCoordinates);
@@ -95,6 +94,15 @@ class Map extends THREE.Object3D {
                     temp.routes.push(route);
                     temp.add(route);
                     console.log(JSON.stringify(json));
+                    // parse response into directions
+                    const segments = json.features[0].properties.segments[0]; // contains distance, duration, instruction for directions
+                    let directions = segments.steps.map((step) => ({
+                        distance: step.distance,
+                        duration: step.duration,
+                        instruction: step.instruction
+                    }));
+                    console.log("directions: " + JSON.stringify(temp.directions));
+                    useCallback(directions);
                 })
                 .catch(function (err) {
                     let response = JSON.stringify(err, null, "\t")

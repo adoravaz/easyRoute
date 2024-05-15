@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import Stats from 'stats.js'
-import Map from './code/map';
+import Stats from 'stats.js';
+import Map from './src/utils/map';
 
 const stats = new Stats()
 stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
@@ -71,7 +71,6 @@ renderer.domElement.addEventListener('click', (event) => {
 
   // Calculate objects intersecting the picking ray
   const intersects = raycast.intersectObjects(map.buildings.children, true); // Note this only checks if we clicked buildings
-
   if (intersects.length > 0) {
     map.checkIntersectedBuildings(intersects[0].object)
   }
