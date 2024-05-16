@@ -59,6 +59,12 @@ const raycast = new THREE.Raycaster();
 const map = new Map();
 scene.add(map);
 
+// Card object to display building info 
+const infoCard = document.createElement('div');
+infoCard.className = 'card'; // Assign class 'card'
+// document.body.appendChild(infoCard);
+
+
 renderer.domElement.addEventListener('click', (event) => {
   console.log("clicked");
 

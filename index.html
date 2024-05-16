@@ -4,24 +4,10 @@
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <linK rel="stylesheet" href="style.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    .container {
-      position: relative;
-      height: 100vh;
-    }
 
-    .my-button-1 {
-      position: absolute;
-      bottom: 50px;
-      right: 20px;
-    }
-
-    .my-button-2 {
-      position: absolute;
-      bottom: 20px;
-      right: 20px;
-    }
   </style>
   <title>UCSCMap</title>
 </head>
@@ -29,12 +15,34 @@
 <body>
   <div>
     <div id="app" class="container">
-
+      <div id="legend-container">
+        <div>
+          <button id="toggle-buildings-legend">Buildings</button>
+          <button id="toggle-highways-legend">Highways</button>
+        </div>
+        <div id="buildings-legend-content" class="legend-content">
+          <h4>Buildings</h4>
+          <ul>
+            <li><span style="color: red;">●</span> Item 1</li>
+            <li><span style="color: green;">●</span> Item 2</li>
+            <li><span style="color: blue;">●</span> Item 3</li>
+          </ul>
+        </div>
+        <div id="highways-legend-content" class="legend-content">
+          <h4>Highways</h4>
+          <ul>
+            <li><span style="color: red;">●</span> Item 1</li>
+            <li><span style="color: green;">●</span> Item 2</li>
+            <li><span style="color: blue;">●</span> Item 3</li>
+          </ul>
+        </div>
+      </div>
       <button id="calcRoute" class="my-button-1">Calculate Route</button>
       <button id="clearRoute" class="my-button-2">Clear Route</button>
     </div>
   </div>
   <script type="module" src="/main.js"></script>
+  <script type="module" src="/code/mapUI.js"></script>
 </body>
 
 </html>

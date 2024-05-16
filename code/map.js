@@ -1,9 +1,7 @@
 import * as THREE from 'three';
 import Openrouteservice from 'openrouteservice-js'
-
 import createBuildings from './buildings';
 import createHighways from './highways';
-
 import makeDirection from './makeDirection';
 
 // So I want to be able to export this Map as a contain unite where it handles routing between different locations, drawing, etc 
@@ -75,9 +73,13 @@ class Map extends THREE.Object3D {
             return
         } else if (length == 2) {
 
-            const from = this.clickedBuildings[0].userData.centroid;
-            const to = this.clickedBuildings[1].userData.centroid;
+            let from = this.clickedBuildings[0].userData.centroid;
+            let to = this.clickedBuildings[1].userData.centroid;
             console.log("Getting Directions from " + from + " and " + to);
+
+            // Don't ask lol 
+            from = [from[0], from[1]];
+            to = [to[0], to[1]];
 
             let temp = this;
 
@@ -125,7 +127,7 @@ class Map extends THREE.Object3D {
 
     checkIntersectedBuildings(object) {
 
-        console.log("Building clicked", object.userData.info);
+        console.log("Building clicked", object.userData);
 
         let temp = -1;
         for (let i = this.clickedBuildings.length - 1; i >= 0; i--) {
