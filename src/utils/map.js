@@ -20,12 +20,17 @@ import makeDirection from './makeDirection';
 // add multi 
 
 function deselectBuilding(object) {
+    console.log("buildings deselected -> revert color");
     object.material.color.setHex(object.userData.color);
     object.material.needsUpdate = true;
 }
 
 function selectBuilding(object) {
+    console.log("buildings selected -> change color");
+    console.log("object: " + JSON.stringify(object));
+    console.log("object.material.color: " + JSON.stringify(object.material.color));
     object.material.color.setHex(0x000000);
+    console.log("object.material.color after: " + JSON.stringify(object.material.color));
     object.material.needsUpdate = true;
 }
 
@@ -91,7 +96,7 @@ class Map extends THREE.Object3D {
                     console.log("cords:= ", route)
                     temp.routes.push(route);
                     temp.add(route);
-                    console.log(JSON.stringify(json));
+                    // console.log(JSON.stringify(json));
                     // parse response into directions
                     const segments = json.features[0].properties.segments[0]; // contains distance, duration, instruction for directions
                     // distance and duration for entire route
@@ -102,7 +107,7 @@ class Map extends THREE.Object3D {
                         duration: step.duration,
                         instruction: step.instruction
                     }));
-                    console.log("directions: " + JSON.stringify(directions));
+                    // console.log("directions: " + JSON.stringify(directions));
                     if (setDirections) {
                         setDirections(directions);
                     }
@@ -151,8 +156,10 @@ class Map extends THREE.Object3D {
 
         if (temp > -1) {
             this.clickedBuildings.splice(i, 1);
+            console.log("calling deselectBuilding");
             deselectBuilding(object);
         } else {
+            console.log("calling selectBuilding");
             selectBuilding(object);
             this.clickedBuildings.push(object);
         }
