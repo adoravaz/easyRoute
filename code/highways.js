@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 
-const center = [-122.0583, 36.9916]
+const center = [-122.0583, 36.9916, 36.9941766]
 const scale = 10000;
 
 const materials = {
-    pedestrian: new THREE.LineBasicMaterial({ color: "lightblue" }),
+    pedestrian: new THREE.LineBasicMaterial({ color: "black" }),
     residential: new THREE.LineBasicMaterial({ color: "coral" }),
     service: new THREE.LineBasicMaterial({ color: 0xf695fc }),
     tertiary: new THREE.LineBasicMaterial({ color: "skyblue" }),
@@ -26,10 +26,10 @@ const highwayTypes = new Set();
 async function createHighways() {
     try {
         // const response = await fetch('/UCSC_Highways.geojson');
-        const response = await fetch('/path.geojson')
+        const response = await fetch('/UCSC_Highways_V2.geojson')
         const data = await response.json();
         LoadHighways(data);
-        printHighwayTypes();
+        //printHighwayTypes();
         return routesGroup;
     } catch (error) {
         throw error;
@@ -39,11 +39,11 @@ async function createHighways() {
 function LoadHighways(data) {
     let features = data.features
 
-    console.log(features.length)
-
     for (let i = 0; i < features.length; i++) {
 
         let fel = features[i]
+
+
 
         if (fel.properties['highway']) {
             addHighway(fel.geometry.coordinates, fel.properties)
@@ -89,9 +89,7 @@ function addHighway(data, info) {
             temp = normalizePolygon(data);
         }
 
-        let geometry = genGemoetry(temp.polygon)
-
-        //let line = new THREE.Points(geometry, pointMaterial);
+        let geometry = genGeometry(temp.polygon)
 
         let line = new THREE.Line(geometry, getMatrial(info))
 
@@ -104,16 +102,15 @@ function addHighway(data, info) {
         line.position.x = -direction.x;
         line.position.z = direction.y;
 
-        // Add info to mesh user data 
-        //line.userData.info = info;
-        line.userData.centroid = temp.centroid;
         line.userData.type = "line"
 
-        if (info["highway"] == "steps") {
-            line.computeLineDistances()
-        }
+        // if (info["highway"] == "steps") {
+        //     line.computeLineDistances()
+        // }
 
-        routesGroup.add(line)
+        if (info["highway"] == "pedestrian") {
+            routesGroup.add(line)
+        }
     }
 }
 
@@ -134,20 +131,20 @@ function normalizePolygon(polygon) {
     const centroid = findCentroid(polygon);
     const normalizedPolygon = polygon.map(vertex => [
         (vertex[0] - centroid[0]) * scale,
-        (vertex[1] - centroid[1]) * scale
+        (vertex[1] - centroid[1]) * scale,
+        -((vertex[2] / 4.5) - (center[2])),
     ]);
 
     return { polygon: normalizedPolygon, centroid: centroid };
 }
 
-function genGemoetry(polygon) {
+function genGeometry(polygon) {
 
     const points = [];
 
     for (let i = 0; i < polygon.length; i++) {
         let elp = polygon[i]
-
-        points.push(new THREE.Vector3(elp[0], 0, elp[1]))
+        points.push(new THREE.Vector3(elp[0], elp[2], elp[1]))
     }
 
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
