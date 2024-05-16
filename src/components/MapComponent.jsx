@@ -4,9 +4,11 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import Stats from 'stats.js';
 import Map from '../utils/map.js'; // import Three.js Map component
 import DirectionsList from './DirectionsList';
+import './MapComponent.css';
 
 const MapComponent = () => {
     const mountRef = useRef(null);
+    const [routeTotal, setRouteTotal] = useState({});
     const [directions, setDirections] = useState([]);
 
     useEffect(() => {
@@ -77,7 +79,8 @@ const MapComponent = () => {
             // mouse.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
             mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
             mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-            console.log("mouse x: " + mouse.x + ", mouse y: " + mouse.y);
+            // console.log("mouse x: " + mouse.x + ", mouse y: " + mouse.y);
+
             // Update the picking ray with the camera and mouse position
             raycast.setFromCamera(mouse, camera);
 
@@ -91,15 +94,16 @@ const MapComponent = () => {
         };
 
         const onCalcRoute = () => {
-            map.generateDirections((directions) => {
-                console.log("directions before setDirections: " + JSON.stringify(directions));
-                setDirections(directions);
-            });
+            // map.generateDirections((directions) => {
+            //     setDirections(directions);
+            // });
+            map.generateDirections(setDirections, setRouteTotal);
         };
 
         const onClearRoute = () => {
             map.clearRoutes();
             setDirections([]);
+            setRouteTotal({});
         };
 
         renderer.domElement.addEventListener('click', onClick);
@@ -145,7 +149,7 @@ const MapComponent = () => {
         <div className="container">
             <div ref={mountRef} className="map-container"></div>
             <div className="directions-container">
-                <DirectionsList directions={directions} />
+                <DirectionsList directions={directions} routeTotal={routeTotal} />
             </div>
             <button id="calcRoute" className="my-button-1">Calculate Route</button>
             <br />

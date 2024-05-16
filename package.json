@@ -20,12 +20,16 @@
     "vite": "^5.2.0"
   },
   "dependencies": {
+    "@emotion/react": "*",
+    "@emotion/styled": "*",
     "geolib": "^3.3.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "openrouteservice-js": "^0.3.2",
     "stats.js": "^0.17.0",
     "three": "^0.164.1",
-    "three.js": "^0.77.1"
+    "three.js": "^0.77.1",
+    "@mui/icons-material": "*",
+    "@mui/material": "*"
   }
 }

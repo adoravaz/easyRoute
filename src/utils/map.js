@@ -66,8 +66,7 @@ class Map extends THREE.Object3D {
 
     }
     // This function draws the route. 
-    generateDirections() {
-
+    generateDirections(setDirections, setRouteTotal) {
         let length = this.clickedBuildings.length;
         if (length <= 1) {
             console.log("Not enough buildings clicked");
@@ -87,7 +86,6 @@ class Map extends THREE.Object3D {
                 api_version: 'v2',
             })
                 .then((json) => {
-
                     const routeCoordinates = json.features.find(feature => feature.geometry.type === 'LineString').geometry.coordinates;
                     const route = makeDirection(routeCoordinates);
                     console.log("cords:= ", route)
@@ -96,9 +94,8 @@ class Map extends THREE.Object3D {
                     console.log(JSON.stringify(json));
                     // parse response into directions
                     const segments = json.features[0].properties.segments[0]; // contains distance, duration, instruction for directions
-                    // console.log("segments: " + JSON.stringify(segments));
                     // distance and duration for entire route
-                    const directionTotal = {distance: segments.distance, duration: segments.duration};
+                    const routeTotal = {distance: segments.distance, duration: segments.duration};
                     // turn-by-turn directions
                     let directions = segments.steps.map((step) => ({
                         distance: step.distance,
@@ -106,7 +103,12 @@ class Map extends THREE.Object3D {
                         instruction: step.instruction
                     }));
                     console.log("directions: " + JSON.stringify(directions));
-                    useCallback(directions);
+                    if (setDirections) {
+                        setDirections(directions);
+                    }
+                    if (setRouteTotal) {
+                        setRouteTotal(routeTotal);
+                    }
                 })
                 .catch(function (err) {
                     let response = JSON.stringify(err, null, "\t")
@@ -160,8 +162,5 @@ class Map extends THREE.Object3D {
 
     }
 }
-
-
-
 
 export default Map;

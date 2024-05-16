@@ -1,0 +1,9 @@
+.directions-container {
+    display: inline-block;
+    background-color: whitesmoke;
+    border-radius: 15px;
+    color: black;
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    width: 40%;
+}
+

@@ -1,0 +1,27 @@
+.container {
+    display: inline-block;
+    /* position: relative;
+    height: 100vh; */
+}
+
+.map-container {
+    display: inline-block;
+    width: 60%;
+}
+
+.directions-container {
+    display: inline-block;
+    width: 40%;
+}
+
+.my-button-1 {
+    position: absolute;
+    bottom: 70px;
+    right: 20px;
+}
+
+.my-button-2 {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+}
