@@ -41,6 +41,8 @@ class Map extends THREE.Object3D {
         this.scale.multiplyScalar(.25);
         scene.add(this);
 
+        this.position.y = 5
+
         Map.instance = this;
 
         // Tools 
@@ -65,7 +67,7 @@ class Map extends THREE.Object3D {
             console.log('Highways loaded', routesGroup);
             this.highways = routesGroup;
             this.highways.position.y = -0.1
-            //this.add(this.highways);
+            this.add(this.highways);
 
         } catch (error) {
             console.error('Failed to load buildings:', error);

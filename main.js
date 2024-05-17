@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { XRButton } from 'three/addons/webxr/XRButton.js';
+
 import Stats from 'stats.js'
 import Map from './code/map';
 
@@ -24,7 +26,13 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setClearColor("white");
 renderer.setPixelRatio(window.devicePixelRatio)
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.xr.enabled = true;
+renderer.sortObjects = false;
 document.getElementById("app").appendChild(renderer.domElement);
+
+document.body.appendChild(XRButton.createButton(renderer, { 'optionalFeatures': ['depth-sensing'] }));
+
 
 // Map Controls 
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -51,6 +59,10 @@ light1.position.set(20, 30, 10)
 
 scene.add(light0)
 scene.add(light1)
+
+scene.add(
+  new THREE.AxesHelper(3)
+)
 
 // Raycaster 
 const raycast = new THREE.Raycaster();

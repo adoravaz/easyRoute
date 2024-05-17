@@ -5,6 +5,23 @@ from shapely.geometry import shape, Polygon, MultiLineString
 
 api_key = '5b3ce3597851110001cf6248f4c2894628b444238faa26e91c70c3f3'
 
+def list_highway_types(geojson_file):
+
+    with open(geojson_file, 'r') as file:
+        data = json.load(file)
+    
+    highway_types = set()
+
+    # Iterate through each feature in the GeoJSON
+    for feature in data.get('features', []):
+        # Check if 'properties' and 'highway' exist
+        if 'properties' in feature and 'highway' in feature['properties']:
+            highway_type = feature['properties']['highway']
+            if highway_type:
+                highway_types.add(highway_type)
+
+    print("highway types", highway_types)
+
 def count_short_geometries(geojson_file):
     with open(geojson_file, 'r') as file:
         geojson = json.load(file)
@@ -227,10 +244,7 @@ def process_1(old_coordinates):
     print("Total new coordinates:", len(new_coordinates))
     return new_coordinates
         
-def add_elevation_to_highway(geojson_file, highway_type): 
-
-    with open(geojson_file, 'r') as file:
-        input_geojson = json.load(file)
+def add_elevation_to_highway(input_geojson, highway_type): 
 
     old_coordinates = []
     for feature in input_geojson['features']:
@@ -249,7 +263,7 @@ def add_elevation_to_highway(geojson_file, highway_type):
     
     new_coordinates = process_1(old_coordinates)
 
-    print("new_coordinates", new_coordinates)
+    # print("new_coordinates", new_coordinates)
 
     index = 0
     # Check if the lengths match
@@ -271,13 +285,24 @@ def add_elevation_to_highway(geojson_file, highway_type):
                         for i in range(len(ring)):
                             ring[i] = new_coordinates[index]
                             index += 1
-        
-        # print("input_geojson", input_geojson)
-            # Write the modified GeoJSON to a new file
-        with open('dumpfile.geojson', 'w') as file:
+
+
+def add_elevation_for_types(file_path,output_path ): 
+    
+    temp = ['secondary']
+    temp2 = ['steps', 'footway', 'traffic_signals', 'living_street', 'secondary_link', 'service', 'cycleway', 'turning_circle', 'proposed', 'tertiary']
+
+    with open(file_path, 'r') as file:
+        input_geojson = json.load(file)
+
+    for i in range(len(temp)): 
+        add_elevation_to_highway(input_geojson, temp[i])
+
+
+    with open(output_path, 'w') as file:
             json.dump(input_geojson, file, indent=4)
 
-    
+
 
 # Example usage for count_short...
 # geojson_file = 'UCSC_Buildings_V2.geojson'
@@ -314,7 +339,11 @@ def add_elevation_to_highway(geojson_file, highway_type):
 # print(f"Total coordinates for {highway_type} highways: {count_coordinates_by_highway(file_path, highway_type)}")
 
 # Example usage
-file_path = 'path.geojson'
-highway_type = 'path'  # Specify the type of highway you are interested in
-add_elevation_to_highway(file_path, highway_type)
+file_path = 'UCSC_Highways_V6.geojson'
+output_path = 'UCSC_Highways_V7.geojson'
+highway_type = 'ser'  # Specify the type of highway you are interested in
+# add_elevation_to_highway(file_path, highway_type, output_path)
 
+# list_highway_types(file_path)
+
+add_elevation_for_types(file_path, output_path)

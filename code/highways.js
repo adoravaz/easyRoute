@@ -3,6 +3,11 @@ import * as THREE from 'three';
 const center = [-122.0583, 36.9916, 36.9941766]
 const scale = 10000;
 
+let alltypes = ['pedestrian', 'track', 'crossing', 'secondary', 'steps', 'footway',
+    'traffic_signals', 'living_street', 'secondary_link',
+    'service', 'cycleway', 'turning_circle', 'proposed', 'tertiary', 'path']
+let temp = ['pedestrian', 'residential', 'secondary', 'service', 'path', 'track', 'crossing']
+
 const materials = {
     pedestrian: new THREE.LineBasicMaterial({ color: "black" }),
     residential: new THREE.LineBasicMaterial({ color: "coral" }),
@@ -21,12 +26,14 @@ const materials = {
 
 const routesGroup = new THREE.Group();
 
-const highwayTypes = new Set();
+const highwayTypes = new Set(temp);
+
+console.log(highwayTypes);
 
 async function createHighways() {
     try {
         // const response = await fetch('/UCSC_Highways.geojson');
-        const response = await fetch('/UCSC_Highways_V2.geojson')
+        const response = await fetch('/UCSC_Highways_V7.geojson')
         const data = await response.json();
         LoadHighways(data);
         //printHighwayTypes();
@@ -62,25 +69,27 @@ function getMatrial(info) {
         case "path": return materials.path;
         case "steps": return materials.steps;
         case "living_street": return materials.living_street;
+        case "crossing": return materials.default;
+        case "traffic_signals": return materials.default;
+        case "turning_circle": return materials.default;
+        case "proposed": return materials.default;
         default: return materials.default;
     }
 }
 
-function printHighwayTypes() {
-    console.log("Printing types of highways")
-    highwayTypes.forEach((type) => {
-        console.log(type);
-    })
-}
-
 function addHighway(data, info) {
 
+    if (!highwayTypes.has(info["highway"])) {
+        return
+    }
+
+    //console.log(data)
     // This is because fel.geometry.coordinates is an array of arrays of coords that make up all the polygons need for a building
     for (let i = 0; i < data.length; i++) {
 
         // Normalize the coordiantes and return the centroid in lat and long
         let temp;
-        if (data[0].length > 2) {
+        if (data[0].length == 1) {
             temp = normalizePolygon(data[0]);
         } else {
             temp = normalizePolygon(data);
@@ -105,9 +114,7 @@ function addHighway(data, info) {
         //     line.computeLineDistances()
         // }
 
-        if (info["highway"] == "pedestrian") {
-            routesGroup.add(line)
-        }
+        routesGroup.add(line);
     }
 }
 
@@ -126,6 +133,7 @@ function findCentroid(polygon) {
 function normalizePolygon(polygon) {
 
     const centroid = findCentroid(polygon);
+
     const normalizedPolygon = polygon.map(vertex => [
         (vertex[0] - centroid[0]) * scale,
         (vertex[1] - centroid[1]) * scale,
