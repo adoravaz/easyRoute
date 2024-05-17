@@ -42,9 +42,6 @@ function LoadHighways(data) {
     for (let i = 0; i < features.length; i++) {
 
         let fel = features[i]
-
-
-
         if (fel.properties['highway']) {
             addHighway(fel.geometry.coordinates, fel.properties)
         }
@@ -132,7 +129,7 @@ function normalizePolygon(polygon) {
     const normalizedPolygon = polygon.map(vertex => [
         (vertex[0] - centroid[0]) * scale,
         (vertex[1] - centroid[1]) * scale,
-        -((vertex[2] / 4.5) - (center[2])),
+        -((vertex[2] / 10) - (center[2])),
     ]);
 
     return { polygon: normalizedPolygon, centroid: centroid };

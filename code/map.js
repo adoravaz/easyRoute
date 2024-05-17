@@ -28,12 +28,20 @@ function selectBuilding(object) {
 }
 
 class Map extends THREE.Object3D {
-    constructor() {
+    constructor(scene = null) {
         super();
+
+        if (Map.instance) {
+            return Map.instance;
+        }
+
         this.buildings = null;
         this.highways = null;
         this.rotateY(Math.PI);
         this.scale.multiplyScalar(.25);
+        scene.add(this);
+
+        Map.instance = this;
 
         // Tools 
         this.orsDirections = new Openrouteservice.Directions({ api_key: import.meta.env.VITE_OPENSTREET_API_KEY });
@@ -57,7 +65,7 @@ class Map extends THREE.Object3D {
             console.log('Highways loaded', routesGroup);
             this.highways = routesGroup;
             this.highways.position.y = -0.1
-            this.add(this.highways);
+            //this.add(this.highways);
 
         } catch (error) {
             console.error('Failed to load buildings:', error);
@@ -149,6 +157,7 @@ class Map extends THREE.Object3D {
     update(time) {
 
     }
+
 }
 
 

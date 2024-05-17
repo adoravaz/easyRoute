@@ -94,7 +94,8 @@ function addBuilding(building, info, height = 1) {
 
         mesh.position.x = -direction.x;
         mesh.position.z = direction.y;
-        mesh.position.y = (centroid[2] / 4.5) - (center[2])
+        mesh.position.y = (centroid[2] / 10) - (center[2])
+
         // Add info to mesh user data 
         mesh.userData.info = info;
         mesh.userData.centroid = centroid;

@@ -1,4 +1,5 @@
 import json
+import math
 import requests
 from shapely.geometry import shape, Polygon, MultiLineString
 
@@ -184,9 +185,48 @@ def count_coordinates_by_highway(geojson_file, highway_type):
                 # Count coordinates in each LineString of a MultiLineString
                 for line in geometry['coordinates']:
                     total_coordinates += len(line)
+            elif geometry['type'] == 'Polygon':
+                for ring in geometry['coordinates']:
+                    total_coordinates += len(ring)
 
     return total_coordinates
 
+def api_call(coords): 
+
+    # do api call 
+    url = "https://api.openrouteservice.org/elevation/line"
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': api_key
+    }
+    data = {
+        "format_in": "polyline",
+        "format_out": "geojson",
+        "geometry": coords
+    }
+    
+    response = requests.post(url, json=data, headers=headers)
+    # print("res", response.json())
+
+    response = response.json()
+    return response['geometry']['coordinates']
+
+def process_1(old_coordinates):
+    new_coordinates = []
+    num_chunks = math.ceil(len(old_coordinates) / 2000)
+
+    for i in range(num_chunks):
+        # Slice the coordinates into chunks of 2000
+        chunk = old_coordinates[i*2000:(i+1)*2000]
+        print(f"Making an API call with {len(chunk)} data items.")
+        api_response = api_call(chunk)
+        new_coordinates.extend(api_response)
+        
+        print("Added new data, total data processed so far:", len(new_coordinates))
+
+    print("Total new coordinates:", len(new_coordinates))
+    return new_coordinates
+        
 def add_elevation_to_highway(geojson_file, highway_type): 
 
     with open(geojson_file, 'r') as file:
@@ -206,54 +246,37 @@ def add_elevation_to_highway(geojson_file, highway_type):
                     old_coordinates.extend(ring)
 
     print("old_coords", len(old_coordinates))
+    
+    new_coordinates = process_1(old_coordinates)
 
-    if (len(old_coordinates) < 2000): 
-        # do api call 
-        url = "https://api.openrouteservice.org/elevation/line"
-        headers = {
-            'Content-Type': 'application/json',
-            'Authorization': api_key
-        }
-        data = {
-            "format_in": "polyline",
-            "format_out": "geojson",
-            "geometry": old_coordinates
-        }
-        
-        response = requests.post(url, json=data, headers=headers)
-        # print("res", response.json())
+    print("new_coordinates", new_coordinates)
 
-        response = response.json()
-        new_coordinates = response['geometry']['coordinates']
-
-        print("new_coordiantes", len(new_coordinates))
-
-        index = 0
-
-        # Check if the lengths match
-        if len(new_coordinates) == len(old_coordinates):
-            for feature in input_geojson['features']:
-                if feature['properties'].get('highway') == highway_type:
-                    geometry = feature['geometry']
-                    if geometry['type'] == 'LineString':
-                        for i in range(len(geometry['coordinates'])):
-                            geometry['coordinates'][i] = new_coordinates[index]
+    index = 0
+    # Check if the lengths match
+    if len(new_coordinates) == len(old_coordinates):
+        for feature in input_geojson['features']:
+            if feature['properties'].get('highway') == highway_type:
+                geometry = feature['geometry']
+                if geometry['type'] == 'LineString':
+                    for i in range(len(geometry['coordinates'])):
+                        geometry['coordinates'][i] = new_coordinates[index]
+                        index += 1
+                elif geometry['type'] == 'MultiLineString':
+                    for line in geometry['coordinates']:
+                        for i in range(len(line)):
+                            line[i] = new_coordinates[index]
                             index += 1
-                    elif geometry['type'] == 'MultiLineString':
-                        for line in geometry['coordinates']:
-                            for i in range(len(line)):
-                                line[i] = new_coordinates[index]
-                                index += 1
-                    elif geometry['type'] == 'Polygon':
-                        for ring in geometry['coordinates']:
-                            for i in range(len(ring)):
-                                ring[i] = new_coordinates[index]
-                                index += 1
-            
-            # print("input_geojson", input_geojson)
-             # Write the modified GeoJSON to a new file
-            with open('dumpfile.geojson', 'w') as file:
-                json.dump(input_geojson, file, indent=4)
+                elif geometry['type'] == 'Polygon':
+                    for ring in geometry['coordinates']:
+                        for i in range(len(ring)):
+                            ring[i] = new_coordinates[index]
+                            index += 1
+        
+        # print("input_geojson", input_geojson)
+            # Write the modified GeoJSON to a new file
+        with open('dumpfile.geojson', 'w') as file:
+            json.dump(input_geojson, file, indent=4)
+
     
 
 # Example usage for count_short...
@@ -287,10 +310,11 @@ def add_elevation_to_highway(geojson_file, highway_type):
 
 # Example usage
 # file_path = 'path.geojson'
-# highway_type = 'pedestrian'  # Specify the type of highway you want to count
+# highway_type = 'path'  # Specify the type of highway you want to count
 # print(f"Total coordinates for {highway_type} highways: {count_coordinates_by_highway(file_path, highway_type)}")
 
 # Example usage
 file_path = 'path.geojson'
-highway_type = 'pedestrian'  # Specify the type of highway you are interested in
+highway_type = 'path'  # Specify the type of highway you are interested in
 add_elevation_to_highway(file_path, highway_type)
+

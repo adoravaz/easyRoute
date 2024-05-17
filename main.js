@@ -56,14 +56,10 @@ scene.add(light1)
 const raycast = new THREE.Raycaster();
 
 // Our Map 
-const map = new Map();
-scene.add(map);
+const map = new Map(scene);
 
-// Card object to display building info 
-const infoCard = document.createElement('div');
-infoCard.className = 'card'; // Assign class 'card'
-// document.body.appendChild(infoCard);
-
+// after initializing the map, exposing map to be available globally
+window.mainMap = map;
 
 renderer.domElement.addEventListener('click', (event) => {
   console.log("clicked");
@@ -114,3 +110,4 @@ const animate = function () {
 };
 
 animate();
+
