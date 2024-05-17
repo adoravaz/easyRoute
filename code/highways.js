@@ -6,7 +6,7 @@ const scale = 10000;
 let alltypes = ['pedestrian', 'track', 'crossing', 'secondary', 'steps', 'footway',
     'traffic_signals', 'living_street', 'secondary_link',
     'service', 'cycleway', 'turning_circle', 'proposed', 'tertiary', 'path']
-let temp = ['pedestrian', 'residential', 'secondary', 'service', 'path', 'track', 'crossing']
+let temp = ['residential', 'secondary', 'service', 'path', 'track']
 
 const materials = {
     pedestrian: new THREE.LineBasicMaterial({ color: "black" }),

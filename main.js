@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { XRButton } from 'three/addons/webxr/XRButton.js';
+// import { XRButton } from 'three/addons/webxr/XRButton.js';
 
 import Stats from 'stats.js'
 import Map from './code/map';
@@ -31,7 +31,7 @@ renderer.xr.enabled = true;
 renderer.sortObjects = false;
 document.getElementById("app").appendChild(renderer.domElement);
 
-document.body.appendChild(XRButton.createButton(renderer, { 'optionalFeatures': ['depth-sensing'] }));
+// document.body.appendChild(XRButton.createButton(renderer, { 'optionalFeatures': ['depth-sensing'] }));
 
 
 // Map Controls 
