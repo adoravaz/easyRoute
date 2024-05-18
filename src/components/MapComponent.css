@@ -6,12 +6,19 @@
 
 .map-container {
     display: inline-block;
+    margin: 10px 10px 10px 10px;
     /* width: 60%; */
 }
 
 .directions-container {
     display: inline-block;
     /* width: 40%; */
+}
+
+.avoidStairs {
+    position: absolute;
+    bottom: 120px;
+    right: 20px;
 }
 
 .my-button-1 {

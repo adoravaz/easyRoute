@@ -5,6 +5,7 @@ import Stats from 'stats.js';
 import Map from '../utils/map.js'; // import Three.js Map component
 import DirectionsList from './DirectionsList';
 import './MapComponent.css';
+import AvoidStairsSwitch from './AvoidStairsSwitch.jsx';
 
 const MapComponent = () => {
     const mountRef = useRef(null);
@@ -147,13 +148,16 @@ const MapComponent = () => {
 
     return (
         <div className="container">
-            <div ref={mountRef} className="map-container"></div>
+            <div ref={mountRef} className="map-container">
+                <div className="avoidStairs">
+                    <AvoidStairsSwitch />   
+                </div>
+                <button id="calcRoute" className="my-button-1">Calculate Route</button>
+                <button id="clearRoute" className="my-button-2">Clear Route</button>
+            </div>
             <div className="directions-container">
                 <DirectionsList directions={directions} routeTotal={routeTotal} />
             </div>
-            <button id="calcRoute" className="my-button-1">Calculate Route</button>
-            <br />
-            <button id="clearRoute" className="my-button-2">Clear Route</button>
         </div>
         // <div ref={mapRef} />
     );
