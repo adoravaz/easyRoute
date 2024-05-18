@@ -52,12 +52,16 @@ light1.position.set(20, 30, 10)
 scene.add(light0)
 scene.add(light1)
 
+scene.add(
+  new THREE.AxesHelper(3)
+)
+
 // Raycaster 
 const raycast = new THREE.Raycaster();
 
 // Our Map 
-const map = new Map();
-scene.add(map);
+const map = new Map(scene);
+// scene.add(map);
 
 // after initializing the map, exposing map to be available globally
 window.mainMap = map;

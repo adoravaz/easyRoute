@@ -1,17 +1,16 @@
 import * as THREE from 'three';
 import Openrouteservice from 'openrouteservice-js'
-
 import createBuildings from './buildings';
 import createHighways from './highways';
-
 import makeDirection from './makeDirection';
+import { getProfileInfo } from './profiles';
+import { getBuildingMaterial, highlightedMaterial } from './materials';
 
 // So I want to be able to export this Map as a contain unite where it handles routing between different locations, drawing, etc 
 // The main problem is that I want to be able to use this map with different controllers and in different spaces like XR, mobile, and desktop 
 
 // Things to do: 
 // make stuff simple 
-// add elevation 
 // improve performance in route section 
 // add a search bar 
 // add 2D text to map 
@@ -19,30 +18,32 @@ import makeDirection from './makeDirection';
 // add default UI, problem: I need two different UIs 2D and 3D (for XR); 
 // add multi 
 
-function deselectBuilding(object) {
-    object.material.color.setHex(object.userData.color);
-    object.material.needsUpdate = true;
-}
-
-function selectBuilding(object) {
-    object.material.color.setHex(0x000000);
-    object.material.needsUpdate = true;
-}
-
 class Map extends THREE.Object3D {
-    constructor() {
+    constructor(scene = null) {
         super();
+
+        if (Map.instance) {
+            return Map.instance;
+        }
+
         this.buildings = null;
         this.highways = null;
         this.rotateY(Math.PI);
-        this.scale.multiplyScalar(.25);
+        this.scale.multiplyScalar(.1);
+        scene.add(this);
+
+        this.position.y = 5
+
+        Map.instance = this;
 
         // Tools 
         this.orsDirections = new Openrouteservice.Directions({ api_key: import.meta.env.VITE_OPENSTREET_API_KEY });
 
-        // Value to store current drawn route 
         this.routes = [];
         this.clickedBuildings = [];
+
+        // Profile type 
+        this.profile = getProfileInfo('walking', 'walking');
 
         this.init();
     }
@@ -75,15 +76,19 @@ class Map extends THREE.Object3D {
             return
         } else if (length == 2) {
 
-            const from = this.clickedBuildings[0].userData.centroid;
-            const to = this.clickedBuildings[1].userData.centroid;
+            let from = this.clickedBuildings[0].userData.centroid;
+            let to = this.clickedBuildings[1].userData.centroid;
             console.log("Getting Directions from " + from + " and " + to);
+
+            // Don't ask lol 
+            from = [from[0], from[1]];
+            to = [to[0], to[1]];
 
             let temp = this;
 
             this.orsDirections.calculate({
                 coordinates: [from, to],
-                profile: "driving-car",
+                profile: temp.profile.profile,
                 format: "geojson",
                 api_version: 'v2',
             })
@@ -110,10 +115,8 @@ class Map extends THREE.Object3D {
 
         // Clear the buildings then the routes 
         this.clickedBuildings.forEach((building) => {
-            deselectBuilding(building);
+            this.deselectBuilding(building);
         })
-
-        this.clickedBuildings = [];
 
         this.routes.forEach((route) => {
             console.log("Route cleared")
@@ -123,24 +126,27 @@ class Map extends THREE.Object3D {
         this.routes = [];
     }
 
-    checkIntersectedBuildings(object) {
+    deselectBuilding(building) {
+        console.log(building.userData.info['building'])
+        building.material = getBuildingMaterial(building.userData.info['building']);
+    }
 
-        console.log("Building clicked", object.userData.info);
+    selectBuilding(building) {
+        building.material = highlightedMaterial;
+    }
 
-        let temp = -1;
-        for (let i = this.clickedBuildings.length - 1; i >= 0; i--) {
-            if (this.clickedBuildings[i] === object) {
-                temp = i;
-                i = this.clickedBuildings.length + 2; // dip out 
-            }
-        }
+    checkIntersectedBuildings(building) {
 
-        if (temp > -1) {
-            this.clickedBuildings.splice(i, 1);
-            deselectBuilding(object);
+        console.log(building)
+
+        const index = this.clickedBuildings.indexOf(building);
+
+        if (index !== -1) {
+            this.deselectBuilding(building);
+            this.clickedBuildings.splice(index, 1);
         } else {
-            selectBuilding(object);
-            this.clickedBuildings.push(object);
+            this.selectBuilding(building);
+            this.clickedBuildings.push(building);
         }
     }
 
@@ -148,25 +154,6 @@ class Map extends THREE.Object3D {
 
     }
 
-    // /*function for  search interface, when a user selects a building by clicking on a card, you should be able to call a method on the map instance to find 
-    // and highlight the corresponding building in the Three.js scene*/
-    // selectBuildingByCoordinates(coordinates) {
-    //     // Method to select a building based on coordinates
-    //     const building = this.findBuildingByCoordinates(coordinates);
-    //     if (building) {
-    //         this.selectBuilding(building);
-    //     }
-    // }
-
-    // findBuildingByCoordinates(coordinates) {
-    //     // Find the building in this.buildings that matches the coordinates
-    //     return this.buildings.children.find(b => this.coordinatesMatch(b.userData.coordinates, coordinates));
-    // }
-
-    // coordinatesMatch(coords1, coords2) {
-    //     // Determine if two sets of coordinates match
-    //     return coords1[0] === coords2[0] && coords1[1] === coords2[1]; //Comparing coordinates of the building and the selected card
-    // }
 }
 
 
