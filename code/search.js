@@ -20,14 +20,22 @@ console.log("map", map);
 //getting the data from the users search
 searchInput.addEventListener("input", e=> {
     const value = e.target.value.toLowerCase()
-    buildings.forEach(feature => {
-        const isVisible = feature.name?.toLowerCase().includes(value) || feature.address?.toLowerCase().includes(value)
-        feature.element.classList.toggle("hide", !isVisible)
-    })
+    //if the search bar is empty, hide all cards 
+    if (value === "") {
+        // If the search bar is empty, hide all cards
+        buildings.forEach(feature => {
+            feature.element.classList.add("hide");
+        });
+    }else{
+        buildings.forEach(feature => {
+            const isVisible = feature.name?.toLowerCase().includes(value) || feature.address?.toLowerCase().includes(value)
+            feature.element.classList.toggle("hide", !isVisible)
+        });
+    }
     // console.log(buildings)
-}) //check if we also want coordinates as part of the search of the buildings
+}); //check if we also want coordinates as part of the search of the buildings
 
-fetch('/buildings.geojson') //need to check if path is correctly being referred to 
+fetch('/UCSC_Buildings_V3.geojson') //need to check if path is correctly being referred to 
     .then(res => res.json())  // calling json() to parse the response.
     .then(data => {
         buildings = data.features.map(feature => { //data.features specifically for geoson files
@@ -46,7 +54,7 @@ fetch('/buildings.geojson') //need to check if path is correctly being referred 
 
             // Setting the coordinates as an attribute
             card.setAttribute('data-coordinates', JSON.stringify(feature.geometry.coordinates));
-            // card.setAttribute('data-centroid', JSON.stringify(centroid));
+            card.setAttribute('data-centroid', JSON.stringify(feature.geometry.centroid));
 
             header.textContent = feature.properties.name; 
             body.textContent = `${feature.properties['addr:street']} ${feature.properties['addr:housenumber']}, ${feature.properties['addr:city']} ${feature.properties['addr:postcode']}`;
@@ -74,7 +82,9 @@ buildingCardcontainer.addEventListener('click', function(event) {
     const card = event.target.closest('.card');
     if (card) {
         const coordinates = JSON.parse(card.getAttribute('data-coordinates'));
-        // const centroid = JSON.parse(card.getAttribute('data-centroid')); // Make sure you have saved centroid here
+        const centroid = JSON.parse(card.getAttribute('data-centroid')); // Make sure you have saved centroid here
+
+        console.log(centroid)
 
         // If there's a previously selected card, remove the selected class
         if (selectedCard && selectedCard !== card) {
@@ -88,7 +98,10 @@ buildingCardcontainer.addEventListener('click', function(event) {
         console.log(coordinates)
         // console.log(centroid)
 
-        // map.highlightBuildingOnMap(centroid);
+        if (map.buildings != null) {
+            map.selectBuilding(centroid);
+            console.log('Highlighted!')
+        }
     }
   });
 }).catch(error => console.error("Failed to initialize map:", error));

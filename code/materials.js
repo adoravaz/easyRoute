@@ -30,7 +30,7 @@ const highwayMaterials = {
 }
 
 const highlightedMaterial = new THREE.MeshStandardMaterial({
-    color: 0x194bff,   // Gold color
+    color: 0x194bff,   // Gold color - changing to black 
     emissive: 0x0037ff, // Orange emissive color for a glowing effect
     emissiveIntensity: 2,
     roughness: 0.5,
