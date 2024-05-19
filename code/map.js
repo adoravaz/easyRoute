@@ -82,6 +82,8 @@ class Map extends THREE.Object3D {
     
             let from = this.clickedBuildings[0].userData.centroid;
             let to = this.clickedBuildings[1].userData.centroid;
+            console.log("Clicked Buildings",this.clickedBuildings);
+
             console.log(from)
             console.log(to)
             console.log("Getting Directions from " + from + " and " + to);
@@ -131,15 +133,35 @@ class Map extends THREE.Object3D {
 
         this.routes = [];
     }
-
-    deselectBuilding(building) {
-        console.log(building.userData.info['building'])
-        building.material = getBuildingMaterial(building.userData.info['building']);
+    
+    selectBuilding(buildingCentroid) {
+        const building = this.buildings.children.find(b => {
+            return b.userData.centroid[0] === buildingCentroid[0] && b.userData.centroid[1] === buildingCentroid[1];
+        });
+        if (building && !this.clickedBuildings.includes(building)) {
+            this.clickedBuildings.push(building);
+            building.material = highlightedMaterial;
+        }
+    }
+    
+    deselectBuilding(buildingCentroid) {
+        const building = this.buildings.children.find(b => {
+            return b.userData.centroid[0] === buildingCentroid[0] && b.userData.centroid[1] === buildingCentroid[1];
+        });
+        if (building) {
+            this.clickedBuildings = this.clickedBuildings.filter(b => b !== building);
+            building.material = getBuildingMaterial(building.userData.info['building']);
+        }
     }
 
-    selectBuilding(building) {
-        building.material = highlightedMaterial;
-    }
+    // deselectBuilding(building) {
+    //     console.log(building.userData.info['building'])
+    //     building.material = getBuildingMaterial(building.userData.info['building']);
+    // }
+
+    // selectBuilding(building) {
+    //     building.material = highlightedMaterial;
+    // }
 
     checkIntersectedBuildings(building) {
 

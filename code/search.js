@@ -72,6 +72,7 @@ buildingCardcontainer.addEventListener('click', event => {
             const selectedBuilding = buildings.find(b => b.name === card.querySelector("[data-header]").textContent);
             if (activeInput === 'start' && startPoint !== selectedBuilding) {
                 if (startPoint) {
+                    map.deselectBuilding(startPoint.centroid); // Adjust deselection logic
                     startPoint.element.classList.remove('selected');
                 }
                 startPoint = selectedBuilding;
@@ -80,6 +81,7 @@ buildingCardcontainer.addEventListener('click', event => {
                 console.log("Setting start point:", startPoint);
             } else if (activeInput === 'destination' && endPoint !== selectedBuilding) {
                 if (endPoint) {
+                    map.deselectBuilding(endPoint.centroid); // Adjust deselection logic
                     endPoint.element.classList.remove('selected');
                 }
                 endPoint = selectedBuilding;

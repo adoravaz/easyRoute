@@ -85,6 +85,14 @@ renderer.domElement.addEventListener('click', (event) => {
 
 });
 
+// document.getElementById('calcRoute').addEventListener('click', () => {
+//   if (map.clickedBuildings.length >= 2) {
+//       map.generateDirections();
+//   } else {
+//       console.error("Not enough buildings selected for a route.");
+//   }
+// });
+
 document.getElementById('calcRoute').addEventListener('click', () => {
   map.generateDirections();
 });
