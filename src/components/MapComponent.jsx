@@ -11,6 +11,12 @@ const MapComponent = () => {
     const mountRef = useRef(null);
     const [routeTotal, setRouteTotal] = useState({});
     const [directions, setDirections] = useState([]);
+    const avoidStairsRef = useRef(false);
+    // const [avoidStairs, setAvoidStairs] = useState(false);
+
+    // const handleToggle = () => {
+    //     setAvoidStairs(!avoidStairs);
+    // };
 
     useEffect(() => {
         const stats = new Stats();
@@ -98,13 +104,15 @@ const MapComponent = () => {
             // map.generateDirections((directions) => {
             //     setDirections(directions);
             // });
-            map.generateDirections(setDirections, setRouteTotal);
+            map.generateDirections(setDirections, setRouteTotal, avoidStairsRef.current);
         };
 
         const onClearRoute = () => {
             map.clearRoutes();
             setDirections([]);
             setRouteTotal({});
+            // setAvoidStairs(false);
+            avoidStairsRef.current = false; // reset avoidStairs value
         };
 
         renderer.domElement.addEventListener('click', onClick);
@@ -146,11 +154,16 @@ const MapComponent = () => {
         };
     }, []);
 
+    const handleAvoidStairsChange = (value) => {
+        avoidStairsRef.current = value;
+    };
+
     return (
         <div className="container">
             <div ref={mountRef} className="map-container">
                 <div className="avoidStairs">
-                    <AvoidStairsSwitch />   
+                    {/* <AvoidStairsSwitch avoidStairs={avoidStairs} handleToggle={handleToggle} />    */}
+                    <AvoidStairsSwitch onToggle={handleAvoidStairsChange} />
                 </div>
                 <button id="calcRoute" className="my-button-1">Calculate Route</button>
                 <button id="clearRoute" className="my-button-2">Clear Route</button>
