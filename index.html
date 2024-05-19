@@ -30,10 +30,18 @@
 <body>
   <div>
   <!-- Search Bar -->
-  <div class="search-wrapper">
-    <label for="search">Search the Map!</label>
-    <input type="search" id="search" data-search>
+  <div class="search-wrapper start-search-wrapper">
+     <!-- Starting Point Search Bar -->
+    <label for="start-search">Start:</label>
+    <input type="search" id="start-search" data-search  placeholder="Enter start location">
   </div>
+
+  <!-- Destination Search Bar -->
+  <div class="search-wrapper destination-search-wrapper">
+    <label for="destination-search">Destination:</label>
+    <input type="search" id="destination-search" data-destination-search placeholder= "Enter end location">
+  </div>
+
   <div class="building-cards" data-building-cards-container></div>
   <template data-building-template>
     <div class="card">

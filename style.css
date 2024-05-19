@@ -9,19 +9,33 @@
 }
 
 /* Adding Styles for the Search Bar */
-.search-wrapper{
-    position: absolute; /* Absolute positioning to place it on the right */
-    top: 0; /* Aligns to the top right corner */
-    right: 10px; /* Aligns to the right */
-    left:0.1;
-    width: 300px; 
-    height: 50px;
+.search-wrapper {
+    position: absolute; /* Keeps the search bar positioned relative to its nearest positioned ancestor */
+    right: 10px; /* Right margin to keep it off the edge */
+    width: 300px; /* Fixed width */
     display: flex;
-    /* float:right; */
-    flex-direction: column;
-    gap:.25rem;
-    z-index: 1000; /* Higher z-index to keep it above the map */
+    flex-direction: column; /* Stacks child elements vertically */
+    gap: 0.25rem; /* Space between child elements */
+    z-index: 1000; /* Ensures the search bar is above other content */
+    padding: 10px; /* Padding around the content */
+    background: rgba(255, 255, 255, 0.9); /* Semi-transparent background */
+    border-radius: 8px; /* Rounded corners */
+}
 
+/* Individual search bars */
+.search-bar {
+    height: 40px; /* Fixed height for each search input */
+    margin-bottom: 10px; /* Space between the search bars */
+}
+
+/* First search wrapper for starting point */
+.start-search-wrapper {
+    top: 5px; /* Distance from the top edge */
+}
+
+/* Second search wrapper for destination */
+.destination-search-wrapper {
+    top: 70px; /* Adjust this value based on the height and margin of the first search bar */
 }
 
 .building-cards{

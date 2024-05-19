@@ -68,7 +68,7 @@ class Map extends THREE.Object3D {
 
     }
     // This function draws the route. 
-    generateDirections() {
+    generateDirections(startBuilding, endBuilding) {
 
         let length = this.clickedBuildings.length;
         if (length <= 1) {
@@ -76,8 +76,14 @@ class Map extends THREE.Object3D {
             return
         } else if (length == 2) {
 
+            // let from = startBuilding.userData.centroid;
+            // let to = endBuilding.userData.centroid;
+
+    
             let from = this.clickedBuildings[0].userData.centroid;
             let to = this.clickedBuildings[1].userData.centroid;
+            console.log(from)
+            console.log(to)
             console.log("Getting Directions from " + from + " and " + to);
 
             // Don't ask lol 
