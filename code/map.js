@@ -134,33 +134,65 @@ class Map extends THREE.Object3D {
         this.routes = [];
     }
     
-    selectBuilding(buildingCentroid) {
+    //functions that allow selection of buildings through search card
+    selectBuildingByCentroid(centroid) {
         const building = this.buildings.children.find(b => {
-            return b.userData.centroid[0] === buildingCentroid[0] && b.userData.centroid[1] === buildingCentroid[1];
+            return b.userData.centroid[0] === centroid[0] && b.userData.centroid[1] === centroid[1];
         });
-        if (building && !this.clickedBuildings.includes(building)) {
+          if (building && !this.clickedBuildings.includes(building)) {
             this.clickedBuildings.push(building);
             building.material = highlightedMaterial;
         }
     }
-    
-    deselectBuilding(buildingCentroid) {
+
+    deselectBuildingByCentroid(centroid) {
         const building = this.buildings.children.find(b => {
-            return b.userData.centroid[0] === buildingCentroid[0] && b.userData.centroid[1] === buildingCentroid[1];
+            return b.userData.centroid[0] === centroid[0] && b.userData.centroid[1] === centroid[1];
         });
-        if (building) {
+            if (building) {
             this.clickedBuildings = this.clickedBuildings.filter(b => b !== building);
             building.material = getBuildingMaterial(building.userData.info['building']);
         }
     }
+  
 
-    // deselectBuilding(building) {
-    //     console.log(building.userData.info['building'])
-    //     building.material = getBuildingMaterial(building.userData.info['building']);
+    // selectBuilding(buildingCentroid) {
+    //     const building = this.buildings.children.find(b => {
+    //         return b.userData.centroid[0] === buildingCentroid[0] && b.userData.centroid[1] === buildingCentroid[1];
+    //     });
+    //     if (building && !this.clickedBuildings.includes(building)) {
+    //         this.clickedBuildings.push(building);
+    //         building.material = highlightedMaterial;
+    //     }
+    // }
+    
+    // deselectBuilding(buildingCentroid) {
+    //     const building = this.buildings.children.find(b => {
+    //         return b.userData.centroid[0] === buildingCentroid[0] && b.userData.centroid[1] === buildingCentroid[1];
+    //     });
+    //     if (building) {
+    //         this.clickedBuildings = this.clickedBuildings.filter(b => b !== building);
+    //         building.material = getBuildingMaterial(building.userData.info['building']);
+    //     }
     // }
 
-    // selectBuilding(building) {
-    //     building.material = highlightedMaterial;
+    
+    //functions that allow selection of buildings through manual click
+    deselectBuilding(building) {
+        console.log(building.userData.info['building'])
+        building.material = getBuildingMaterial(building.userData.info['building']);
+    }
+
+    selectBuilding(building) {
+        building.material = highlightedMaterial;
+    }
+
+    // checkIntersectedBuildings(intersectedObject) {
+    //     if (this.clickedBuildings.includes(intersectedObject)) {
+    //         this.deselectBuilding(intersectedObject);
+    //     } else {
+    //         this.selectBuilding(intersectedObject);
+    //     }
     // }
 
     checkIntersectedBuildings(building) {

@@ -94,6 +94,7 @@ renderer.domElement.addEventListener('click', (event) => {
 // });
 
 document.getElementById('calcRoute').addEventListener('click', () => {
+  // map.clearRoutes();  // Clear previous routes if any
   map.generateDirections();
 });
 
