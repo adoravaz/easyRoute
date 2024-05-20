@@ -4,18 +4,6 @@ import { LineMaterial } from 'three/examples/jsm/Addons.js';
 const center = [-122.0583, 36.9916, 36.9941766]
 const scale = 10000
 
-const material = new LineMaterial({
-
-    color: 0xffffff,
-    linewidth: 5, // in world units with size attenuation, pixels otherwise
-    vertexColors: true,
-
-    //resolution:  // to be set by renderer, eventually
-    dashed: false,
-    alphaToCoverage: true,
-
-});
-
 function findCentroid(polygon) {
     let x = 0, y = 0;
     const n = polygon.length - 1; // Subtract one because the last vertex is the same as the first

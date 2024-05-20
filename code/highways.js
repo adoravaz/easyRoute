@@ -1,13 +1,14 @@
 import * as THREE from 'three';
 
 import { getHighwayMatrial } from './materials';
+import { step } from 'three/examples/jsm/nodes/Nodes.js';
 const center = [-122.0583, 36.9916, 36.9941766]
 const scale = 10000;
 
 let alltypes = ['pedestrian', 'track', 'crossing', 'secondary', 'steps', 'footway',
     'traffic_signals', 'living_street', 'secondary_link',
     'service', 'cycleway', 'turning_circle', 'proposed', 'tertiary', 'path']
-let temp = ['residential', 'secondary', 'service', 'cycleway']
+let temp = ['pedestrian', 'residential', 'secondary', 'service', 'cycleway', 'footway', 'steps']
 let test = ['residential']
 
 const routesGroup = new THREE.Group();

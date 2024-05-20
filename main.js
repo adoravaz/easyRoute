@@ -33,7 +33,6 @@ document.getElementById("app").appendChild(renderer.domElement);
 
 // document.body.appendChild(XRButton.createButton(renderer, { 'optionalFeatures': ['depth-sensing'] }));
 
-
 // Map Controls 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true
