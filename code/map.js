@@ -154,6 +154,8 @@ class Map extends THREE.Object3D {
             building.material = getBuildingMaterial(building.userData.info['building']);
         }
     }
+
+    //function to hide 
   
 
     // selectBuilding(buildingCentroid) {

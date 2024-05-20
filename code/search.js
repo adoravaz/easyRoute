@@ -52,12 +52,13 @@ function searchBuildings(input) {
                 const isVisible = building.name?.toLowerCase().includes(value) || building.address?.toLowerCase().includes(value)
                 // const isVisible = building.name ? building.name.toLowerCase().includes(value) : false;
                 building.element.classList.toggle("hide", !isVisible);
+                // building.element.style.display = 'block'; // Ensure cards are visible when they match the search
             });
         }
     });
 }
 
-
+//making sure we are focusing on either the start search input or the destination search input
 startSearchInput.addEventListener("focus", () => {
     activeInput = 'start';
 });
@@ -70,29 +71,55 @@ buildingCardcontainer.addEventListener('click', event => {
         const card = event.target.closest('.card');
         if (card) {
             const selectedBuilding = buildings.find(b => b.name === card.querySelector("[data-header]").textContent);
+            buildings.forEach(building => { // Hide all cards initially
+                building.element.classList.add('hide');
+            });
             if (activeInput === 'start' && startPoint !== selectedBuilding) {
                 if (startPoint) {
                     map.deselectBuildingByCentroid(startPoint.centroid); // Adjust deselection logic
-                    startPoint.element.classList.remove('selected');
+                    // startPoint.element.classList.remove('selected');
+                    startPoint.element.classList.remove('selected', 'visible');
+                    startPoint.element.classList.add('hide'); // Hide previous start point card
                 }
                 startPoint = selectedBuilding;
-                startPoint.element.classList.add('selected');
+                startPoint.element.classList.add('selected', 'visible'); // Make only the selected card visible
+                // startPoint.element.classList.add('selected');
                 map.selectBuildingByCentroid(startPoint.centroid);
                 console.log("Setting start point:", startPoint);
             } else if (activeInput === 'destination' && endPoint !== selectedBuilding) {
                 if (endPoint) {
                     map.deselectBuildingByCentroid(endPoint.centroid); // Adjust deselection logic
-                    endPoint.element.classList.remove('selected');
+                    // endPoint.element.classList.remove('selected');
+                    endPoint.element.classList.remove('selected', 'visible');
+                    endPoint.element.classList.add('hide'); // Hide previous destination card
                 }
                 endPoint = selectedBuilding;
-                endPoint.element.classList.add('selected');
+                // endPoint.element.classList.add('selected');
+                endPoint.element.classList.add('selected', 'visible'); // Make only the selected card visible
                 map.selectBuildingByCentroid(endPoint.centroid);
                 console.log("Setting end point:", endPoint);
             }
             // if (startPoint && endPoint && startPoint !== endPoint) {
             //     map.generateDirections(startPoint.centroid, endPoint.centroid);
             // }
+            // Move the start card to the top of the container if it exists
+            if (startPoint) {
+                startPoint.element.classList.remove('hide');
+                buildingCardcontainer.prepend(startPoint.element); // Ensures start point card is always at the top
+            }
+             // Move the destination card below the start card if both are selected
+            if (endPoint) {
+                endPoint.element.classList.remove('hide');
+            if (startPoint) {
+                startPoint.element.insertAdjacentElement('afterend', endPoint.element);
+            } else {
+                buildingCardcontainer.prepend(endPoint.element);
+            }
+        }
     }
+    // Ensure selected cards are visible
+    // if (startPoint) startPoint.element.classList.remove('hide');
+    // if (endPoint) endPoint.element.classList.remove('hide');
 });
 
 // function testHighlight() {

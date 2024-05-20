@@ -100,7 +100,17 @@ document.getElementById('calcRoute').addEventListener('click', () => {
 
 document.getElementById('clearRoute').addEventListener('click', () => {
   map.clearRoutes();
+  hideBuildingCards(); //added functionality to hid the building cards
 })
+
+// Function to hide all building cards
+function hideBuildingCards() {
+  const cards = document.querySelectorAll('.card');
+  cards.forEach(card => {
+      card.style.display = 'none'; // Hide each card
+      // card.classList.add('hide'); // Add 'hide' class that sets display to none
+  });
+}
 
 function onWindowResize() {
   camera.aspect = window.innerWidth / window.innerHeight;
