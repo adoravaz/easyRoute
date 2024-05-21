@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { LineMaterial } from 'three/examples/jsm/Addons.js';
 
 const center = [-122.0583, 36.9916, 36.9941766]
 const scale = 10000

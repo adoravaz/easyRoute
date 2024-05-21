@@ -73,6 +73,13 @@ function addBuilding(building, info, height = 1) {
         mesh.userData.type = "building"
         mesh.userData.color = mesh.material.color.getHex();
 
+        // Now create a text label 
+
+        if (info['name']) {
+            var buildingLabel = createLabel(info['name'], mesh.position);
+            buildingsGroup.add(buildingLabel);
+        }
+
         buildingsGroup.add(mesh)
     }
 }
@@ -106,6 +113,29 @@ function genGeometry(shape, settings) {
     let geometry = new THREE.ExtrudeGeometry(shape, settings)
 
     return geometry
+}
+
+function createLabel(text, position) {
+    // Create a canvas and draw text on it
+    var canvas = document.createElement('canvas');
+    var context = canvas.getContext('2d');
+    context.font = 'Bold 20px Arial';
+    context.fillStyle = 'black';
+    context.fillText(text, 20, 20);
+
+    // Create texture from canvas
+    var texture = new THREE.Texture(canvas);
+    texture.needsUpdate = true;
+
+    // Create a sprite material with the canvas texture
+    var material = new THREE.SpriteMaterial({ map: texture });
+    var sprite = new THREE.Sprite(material);
+
+    // Set the scale and position of the sprite
+    sprite.scale.set(1.5, 1, 1); // Scale it to the right size
+    sprite.position.set(position.x, position.y + 0.6, position.z); // Position it above the building
+
+    return sprite;
 }
 
 export default createBuildings; 

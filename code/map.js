@@ -170,7 +170,4 @@ class Map extends THREE.Object3D {
 
 }
 
-
-
-
 export default Map;

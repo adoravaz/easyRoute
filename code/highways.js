@@ -15,8 +15,6 @@ const routesGroup = new THREE.Group();
 
 const highwayTypes = new Set(temp);
 
-console.log(highwayTypes);
-
 async function createHighways() {
     try {
         // const response = await fetch('/UCSC_Highways.geojson');
@@ -57,8 +55,6 @@ function addHighway(data, info) {
         } else {
             polygon = genGeometry(data);
         }
-
-        console.log("polygon", polygon);
 
         let line = new THREE.Line(polygon, getHighwayMatrial(info['highway']))
 
