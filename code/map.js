@@ -38,6 +38,7 @@ class Map extends THREE.Object3D {
 
         // Tools 
         this.orsDirections = new Openrouteservice.Directions({ api_key: import.meta.env.VITE_OPENSTREET_API_KEY });
+        this.orsElevation = new Openrouteservice.Elevation({ api_key: import.meta.env.VITE_OPENSTREET_API_KEY });
 
         this.routes = [];
         this.clickedBuildings = [];
@@ -95,11 +96,24 @@ class Map extends THREE.Object3D {
                 .then(function (json) {
 
                     const routeCoordinates = json.features.find(feature => feature.geometry.type === 'LineString').geometry.coordinates;
-                    const route = makeDirection(routeCoordinates);
-                    console.log("cords:= ", route)
-                    temp.routes.push(route);
-                    temp.add(route);
-                    console.log(JSON.stringify(json));
+
+                    temp.orsElevation.lineElevation({
+                        format_in: 'geojson',
+                        format_out: 'geojson',
+                        geometry: {
+                            coordinates: routeCoordinates,
+                            type: 'LineString'
+                        }
+                    }).then((res) => {
+
+                        const route = makeDirection(res.geometry.coordinates);
+                        console.log("cords:= ", route)
+                        temp.routes.push(route);
+                        temp.add(route);
+                    }).catch((error) => {
+                        let response = JSON.stringify(error, null, "\t")
+                        console.error(response);
+                    })
                 })
                 .catch(function (err) {
                     let response = JSON.stringify(err, null, "\t")

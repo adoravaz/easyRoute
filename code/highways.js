@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 import { getHighwayMatrial } from './materials';
-import { step } from 'three/examples/jsm/nodes/Nodes.js';
+
 const center = [-122.0583, 36.9916, 36.9941766]
 const scale = 10000;
 
