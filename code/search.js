@@ -134,3 +134,4 @@ searchBuildings(destinationSearchInput);
 
 console.log(startSearchInput)
 console.log(destinationSearchInput)
+

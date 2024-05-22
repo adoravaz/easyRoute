@@ -1,7 +1,55 @@
-/* .banner {} */
-
 .container {
     width: 100%;
+    height: 100%;
+    position:relative;
+    background-color: rgb(206, 224, 44);
+    z-index: 0; /* Ensure the container has a base z-index */
+}
+
+.my-button-1 {
+    position: absolute;
+    bottom: 50px;
+    right: 20px;
+}
+
+.my-button-2 {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+}
+
+/* styles.css */
+#legend-container {
+    position: absolute;
+    top: 60px;
+    left: 5px;
+    background: rgba(255, 255, 255, 0);
+    border: 1px solid #ccc;
+    padding: 8px;
+    width: auto;
+    z-index: 1000;
+    transition: transform 0.3s ease-in-out;
+}
+
+.legend-content {
+    /* display: none; */
+}
+
+.toggle-button {
+    background-color: #f8f8f8;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+}
+
+.legend-container.closed .legend-content {
+    display: none;
+}
+
+.legend-container.open .legend-content {
+    display: block;
     height: 100%;
     position: absolute;
     background-color: rgb(206, 224, 44);
@@ -96,25 +144,7 @@
     display: block;
 }
 
-/* moved from the index.html for the calculate route and buttons */
-/* .container {
-    position: relative;
-    height: 100vh;
-  } */
-
-  .my-button-1 {
-    position: absolute;
-    bottom: 50px;
-    right: 20px;
-  }
-
-  .my-button-2 {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-  }
-
-uphill-counters {
+.uphill-counters {
     position: fixed;
     bottom: 20px;
     left: 20px;
