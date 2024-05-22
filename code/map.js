@@ -107,8 +107,8 @@ class Map extends THREE.Object3D {
             console.log("Getting Directions from " + from + " and " + to);
 
             // Don't ask lol 
-            // from = [from[0], from[1]];
-            // to = [to[0], to[1]];
+            from = [from[0], from[1]];
+            to = [to[0], to[1]];
 
             let temp = this;
 
