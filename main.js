@@ -99,14 +99,23 @@ renderer.domElement.addEventListener('click', (event) => {
 //   }
 // });
 
+// avoid stairs switch toggled
+let avoidStairs = false;
+document.getElementById('avoidStairsSwitch').addEventListener('change', (event) => {
+  avoidStairs = event.target.checked;
+});
+
 document.getElementById('calcRoute').addEventListener('click', () => {
   // map.clearRoutes();  // Clear previous routes if any
-  map.generateDirections();
+  map.generateDirections(avoidStairs);
 });
 
 document.getElementById('clearRoute').addEventListener('click', () => {
   map.clearRoutes();
   hideBuildingCards(); //added functionality to hid the building cards
+  // reset avoid stairs switch
+  document.getElementById('avoidStairsSwitch').checked = false;
+  avoidStairs = false;
 })
 
 // Function to hide all building cards
@@ -117,6 +126,24 @@ function hideBuildingCards() {
       // card.classList.add('hide'); // Add 'hide' class that sets display to none
   });
 }
+
+// create HTML elements for directions list
+const directionsList = document.getElementById('directions-list');
+const totalDistance = document.getElementById('total-distance');
+const totalDuration = document.getElementById('total-duration');
+function updateDirectionsList(directions, routeTotal) {
+  directionsList.innerHTML = '';
+  directions.forEach((direction) => {
+    const li = document.createElement('li');
+    li.className = 'direction-item';
+    li.textContent = `${direction.instruction} (Distance: ${direction.distance} meters, Duration: ${(direction.duration/60).toFixed(2)} min)`;
+    directionsList.appendChild(li);
+  });
+  totalDistance.textContent = `Total Distance: ${routeTotal.distance} meters`;
+  totalDuration.textContent = `Total Duration: ${(routeTotal.duration/60).toFixed(2)} min`;
+}
+// expose updateDirectionsList to global scope so it can be called from map.js
+window.updateDirectionsList = updateDirectionsList;
 
 function onWindowResize() {
   camera.aspect = window.innerWidth / window.innerHeight;

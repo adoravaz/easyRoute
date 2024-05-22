@@ -8,33 +8,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="style.css">
   <title>UCSCMap</title>
- </head>
+</head>
 
 <body>
   <div>
-  <!-- Search Bar -->
-  <div class="search-wrapper start-search-wrapper">
-     <!-- Starting Point Search Bar -->
-    <label for="start-search">Start:</label>
-    <input type="search" id="start-search" data-search  placeholder="Enter start location">
-  </div>
-
-  <!-- Destination Search Bar -->
-  <div class="search-wrapper destination-search-wrapper">
-    <label for="destination-search">Destination:</label>
-    <input type="search" id="destination-search" data-destination-search placeholder= "Enter end location">
-  </div>
-
-  <div class="building-cards" data-building-cards-container></div>
-  <template data-building-template>
-    <div class="card">
-      <div class="header" data-header></div>
-      <div class="body" data-body></div>
+    <!-- Search Bar -->
+    <div class="search-wrapper start-search-wrapper">
+      <!-- Starting Point Search Bar -->
+      <label for="start-search">Start:</label>
+      <input type="search" id="start-search" data-search placeholder="Enter start location">
     </div>
-  </template>
+
+    <!-- Destination Search Bar -->
+    <div class="search-wrapper destination-search-wrapper">
+      <label for="destination-search">Destination:</label>
+      <input type="search" id="destination-search" data-destination-search placeholder="Enter end location">
+    </div>
+
+    <div class="building-cards" data-building-cards-container></div>
+    <template data-building-template>
+      <div class="card">
+        <div class="header" data-header></div>
+        <div class="body" data-body></div>
+      </div>
+    </template>
   </div>
-   <!-- Calculate and Clear Route Buttons-->
-  
+  <!-- Calculate and Clear Route Buttons-->
+
   <div>
     <div id="app" class="container">
       <div id="legend-container">
@@ -72,19 +72,38 @@
       <div class="user profile">
 
       </div>
+
+      <!-- Turn-By-Turn Directions List -->
+      <div id="directions-container" class="directions-container">
+        <h3>Directions</h3>
+        <ul id="directions-list"></ul>
+        <p id="total-distance"></p>
+        <p id="total-duration"></p>
+      </div>
+
+      <!-- Avoid Stairs Switch -->
+      <div class="avoidStairs-container">
+        <label class="switch" for="avoidStairsSwitch">
+          <input type="checkbox" id="avoidStairsSwitch">
+          <span class="slider round"></span>
+        </label>
+        <span id="avoid-stairs">Avoid stairs</span>
+      </div>
+
       <button id="calcRoute" class="my-button-1">Calculate Route</button>
       <button id="clearRoute" class="my-button-2">Clear Route</button>
     </div>
   </div>
+
   <!-- Uphill Counters -->
-  
   <div>
     <div id="uphill-counters" style="position:fixed;bottom:20px;left:20px;">
       <label for="uphill">For this route, you will have to climb:</label>
       <p id="uphill-counter"></p>
     </div>
   </div>
-</div>
+
+  </div>
   <script type="module" src="/main.js"></script>
   <script type="module" src="/code/search.js"></script>
 </body>

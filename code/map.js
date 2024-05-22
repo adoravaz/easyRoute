@@ -98,7 +98,7 @@ class Map extends THREE.Object3D {
 
     }
     // This function draws the route. 
-    generateDirections() {
+    generateDirections(avoidStairs) {
 
         let length = this.clickedBuildings.length;
         if (length <= 1) {
@@ -120,11 +120,15 @@ class Map extends THREE.Object3D {
 
             let temp = this;
 
+            // customize options based on avoid stairs switch
+            const options = avoidStairs ? {avoid_features: ['steps']} : {};
+
             this.orsDirections.calculate({
                 coordinates: [from, to],
                 profile: temp.profile.profile,
                 format: "geojson",
                 api_version: 'v2',
+                options: options,
             })
                 .then(function (json) {
 
@@ -143,6 +147,20 @@ class Map extends THREE.Object3D {
                         console.log("cords:= ", route)
                         temp.routes.push(route);
                         temp.add(route);
+
+                        // parse json response into directions array
+                        const segments = json.features[0].properties.segments[0]; // contains distance, duration, instruction for directions
+                        // distance and duration for entire route
+                        const routeTotal = {distance: segments.distance, duration: segments.duration};
+                        // turn-by-turn directions
+                        let directions = segments.steps.map((step) => ({
+                            distance: step.distance,
+                            duration: step.duration,
+                            instruction: step.instruction
+                        }));
+                        // update directions list
+                        window.updateDirectionsList(directions, routeTotal);
+                        document.getElementById('directions-container').style.display = 'block';
                     }).catch((error) => {
                         let response = JSON.stringify(error, null, "\t")
                         console.error(response);
@@ -193,6 +211,10 @@ class Map extends THREE.Object3D {
 
         this.routes = [];
         this.clickedBuildings = [];
+
+        // clear directions list and hide the container
+        window.updateDirectionsList([], {distance: 0, duration: 0});
+        document.getElementById('directions-container').style.display = 'none';
     }
 
     //functions that allow selection of buildings through search card
