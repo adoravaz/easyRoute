@@ -40,6 +40,7 @@ class Map extends THREE.Object3D {
         this.orsDirections = new Openrouteservice.Directions({ api_key: import.meta.env.VITE_OPENSTREET_API_KEY });
 
         this.routes = [];
+        this.routeUphillCounters = [];
         this.clickedBuildings = [];
 
         // Profile type 
@@ -104,9 +105,20 @@ class Map extends THREE.Object3D {
 
                     const routeCoordinates = json.features.find(feature => feature.geometry.type === 'LineString').geometry.coordinates;
                     const route = makeDirection(routeCoordinates);
-                    console.log("cords:= ", route)
+                    const uphillCounter = getUphillCounter(routeCoordinates).then(function (counter) {
+                        console.log("updated!");
+                        temp.routeUphillCounters.push(counter);
+                        document.getElementById('uphill-counter').innerHTML = counter.toString() + " units of elevation.";
+
+                        return counter;
+                    }).catch(function () {});
                     temp.routes.push(route);
                     temp.add(route);
+
+                    console.log("uphill counter:");
+                    console.log(uphillCounter);
+
+                    console.log("json:");
                     console.log(JSON.stringify(json));
                 })
                 .catch(function (err) {
@@ -128,6 +140,11 @@ class Map extends THREE.Object3D {
 
         this.routes.forEach((route) => {
             console.log("Route cleared")
+            this.remove(route);
+        })
+
+        this.routeUphillCounters.forEach((route) => {
+            console.log("Route uphill counter cleared")
             this.remove(route);
         })
 
@@ -218,6 +235,35 @@ class Map extends THREE.Object3D {
 
 }
 
+async function getUphillCounter(routeCoordinates) {
+    try {
+        // elevations are in the form of key value pairs of:
+        // "x y": z
+        const response = await fetch('/elevations.json')
+        const elevations = await response.json();
+
+        var counter = 0;
+        var prev = -1;
+
+        for (var i = 0; i < routeCoordinates.length; i ++) {
+            var key = routeCoordinates[i][0].toString() + " " + routeCoordinates[i][1].toString()
+
+            // in case we don't have elevation data at a given point
+            if (!elevations.hasOwnProperty(key)) {
+                continue;
+            }
+
+            if (prev != -1 && elevations[key] > prev) {
+                counter += elevations[key] - prev;
+            }
+            prev = elevations[key];
+        }
+
+        return counter;
+    } catch (error) {
+        throw error;
+    }
+}
 
 
 

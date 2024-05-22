@@ -3,9 +3,15 @@
 .container {
     width: 100%;
     height: 100%;
-    position:relative;
+    position: absolute;
     background-color: rgb(206, 224, 44);
     z-index: 0; /* Ensure the container has a base z-index */
+}
+
+.app {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
 }
 
 /* Adding Styles for the Search Bar */
@@ -107,3 +113,9 @@
     bottom: 20px;
     right: 20px;
   }
+
+uphill-counters {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+}
