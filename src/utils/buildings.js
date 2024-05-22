@@ -23,7 +23,7 @@ const buildingsGroup = new THREE.Group();
 async function createBuildings() {
     try {
         // const response = await fetch('/UCSC_Buildings.geojson');
-        const response = await fetch('/../../src/assets/buildings.geojson');
+        const response = await fetch('/../../src/assets/UCSC_Buildings_V3.geojson');
         const data = await response.json();
         LoadBuildings(data);
         return buildingsGroup;

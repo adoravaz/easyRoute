@@ -32,6 +32,8 @@ function selectBuilding(object) {
     object.material.color.setHex(0x000000);
     console.log("object.material.color after: " + JSON.stringify(object.material.color));
     object.material.needsUpdate = true;
+    console.log("after updating object");
+    console.log("object: " + JSON.stringify(object));
 }
 
 class Map extends THREE.Object3D {
@@ -60,18 +62,18 @@ class Map extends THREE.Object3D {
             this.add(this.buildings);
             //console.log(this.buildings.children);
 
-            const routesGroup = await createHighways();
-            console.log('Highways loaded', routesGroup);
-            this.highways = routesGroup;
-            this.highways.position.y = -0.1
-            this.add(this.highways);
+            // const routesGroup = await createHighways();
+            // console.log('Highways loaded', routesGroup);
+            // this.highways = routesGroup;
+            // this.highways.position.y = -0.1
+            // this.add(this.highways);
         } catch (error) {
             console.error('Failed to load buildings:', error);
         }
 
     }
     // This function draws the route. 
-    generateDirections(setDirections, setRouteTotal) {
+    generateDirections(setDirections, setRouteTotal, avoidStairs) {
         let length = this.clickedBuildings.length;
         if (length <= 1) {
             console.log("Not enough buildings clicked");
@@ -83,12 +85,14 @@ class Map extends THREE.Object3D {
             console.log("Getting Directions from " + from + " and " + to);
 
             let temp = this;
+            const options = avoidStairs ? {avoid_features: ['steps']} : {};
 
             this.orsDirections.calculate({
                 coordinates: [from, to],
                 profile: "foot-walking",
                 format: "geojson",
                 api_version: 'v2',
+                options: options,
             })
                 .then((json) => {
                     const routeCoordinates = json.features.find(feature => feature.geometry.type === 'LineString').geometry.coordinates;
