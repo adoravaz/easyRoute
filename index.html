@@ -6,13 +6,55 @@
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <linK rel="stylesheet" href="style.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
 
-  </style>
+
+  <link rel="stylesheet" href="style.css">
+  <!-- <style>
+    .container {
+      position: relative;
+      height: 100vh;
+    }
+
+    .my-button-1 {
+      position: absolute;
+      bottom: 50px;
+      right: 20px;
+    }
+
+    .my-button-2 {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+    }
+  </style> -->
   <title>UCSCMap</title>
-</head>
+ </head>
 
 <body>
+  <div>
+  <!-- Search Bar -->
+  <div class="search-wrapper start-search-wrapper">
+     <!-- Starting Point Search Bar -->
+    <label for="start-search">Start:</label>
+    <input type="search" id="start-search" data-search  placeholder="Enter start location">
+  </div>
+
+  <!-- Destination Search Bar -->
+  <div class="search-wrapper destination-search-wrapper">
+    <label for="destination-search">Destination:</label>
+    <input type="search" id="destination-search" data-destination-search placeholder= "Enter end location">
+  </div>
+
+  <div class="building-cards" data-building-cards-container></div>
+  <template data-building-template>
+    <div class="card">
+      <div class="header" data-header></div>
+      <div class="body" data-body></div>
+    </div>
+  </template>
+  </div>
+   <!-- Calculate and Clear Route Buttons-->
+  
   <div>
     <div id="app" class="container">
       <div id="legend-container">
@@ -54,6 +96,15 @@
       <button id="clearRoute" class="my-button-2">Clear Route</button>
     </div>
   </div>
+  <!-- Uphill Counters -->
+  
+  <div>
+    <div id="uphill-counters" style="position:fixed;bottom:20px;left:20px;">
+      <label for="uphill">For this route, you will have to climb:</label>
+      <p id="uphill-counter"></p>
+    </div>
+  </div>
+</div>
   <script type="module" src="/main.js"></script>
   <script type="module" src="/code/search.js"></script>
 </body>

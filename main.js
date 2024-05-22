@@ -69,8 +69,11 @@ const raycast = new THREE.Raycaster();
 // Our Map 
 const map = new Map(scene);
 
-// // after initializing the map, exposing map to be available globally
-// window.mainMap = map;
+// scene.add(map);
+
+// after initializing the map, exposing map to be available globally
+window.mainMap = map;
+
 
 renderer.domElement.addEventListener('click', (event) => {
   console.log("clicked");
@@ -91,13 +94,32 @@ renderer.domElement.addEventListener('click', (event) => {
 
 });
 
+// document.getElementById('calcRoute').addEventListener('click', () => {
+//   if (map.clickedBuildings.length >= 2) {
+//       map.generateDirections();
+//   } else {
+//       console.error("Not enough buildings selected for a route.");
+//   }
+// });
+
 document.getElementById('calcRoute').addEventListener('click', () => {
+  // map.clearRoutes();  // Clear previous routes if any
   map.generateDirections();
 });
 
 document.getElementById('clearRoute').addEventListener('click', () => {
   map.clearRoutes();
+  hideBuildingCards(); //added functionality to hid the building cards
 })
+
+// Function to hide all building cards
+function hideBuildingCards() {
+  const cards = document.querySelectorAll('.card');
+  cards.forEach(card => {
+      card.style.display = 'none'; // Hide each card
+      // card.classList.add('hide'); // Add 'hide' class that sets display to none
+  });
+}
 
 function onWindowResize() {
   camera.aspect = window.innerWidth / window.innerHeight;
