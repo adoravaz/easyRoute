@@ -76,7 +76,7 @@ function addBuilding(building, info, height = 1) {
         // Now create a text label 
 
         if (info['name']) {
-            var buildingLabel = createLabel(info['name'], mesh.position);
+            var buildingLabel = createLabel(info['name'], new THREE.Vector3(mesh.position.x, mesh.position.y + (height / 2), mesh.position.z));
             buildingsGroup.add(buildingLabel);
         }
 
@@ -116,24 +116,20 @@ function genGeometry(shape, settings) {
 }
 
 function createLabel(text, position) {
-    // Create a canvas and draw text on it
     var canvas = document.createElement('canvas');
     var context = canvas.getContext('2d');
     context.font = 'Bold 20px Arial';
     context.fillStyle = 'black';
     context.fillText(text, 20, 20);
 
-    // Create texture from canvas
     var texture = new THREE.Texture(canvas);
     texture.needsUpdate = true;
 
-    // Create a sprite material with the canvas texture
     var material = new THREE.SpriteMaterial({ map: texture });
     var sprite = new THREE.Sprite(material);
 
-    // Set the scale and position of the sprite
-    sprite.scale.set(1.5, 1, 1); // Scale it to the right size
-    sprite.position.set(position.x, position.y + 0.6, position.z); // Position it above the building
+    sprite.scale.set(1.5, 1, 1);
+    sprite.position.set(position.x, position.y, position.z);
 
     return sprite;
 }

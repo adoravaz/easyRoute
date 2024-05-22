@@ -10,12 +10,6 @@ import { getBuildingMaterial, highlightedMaterial } from './materials';
 // The main problem is that I want to be able to use this map with different controllers and in different spaces like XR, mobile, and desktop 
 
 // Things to do: 
-// make stuff simple 
-// improve performance in route section 
-// add a search bar 
-// add 2D text to map 
-// add hover 
-// add default UI, problem: I need two different UIs 2D and 3D (for XR); 
 // add multi 
 
 class Map extends THREE.Object3D {
