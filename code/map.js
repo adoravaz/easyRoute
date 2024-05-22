@@ -24,6 +24,21 @@ function findBuildings(mesh, result = []) {
     return result;
 }
 
+// function dontAskLol(clickedBuildings) {
+//     let output = []
+//     let from = clickedBuildings[0].userData.centroid;
+//     let to = clickedBuildings[1].userData.centroid;
+//     console.log("Getting Directions from " + from + " and " + to);
+
+//     // // Don't ask lol 
+//     // from = [from[0], from[1]];
+//     // to = [to[0], to[1]];
+
+//     // clickedBuildings.forEach((coord) => {
+//     //     output.push([coord.userData.centroid[0],])
+//     // }).
+// }
+
 class Map extends THREE.Object3D {
     constructor(scene = null) {
         super();
@@ -45,6 +60,7 @@ class Map extends THREE.Object3D {
         // Tools 
         this.orsDirections = new Openrouteservice.Directions({ api_key: import.meta.env.VITE_OPENSTREET_API_KEY });
         this.orsElevation = new Openrouteservice.Elevation({ api_key: import.meta.env.VITE_OPENSTREET_API_KEY });
+        this.orsMatrix = new Openrouteservice.Matrix({ api_key: import.meta.env.VITE_OPENSTREET_API_KEY });
 
         this.routes = [];
         this.clickedBuildings = [];
@@ -71,7 +87,6 @@ class Map extends THREE.Object3D {
             this.add(this.highways);
 
             this.clickable = findBuildings(this.buildings);
-            console.log("clickable", this.clickable);
 
         } catch (error) {
             console.error('Failed to load buildings:', error);
@@ -92,8 +107,8 @@ class Map extends THREE.Object3D {
             console.log("Getting Directions from " + from + " and " + to);
 
             // Don't ask lol 
-            from = [from[0], from[1]];
-            to = [to[0], to[1]];
+            // from = [from[0], from[1]];
+            // to = [to[0], to[1]];
 
             let temp = this;
 
@@ -131,7 +146,9 @@ class Map extends THREE.Object3D {
                 })
 
         } else { // Matrix direction 
-
+            // this.orsMatrix.calculate({
+            //     locations: 
+            // })
         }
     }
 
