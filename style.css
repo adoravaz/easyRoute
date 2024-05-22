@@ -149,3 +149,30 @@
     bottom: 20px;
     left: 20px;
 }
+
+.directions-container {
+    display: none;
+    background-color: white;
+    position: absolute;
+    right: 10px;
+    top: 250px;
+    width: 300px;
+    max-height: 300px;
+    overflow-y: auto; /* allow scrolling */
+    z-index: 1000;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+#directions-list {
+    font-size: 14px;
+}
+
+#total-distance {
+    font-size: 15px;
+}
+
+#total-duration {
+    font-size: 15px;
+}
