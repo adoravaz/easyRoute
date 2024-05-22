@@ -5,7 +5,8 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
+  <link rel="stylesheet" href="style.css">
+  <!-- <style>
     .container {
       position: relative;
       height: 100vh;
@@ -22,11 +23,35 @@
       bottom: 20px;
       right: 20px;
     }
-  </style>
+  </style> -->
   <title>UCSCMap</title>
-</head>
+ </head>
 
 <body>
+  <div>
+  <!-- Search Bar -->
+  <div class="search-wrapper start-search-wrapper">
+     <!-- Starting Point Search Bar -->
+    <label for="start-search">Start:</label>
+    <input type="search" id="start-search" data-search  placeholder="Enter start location">
+  </div>
+
+  <!-- Destination Search Bar -->
+  <div class="search-wrapper destination-search-wrapper">
+    <label for="destination-search">Destination:</label>
+    <input type="search" id="destination-search" data-destination-search placeholder= "Enter end location">
+  </div>
+
+  <div class="building-cards" data-building-cards-container></div>
+  <template data-building-template>
+    <div class="card">
+      <div class="header" data-header></div>
+      <div class="body" data-body></div>
+    </div>
+  </template>
+  </div>
+   <!-- Search Bar -->
+  
   <div>
     <div id="app" class="container">
 
@@ -34,7 +59,9 @@
       <button id="clearRoute" class="my-button-2">Clear Route</button>
     </div>
   </div>
+</div>
   <script type="module" src="/main.js"></script>
+  <script type="module" src="/code/search.js"></script>
 </body>
 
 </html>
