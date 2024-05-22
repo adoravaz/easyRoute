@@ -98,7 +98,7 @@ class Map extends THREE.Object3D {
 
     }
     // This function draws the route. 
-    generateDirections(startBuilding, endBuilding) {
+    generateDirections() {
 
         let length = this.clickedBuildings.length;
         if (length <= 1) {
@@ -108,7 +108,7 @@ class Map extends THREE.Object3D {
 
             let from = this.clickedBuildings[0].userData.centroid;
             let to = this.clickedBuildings[1].userData.centroid;
-            console.log("Clicked Buildings",this.clickedBuildings);
+            console.log("Clicked Buildings", this.clickedBuildings);
 
             console.log(from)
             console.log(to)
@@ -147,15 +147,15 @@ class Map extends THREE.Object3D {
                         let response = JSON.stringify(error, null, "\t")
                         console.error(response);
                     })
-       
+
                     const uphillCounter = getUphillCounter(routeCoordinates).then(function (counter) {
                         console.log("updated!");
                         temp.routeUphillCounters.push(counter);
                         document.getElementById('uphill-counter').innerHTML = counter.toString() + " units of elevation.";
 
                         return counter;
-                    }).catch(function () {});
-     
+                    }).catch(function () { });
+
                     console.log("uphill counter:");
                     console.log(uphillCounter);
 
@@ -193,13 +193,13 @@ class Map extends THREE.Object3D {
 
         this.routes = [];
     }
-    
+
     //functions that allow selection of buildings through search card
     selectBuildingByCentroid(centroid) {
-        const building = this.buildings.children.find(b => {
+        const building = this.clickable.find(b => {
             return b.userData.centroid[0] === centroid[0] && b.userData.centroid[1] === centroid[1];
         });
-          if (building && !this.clickedBuildings.includes(building)) {
+        if (building && !this.clickedBuildings.includes(building)) {
             this.clickedBuildings.push(building);
             building.material = highlightedMaterial;
         }
@@ -218,12 +218,12 @@ class Map extends THREE.Object3D {
         const building = this.clickable.find(b => {
             return b.userData.centroid[0] === centroid[0] && b.userData.centroid[1] === centroid[1];
         });
-            if (building) {
+        if (building) {
             this.clickedBuildings = this.clickedBuildings.filter(b => b !== building);
             building.material = getBuildingMaterial(building.userData.info['building']);
         }
     }
-      
+
     checkIntersectedBuildings(building) {
 
         console.log(building)
@@ -255,7 +255,7 @@ async function getUphillCounter(routeCoordinates) {
         var counter = 0;
         var prev = -1;
 
-        for (var i = 0; i < routeCoordinates.length; i ++) {
+        for (var i = 0; i < routeCoordinates.length; i++) {
             var key = routeCoordinates[i][0].toString() + " " + routeCoordinates[i][1].toString()
 
             // in case we don't have elevation data at a given point
