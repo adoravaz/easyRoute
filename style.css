@@ -1,6 +1,9 @@
 .container {
-    position: relative;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
+    position:relative;
+    background-color: rgb(206, 224, 44);
+    z-index: 0; /* Ensure the container has a base z-index */
 }
 
 .my-button-1 {
@@ -13,15 +16,6 @@
     position: absolute;
     bottom: 20px;
     right: 20px;
-}
-
-.card {
-    position: absolute;
-    padding: 5px;
-    background: 'pink';
-    display: hidden;
-    width: 100px;
-    height: 300px;
 }
 
 /* styles.css */
@@ -56,4 +50,102 @@
 
 .legend-container.open .legend-content {
     display: block;
+    height: 100%;
+    position: absolute;
+    background-color: rgb(206, 224, 44);
+    z-index: 0; /* Ensure the container has a base z-index */
+}
+
+.app {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+}
+
+/* Adding Styles for the Search Bar */
+.search-wrapper {
+    position: absolute; /* Keeps the search bar positioned relative to its nearest positioned ancestor */
+    right: 10px; /* Right margin to keep it off the edge */
+    width: 300px; /* Fixed width */
+    display: flex;
+    flex-direction: column; /* Stacks child elements vertically */
+    gap: 0.25rem; /* Space between child elements */
+    z-index: 1000; /* Ensures the search bar is above other content */
+    padding: 10px; /* Padding around the content */
+    background: rgba(255, 255, 255, 0.9); /* Semi-transparent background */
+    border-radius: 8px; /* Rounded corners */
+}
+
+/* Individual search bars */
+.search-bar {
+    height: 40px; /* Fixed height for each search input */
+    margin-bottom: 10px; /* Space between the search bars */
+}
+
+/* First search wrapper for starting point */
+.start-search-wrapper {
+    top: 5px; /* Distance from the top edge */
+}
+
+/* Second search wrapper for destination */
+.destination-search-wrapper {
+    top: 70px; /* Adjust this value based on the height and margin of the first search bar */
+}
+
+.building-cards{
+    position: absolute; /* Absolute positioning to align under the search bar */
+    top: 115px; /* Adjusted based on the height of your search bar */
+    right: 10px; /* Aligns to the right */
+    width: 300px; 
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /*controls how big we are going to let the search results take up the screen*/
+    gap: .25rem;
+    margin-top: 1rem;
+    text-align: right; /* Aligns the content of each card to the right */
+    z-index: 1000; /* Higher z-index to keep it above the map */
+    overflow-y: auto; /* Allows scrolling within the container */
+    max-height: 300px; /* Limit the height to ensure it does not take up too much space */
+} 
+
+.card{
+    border: 1px solid black;
+    background-color: white;
+    padding: .5rem;
+    text-align: right; /* Aligns the content of each card to the right */
+}
+
+.card > .header{
+    margin-bottom: .25rem;
+}
+
+.card > .body{
+    font-size: .8rem;
+    color: #777;
+}
+
+.hide{
+    display: none;
+}
+
+/*Selected State of Card */
+.card.selected {
+    border-color: #007bff; /* Blue border for selected card */
+    background-color: #f0f9ff; /* Light blue background for visibility */
+}
+
+/*added*/
+/*Ensures card is not displayed*/
+.card.hide {
+    display: none; 
+}
+
+/*Ensures card is displayed*/
+.card.visible {
+    display: block;
+}
+
+.uphill-counters {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
 }

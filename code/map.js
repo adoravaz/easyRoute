@@ -63,8 +63,12 @@ class Map extends THREE.Object3D {
         this.orsMatrix = new Openrouteservice.Matrix({ api_key: import.meta.env.VITE_OPENSTREET_API_KEY });
 
         this.routes = [];
+        this.routeUphillCounters = [];
         this.clickedBuildings = [];
-        this.clickable = null;
+        this.clickable = [];
+
+        // Profile type 
+        this.profile = getProfileInfo('walking', 'walking');
 
         // Profile type 
         this.profile = getProfileInfo('walking', 'walking');
@@ -94,7 +98,7 @@ class Map extends THREE.Object3D {
 
     }
     // This function draws the route. 
-    generateDirections() {
+    generateDirections(startBuilding, endBuilding) {
 
         let length = this.clickedBuildings.length;
         if (length <= 1) {
@@ -104,6 +108,10 @@ class Map extends THREE.Object3D {
 
             let from = this.clickedBuildings[0].userData.centroid;
             let to = this.clickedBuildings[1].userData.centroid;
+            console.log("Clicked Buildings",this.clickedBuildings);
+
+            console.log(from)
+            console.log(to)
             console.log("Getting Directions from " + from + " and " + to);
 
             // Don't ask lol 
@@ -139,6 +147,20 @@ class Map extends THREE.Object3D {
                         let response = JSON.stringify(error, null, "\t")
                         console.error(response);
                     })
+       
+                    const uphillCounter = getUphillCounter(routeCoordinates).then(function (counter) {
+                        console.log("updated!");
+                        temp.routeUphillCounters.push(counter);
+                        document.getElementById('uphill-counter').innerHTML = counter.toString() + " units of elevation.";
+
+                        return counter;
+                    }).catch(function () {});
+     
+                    console.log("uphill counter:");
+                    console.log(uphillCounter);
+
+                    console.log("json:");
+                    console.log(JSON.stringify(json));
                 })
                 .catch(function (err) {
                     let response = JSON.stringify(err, null, "\t")
@@ -164,7 +186,23 @@ class Map extends THREE.Object3D {
             this.remove(route);
         })
 
+        this.routeUphillCounters.forEach((route) => {
+            console.log("Route uphill counter cleared")
+            this.remove(route);
+        })
+
         this.routes = [];
+    }
+    
+    //functions that allow selection of buildings through search card
+    selectBuildingByCentroid(centroid) {
+        const building = this.buildings.children.find(b => {
+            return b.userData.centroid[0] === centroid[0] && b.userData.centroid[1] === centroid[1];
+        });
+          if (building && !this.clickedBuildings.includes(building)) {
+            this.clickedBuildings.push(building);
+            building.material = highlightedMaterial;
+        }
     }
 
     deselectBuilding(building) {
@@ -176,6 +214,16 @@ class Map extends THREE.Object3D {
         building.material = highlightedMaterial;
     }
 
+    deselectBuildingByCentroid(centroid) {
+        const building = this.clickable.find(b => {
+            return b.userData.centroid[0] === centroid[0] && b.userData.centroid[1] === centroid[1];
+        });
+            if (building) {
+            this.clickedBuildings = this.clickedBuildings.filter(b => b !== building);
+            building.material = getBuildingMaterial(building.userData.info['building']);
+        }
+    }
+      
     checkIntersectedBuildings(building) {
 
         console.log(building)
@@ -195,6 +243,36 @@ class Map extends THREE.Object3D {
 
     }
 
+}
+
+async function getUphillCounter(routeCoordinates) {
+    try {
+        // elevations are in the form of key value pairs of:
+        // "x y": z
+        const response = await fetch('/elevations.json')
+        const elevations = await response.json();
+
+        var counter = 0;
+        var prev = -1;
+
+        for (var i = 0; i < routeCoordinates.length; i ++) {
+            var key = routeCoordinates[i][0].toString() + " " + routeCoordinates[i][1].toString()
+
+            // in case we don't have elevation data at a given point
+            if (!elevations.hasOwnProperty(key)) {
+                continue;
+            }
+
+            if (prev != -1 && elevations[key] > prev) {
+                counter += elevations[key] - prev;
+            }
+            prev = elevations[key];
+        }
+
+        return counter;
+    } catch (error) {
+        throw error;
+    }
 }
 
 export default Map;
