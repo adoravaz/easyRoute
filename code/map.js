@@ -192,6 +192,7 @@ class Map extends THREE.Object3D {
         })
 
         this.routes = [];
+        this.clickedBuildings = [];
     }
 
     //functions that allow selection of buildings through search card
