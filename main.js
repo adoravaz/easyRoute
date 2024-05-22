@@ -1,7 +1,5 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-// import { XRButton } from 'three/addons/webxr/XRButton.js';
-
 import Stats from 'stats.js'
 import Map from './code/map';
 
@@ -26,12 +24,7 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setClearColor("white");
 renderer.setPixelRatio(window.devicePixelRatio)
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.shadowMap.enabled = true;
-renderer.xr.enabled = true;
-renderer.sortObjects = false;
 document.getElementById("app").appendChild(renderer.domElement);
-
-// document.body.appendChild(XRButton.createButton(renderer, { 'optionalFeatures': ['depth-sensing'] }));
 
 // Map Controls 
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -68,12 +61,10 @@ const raycast = new THREE.Raycaster();
 
 // Our Map 
 const map = new Map(scene);
-
 // scene.add(map);
 
 // after initializing the map, exposing map to be available globally
 window.mainMap = map;
-
 
 renderer.domElement.addEventListener('click', (event) => {
   console.log("clicked");
@@ -86,7 +77,7 @@ renderer.domElement.addEventListener('click', (event) => {
   raycast.setFromCamera(mouse, camera);
 
   // Calculate objects intersecting the picking ray
-  const intersects = raycast.intersectObjects((map.clickable) ? map.clickable : [], true); // Note this only checks if we clicked buildings
+  const intersects = raycast.intersectObjects(map.buildings.children, true); // Note this only checks if we clicked buildings
 
   if (intersects.length > 0) {
     map.checkIntersectedBuildings(intersects[0].object)
@@ -143,4 +134,3 @@ const animate = function () {
 };
 
 animate();
-

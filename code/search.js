@@ -1,4 +1,3 @@
-
 import Map from './map';
 import Openrouteservice from 'openrouteservice-js'
 import createBuildings from './buildings';
@@ -135,4 +134,3 @@ searchBuildings(destinationSearchInput);
 
 console.log(startSearchInput)
 console.log(destinationSearchInput)
-

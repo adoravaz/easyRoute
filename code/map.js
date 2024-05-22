@@ -9,35 +9,14 @@ import { getBuildingMaterial, highlightedMaterial } from './materials';
 // So I want to be able to export this Map as a contain unite where it handles routing between different locations, drawing, etc 
 // The main problem is that I want to be able to use this map with different controllers and in different spaces like XR, mobile, and desktop 
 
-// Things to do:
+// Things to do: 
+// make stuff simple 
+// improve performance in route section 
+// add a search bar 
+// add 2D text to map 
+// add hover 
+// add default UI, problem: I need two different UIs 2D and 3D (for XR); 
 // add multi 
-
-function findBuildings(mesh, result = []) {
-    if (mesh.userData && mesh.userData.type === 'building') {
-        result.push(mesh);
-    }
-
-    if (mesh.children && mesh.children.length > 0) {
-        mesh.children.forEach(child => findBuildings(child, result));
-    }
-
-    return result;
-}
-
-// function dontAskLol(clickedBuildings) {
-//     let output = []
-//     let from = clickedBuildings[0].userData.centroid;
-//     let to = clickedBuildings[1].userData.centroid;
-//     console.log("Getting Directions from " + from + " and " + to);
-
-//     // // Don't ask lol 
-//     // from = [from[0], from[1]];
-//     // to = [to[0], to[1]];
-
-//     // clickedBuildings.forEach((coord) => {
-//     //     output.push([coord.userData.centroid[0],])
-//     // }).
-// }
 
 class Map extends THREE.Object3D {
     constructor(scene = null) {
@@ -59,16 +38,10 @@ class Map extends THREE.Object3D {
 
         // Tools 
         this.orsDirections = new Openrouteservice.Directions({ api_key: import.meta.env.VITE_OPENSTREET_API_KEY });
-        this.orsElevation = new Openrouteservice.Elevation({ api_key: import.meta.env.VITE_OPENSTREET_API_KEY });
-        this.orsMatrix = new Openrouteservice.Matrix({ api_key: import.meta.env.VITE_OPENSTREET_API_KEY });
 
         this.routes = [];
         this.routeUphillCounters = [];
         this.clickedBuildings = [];
-        this.clickable = null;
-
-        // Profile type 
-        this.profile = getProfileInfo('walking', 'walking');
 
         // Profile type 
         this.profile = getProfileInfo('walking', 'walking');
@@ -79,18 +52,16 @@ class Map extends THREE.Object3D {
     async init() {
         try {
             const buildingsGroup = await createBuildings();
-            //console.log('Buildings loaded:', buildingsGroup);
+            console.log('Buildings loaded:', buildingsGroup);
             this.buildings = buildingsGroup;
             this.add(this.buildings);
             //console.log(this.buildings.children);
 
             const routesGroup = await createHighways();
-            //console.log('Highways loaded', routesGroup);
+            console.log('Highways loaded', routesGroup);
             this.highways = routesGroup;
             this.highways.position.y = -0.1
             this.add(this.highways);
-
-            this.clickable = findBuildings(this.buildings);
 
         } catch (error) {
             console.error('Failed to load buildings:', error);
@@ -106,13 +77,22 @@ class Map extends THREE.Object3D {
             return
         } else if (length == 2) {
 
+            // let from = startBuilding.userData.centroid;
+            // let to = endBuilding.userData.centroid;
+
+    
             let from = this.clickedBuildings[0].userData.centroid;
             let to = this.clickedBuildings[1].userData.centroid;
+            console.log("Clicked Buildings",this.clickedBuildings);
+
+            console.log(from)
+            console.log(to)
             console.log("Getting Directions from " + from + " and " + to);
 
             // Don't ask lol 
             from = [from[0], from[1]];
             to = [to[0], to[1]];
+
             let temp = this;
 
             this.orsDirections.calculate({
@@ -124,24 +104,22 @@ class Map extends THREE.Object3D {
                 .then(function (json) {
 
                     const routeCoordinates = json.features.find(feature => feature.geometry.type === 'LineString').geometry.coordinates;
+                    const route = makeDirection(routeCoordinates);
+                    const uphillCounter = getUphillCounter(routeCoordinates).then(function (counter) {
+                        console.log("updated!");
+                        temp.routeUphillCounters.push(counter);
+                        document.getElementById('uphill-counter').innerHTML = counter.toString() + " units of elevation.";
 
-                    temp.orsElevation.lineElevation({
-                        format_in: 'geojson',
-                        format_out: 'geojson',
-                        geometry: {
-                            coordinates: routeCoordinates,
-                            type: 'LineString'
-                        }
-                    }).then((res) => {
+                        return counter;
+                    }).catch(function () {});
+                    temp.routes.push(route);
+                    temp.add(route);
 
-                        const route = makeDirection(res.geometry.coordinates);
-                        console.log("cords:= ", route)
-                        temp.routes.push(route);
-                        temp.add(route);
-                    }).catch((error) => {
-                        let response = JSON.stringify(error, null, "\t")
-                        console.error(response);
-                    })
+                    console.log("uphill counter:");
+                    console.log(uphillCounter);
+
+                    console.log("json:");
+                    console.log(JSON.stringify(json));
                 })
                 .catch(function (err) {
                     let response = JSON.stringify(err, null, "\t")
@@ -149,9 +127,7 @@ class Map extends THREE.Object3D {
                 })
 
         } else { // Matrix direction 
-            // this.orsMatrix.calculate({
-            //     locations: 
-            // })
+
         }
     }
 
@@ -185,22 +161,7 @@ class Map extends THREE.Object3D {
             building.material = highlightedMaterial;
         }
     }
-  
-    deselectBuilding(building) {
-        console.log(building.userData.info['building'])
-        building.material = getBuildingMaterial(building.userData.info['building']);
-    }
 
-    selectBuilding(building) {
-        building.material = highlightedMaterial;
-    }
-
-    checkIntersectedBuildings(building) {
-
-        console.log(building)
-
-        const index = this.clickedBuildings.indexOf(building);
-    } 
     deselectBuildingByCentroid(centroid) {
         const building = this.buildings.children.find(b => {
             return b.userData.centroid[0] === centroid[0] && b.userData.centroid[1] === centroid[1];
@@ -303,6 +264,7 @@ async function getUphillCounter(routeCoordinates) {
         throw error;
     }
 }
-}
+
+
 
 export default Map;
