@@ -58,6 +58,8 @@ function addHighway(data, info) {
 
         let line = new THREE.Line(polygon, getHighwayMatrial(info['highway']))
 
+        line.userData.type = "line"
+
         routesGroup.add(line);
     }
 }

@@ -83,7 +83,7 @@ renderer.domElement.addEventListener('click', (event) => {
   raycast.setFromCamera(mouse, camera);
 
   // Calculate objects intersecting the picking ray
-  const intersects = raycast.intersectObjects(map.buildings.children, true); // Note this only checks if we clicked buildings
+  const intersects = raycast.intersectObjects((map.clickable) ? map.clickable : [], true); // Note this only checks if we clicked buildings
 
   if (intersects.length > 0) {
     map.checkIntersectedBuildings(intersects[0].object)

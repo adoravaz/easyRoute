@@ -12,6 +12,18 @@ import { getBuildingMaterial, highlightedMaterial } from './materials';
 // Things to do: 
 // add multi 
 
+function findBuildings(mesh, result = []) {
+    if (mesh.userData && mesh.userData.type === 'building') {
+        result.push(mesh);
+    }
+
+    if (mesh.children && mesh.children.length > 0) {
+        mesh.children.forEach(child => findBuildings(child, result));
+    }
+
+    return result;
+}
+
 class Map extends THREE.Object3D {
     constructor(scene = null) {
         super();
@@ -36,6 +48,7 @@ class Map extends THREE.Object3D {
 
         this.routes = [];
         this.clickedBuildings = [];
+        this.clickable = null;
 
         // Profile type 
         this.profile = getProfileInfo('walking', 'walking');
@@ -46,16 +59,19 @@ class Map extends THREE.Object3D {
     async init() {
         try {
             const buildingsGroup = await createBuildings();
-            console.log('Buildings loaded:', buildingsGroup);
+            //console.log('Buildings loaded:', buildingsGroup);
             this.buildings = buildingsGroup;
             this.add(this.buildings);
             //console.log(this.buildings.children);
 
             const routesGroup = await createHighways();
-            console.log('Highways loaded', routesGroup);
+            //console.log('Highways loaded', routesGroup);
             this.highways = routesGroup;
             this.highways.position.y = -0.1
             this.add(this.highways);
+
+            this.clickable = findBuildings(this.buildings);
+            console.log("clickable", this.clickable);
 
         } catch (error) {
             console.error('Failed to load buildings:', error);

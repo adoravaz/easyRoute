@@ -131,6 +131,8 @@ function createLabel(text, position) {
     sprite.scale.set(1.5, 1, 1);
     sprite.position.set(position.x, position.y, position.z);
 
+    sprite.userData.type = "text"
+
     return sprite;
 }
 
