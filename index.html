@@ -4,7 +4,10 @@
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <linK rel="stylesheet" href="style.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+
   <link rel="stylesheet" href="style.css">
   <!-- <style>
     .container {
@@ -54,7 +57,41 @@
   
   <div>
     <div id="app" class="container">
+      <div id="legend-container">
+        <!-- <div>
+          <button id="toggle-buildings-legend">Buildings</button>
+          <button id="toggle-highways-legend">Highways</button>
+        </div> -->
+        <div id="buildings-legend-content" class="legend-content">
+          <h4>Buildings</h4>
+          <ul>
+            <li style="color: lightskyblue;"> University</li>
+            <li style="color: greenyellow;"> Apartments</li>
+            <li style="color: purple;"> Roof</li>
+            <li style="color: orange;"> Dormitory</li>
+            <li style="color: pink;"> House</li>
+            <li style="color: khaki;"> Trailer</li>
+            <li style="color: green;"> Greenhouse</li>
+            <li style="color: aquamarine;"> Farm Auxiliary</li>
+            <li style="color: darkblue;"> Industrial</li>
+          </ul>
+        </div>
+        <div id="highways-legend-content" class="legend-content">
+          <h4>Highways</h4>
+          <ul>
+            <li style="color: black;"> Pedestrian</li>
+            <li style="color: coral;"> Residential</li>
+            <li style="color: lightgreen;"> Secondary</li>
+            <li style="color: rgb(150, 150, 150);"> Service</li>
+            <li style="color: burlywood;"> Footway</li>
+            <li style="color: red;"> Steps</li>
+          </ul>
+        </div>
+      </div>
 
+      <div class="user profile">
+
+      </div>
       <button id="calcRoute" class="my-button-1">Calculate Route</button>
       <button id="clearRoute" class="my-button-2">Clear Route</button>
     </div>
