@@ -98,7 +98,7 @@ class Map extends THREE.Object3D {
 
     }
     // This function draws the route. 
-    generateDirections() {
+    generateDirections(avoidStairs) {
 
         let length = this.clickedBuildings.length;
         if (length <= 1) {
@@ -120,11 +120,15 @@ class Map extends THREE.Object3D {
 
             let temp = this;
 
+            // customize options based on avoid stairs switch
+            const options = avoidStairs ? {avoid_features: ['steps']} : {};
+
             this.orsDirections.calculate({
                 coordinates: [from, to],
                 profile: temp.profile.profile,
                 format: "geojson",
                 api_version: 'v2',
+                options: options,
             })
                 .then(function (json) {
 

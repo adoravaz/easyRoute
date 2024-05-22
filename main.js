@@ -99,14 +99,23 @@ renderer.domElement.addEventListener('click', (event) => {
 //   }
 // });
 
+// avoid stairs switch toggled
+let avoidStairs = false;
+document.getElementById('avoidStairsSwitch').addEventListener('change', (event) => {
+  avoidStairs = event.target.checked;
+});
+
 document.getElementById('calcRoute').addEventListener('click', () => {
   // map.clearRoutes();  // Clear previous routes if any
-  map.generateDirections();
+  map.generateDirections(avoidStairs);
 });
 
 document.getElementById('clearRoute').addEventListener('click', () => {
   map.clearRoutes();
   hideBuildingCards(); //added functionality to hid the building cards
+  // reset avoid stairs switch
+  document.getElementById('avoidStairsSwitch').checked = false;
+  avoidStairs = false;
 })
 
 // Function to hide all building cards
