@@ -68,10 +68,7 @@ class Map extends THREE.Object3D {
         this.clickable = [];
 
         // Profile type 
-        this.profile = getProfileInfo('walking', 'walking');
-
-        // Profile type 
-        this.profile = getProfileInfo('walking', 'walking');
+        this.profile = getProfileInfo('driving-car');
 
         this.init();
     }
@@ -118,14 +115,17 @@ class Map extends THREE.Object3D {
             from = [from[0], from[1]];
             to = [to[0], to[1]];
 
-            let temp = this;
+            let mode = document.getElementById('travelProfile').value;
 
+            console.log(mode);
+
+            let temp = this;
             // customize options based on avoid stairs switch
-            const options = avoidStairs ? {avoid_features: ['steps']} : {};
+            const options = avoidStairs ? { avoid_features: ['steps'] } : {};
 
             this.orsDirections.calculate({
                 coordinates: [from, to],
-                profile: temp.profile.profile,
+                profile: mode,
                 format: "geojson",
                 api_version: 'v2',
                 options: options,
@@ -151,7 +151,7 @@ class Map extends THREE.Object3D {
                         // parse json response into directions array
                         const segments = json.features[0].properties.segments[0]; // contains distance, duration, instruction for directions
                         // distance and duration for entire route
-                        const routeTotal = {distance: segments.distance, duration: segments.duration};
+                        const routeTotal = { distance: segments.distance, duration: segments.duration };
                         // turn-by-turn directions
                         let directions = segments.steps.map((step) => ({
                             distance: step.distance,
@@ -213,7 +213,7 @@ class Map extends THREE.Object3D {
         this.clickedBuildings = [];
 
         // clear directions list and hide the container
-        window.updateDirectionsList([], {distance: 0, duration: 0});
+        window.updateDirectionsList([], { distance: 0, duration: 0 });
         document.getElementById('directions-container').style.display = 'none';
     }
 

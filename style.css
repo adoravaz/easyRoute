@@ -1,38 +1,18 @@
-.container {
-    width: 100%;
-    height: 100%;
-    position:relative;
-    background-color: rgb(206, 224, 44);
-    z-index: 0; /* Ensure the container has a base z-index */
-}
-
-.my-button-1 {
-    position: absolute;
-    bottom: 50px;
-    right: 20px;
-}
-
-.my-button-2 {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* styles.css */
 #legend-container {
-    position: absolute;
-    top: 60px;
-    left: 5px;
+    /* position: absolute; */
+    /* top: 60px; */
+    /* left: 5px; */
     background: rgba(255, 255, 255, 0);
-    border: 1px solid #ccc;
-    padding: 8px;
+    /* border: 1px solid #ccc; */
+    /* padding: 8px; */
     width: auto;
     z-index: 1000;
     transition: transform 0.3s ease-in-out;
-}
-
-.legend-content {
-    /* display: none; */
 }
 
 .toggle-button {
@@ -51,92 +31,111 @@
 .legend-container.open .legend-content {
     display: block;
     height: 100%;
-    position: absolute;
+    /* position: absolute; */
     background-color: rgb(206, 224, 44);
-    z-index: 0; /* Ensure the container has a base z-index */
-}
-
-.app {
-    position: absolute;
-    bottom: 0px;
-    right: 0px;
+    z-index: 0;
+    /* Ensure the container has a base z-index */
 }
 
 /* Adding Styles for the Search Bar */
 .search-wrapper {
-    position: absolute; /* Keeps the search bar positioned relative to its nearest positioned ancestor */
-    right: 10px; /* Right margin to keep it off the edge */
-    width: 300px; /* Fixed width */
+    /* position: absolute; */
+    /* Keeps the search bar positioned relative to its nearest positioned ancestor */
+    right: 10px;
+    /* Right margin to keep it off the edge */
+
+    /* Fixed width */
     display: flex;
-    flex-direction: column; /* Stacks child elements vertically */
-    gap: 0.25rem; /* Space between child elements */
-    z-index: 1000; /* Ensures the search bar is above other content */
-    padding: 10px; /* Padding around the content */
-    background: rgba(255, 255, 255, 0.9); /* Semi-transparent background */
-    border-radius: 8px; /* Rounded corners */
+    flex-direction: column;
+    /* Stacks child elements vertically */
+    /* gap: 0.25rem; */
+    /* Space between child elements */
+    z-index: 1000;
+    /* Ensures the search bar is above other content */
+    /* padding: 10px; */
+    /* Padding around the content */
+    background: rgba(255, 255, 255, 0.9);
+    /* Semi-transparent background */
+    border-radius: 8px;
+    /* Rounded corners */
 }
 
 /* Individual search bars */
 .search-bar {
-    height: 40px; /* Fixed height for each search input */
-    margin-bottom: 10px; /* Space between the search bars */
+    height: 40px;
+    /* Fixed height for each search input */
+    margin-bottom: 10px;
+    /* Space between the search bars */
 }
 
 /* First search wrapper for starting point */
 .start-search-wrapper {
-    top: 5px; /* Distance from the top edge */
+    top: 5px;
+    /* Distance from the top edge */
 }
 
 /* Second search wrapper for destination */
 .destination-search-wrapper {
-    top: 70px; /* Adjust this value based on the height and margin of the first search bar */
+    top: 70px;
+    /* Adjust this value based on the height and margin of the first search bar */
 }
 
-.building-cards{
-    position: absolute; /* Absolute positioning to align under the search bar */
-    top: 115px; /* Adjusted based on the height of your search bar */
-    right: 10px; /* Aligns to the right */
-    width: 300px; 
+.building-cards {
+    /* position: absolute; */
+    /* Absolute positioning to align under the search bar */
+    /* top: 115px; */
+    /* Adjusted based on the height of your search bar */
+    /* right: 10px; */
+    /* Aligns to the right */
+    /* width: 300px; */
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /*controls how big we are going to let the search results take up the screen*/
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    /*controls how big we are going to let the search results take up the screen*/
     gap: .25rem;
     margin-top: 1rem;
-    text-align: right; /* Aligns the content of each card to the right */
-    z-index: 1000; /* Higher z-index to keep it above the map */
-    overflow-y: auto; /* Allows scrolling within the container */
-    max-height: 300px; /* Limit the height to ensure it does not take up too much space */
-} 
+    text-align: right;
+    /* Aligns the content of each card to the right */
+    z-index: 1000;
+    /* Higher z-index to keep it above the map */
+    overflow-y: auto;
+    /* Allows scrolling within the container */
+    max-height: 300px;
+    /* Limit the height to ensure it does not take up too much space */
+}
 
-.card{
+.card {
     border: 1px solid black;
     background-color: white;
     padding: .5rem;
-    text-align: right; /* Aligns the content of each card to the right */
+    text-align: right;
+    /* Aligns the content of each card to the right */
 }
 
-.card > .header{
+.card>.header {
     margin-bottom: .25rem;
 }
 
-.card > .body{
+.card>.body {
     font-size: .8rem;
     color: #777;
 }
 
-.hide{
+.hide {
     display: none;
 }
 
 /*Selected State of Card */
 .card.selected {
-    border-color: #007bff; /* Blue border for selected card */
-    background-color: #f0f9ff; /* Light blue background for visibility */
+    border-color: #007bff;
+    /* Blue border for selected card */
+    background-color: #f0f9ff;
+    /* Light blue background for visibility */
 }
 
 /*added*/
 /*Ensures card is not displayed*/
 .card.hide {
-    display: none; 
+    display: none;
 }
 
 /*Ensures card is displayed*/
@@ -158,7 +157,8 @@
     top: 250px;
     width: 300px;
     max-height: 300px;
-    overflow-y: auto; /* allow scrolling */
+    overflow-y: auto;
+    /* allow scrolling */
     z-index: 1000;
     padding: 10px;
     border: 1px solid black;
@@ -218,8 +218,8 @@
     -webkit-transition: .4s;
     transition: .4s;
 }
-  
-  .slider:before {
+
+.slider:before {
     position: absolute;
     content: "";
     height: 26px;
@@ -231,15 +231,15 @@
     transition: .4s;
 }
 
-input:checked + .slider {
+input:checked+.slider {
     background-color: #2196F3;
 }
-  
-input:focus + .slider {
+
+input:focus+.slider {
     box-shadow: 0 0 1px #2196F3;
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
     -webkit-transform: translateX(26px);
     -ms-transform: translateX(26px);
     transform: translateX(26px);
@@ -249,7 +249,7 @@ input:checked + .slider:before {
 .slider.round {
     border-radius: 30px;
 }
-  
+
 .slider.round:before {
     border-radius: 50%;
 }

@@ -101,9 +101,9 @@ renderer.domElement.addEventListener('click', (event) => {
 
 // avoid stairs switch toggled
 let avoidStairs = false;
-document.getElementById('avoidStairsSwitch').addEventListener('change', (event) => {
-  avoidStairs = event.target.checked;
-});
+// document.getElementById('avoidStairsSwitch').addEventListener('change', (event) => {
+//   avoidStairs = event.target.checked;
+// });
 
 document.getElementById('calcRoute').addEventListener('click', () => {
   // map.clearRoutes();  // Clear previous routes if any
@@ -114,7 +114,7 @@ document.getElementById('clearRoute').addEventListener('click', () => {
   map.clearRoutes();
   hideBuildingCards(); //added functionality to hid the building cards
   // reset avoid stairs switch
-  document.getElementById('avoidStairsSwitch').checked = false;
+  //document.getElementById('avoidStairsSwitch').checked = false;
   avoidStairs = false;
 })
 
@@ -122,8 +122,8 @@ document.getElementById('clearRoute').addEventListener('click', () => {
 function hideBuildingCards() {
   const cards = document.querySelectorAll('.card');
   cards.forEach(card => {
-      card.style.display = 'none'; // Hide each card
-      // card.classList.add('hide'); // Add 'hide' class that sets display to none
+    card.style.display = 'none'; // Hide each card
+    // card.classList.add('hide'); // Add 'hide' class that sets display to none
   });
 }
 
@@ -136,11 +136,11 @@ function updateDirectionsList(directions, routeTotal) {
   directions.forEach((direction) => {
     const li = document.createElement('li');
     li.className = 'direction-item';
-    li.textContent = `${direction.instruction} (Distance: ${direction.distance} meters, Duration: ${(direction.duration/60).toFixed(2)} min)`;
+    li.textContent = `${direction.instruction} (Distance: ${direction.distance} meters, Duration: ${(direction.duration / 60).toFixed(2)} min)`;
     directionsList.appendChild(li);
   });
   totalDistance.textContent = `Total Distance: ${routeTotal.distance} meters`;
-  totalDuration.textContent = `Total Duration: ${(routeTotal.duration/60).toFixed(2)} min`;
+  totalDuration.textContent = `Total Duration: ${(routeTotal.duration / 60).toFixed(2)} min`;
 }
 // expose updateDirectionsList to global scope so it can be called from map.js
 window.updateDirectionsList = updateDirectionsList;
