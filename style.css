@@ -123,9 +123,13 @@
     color: #777;
 }
 
+.hide {
+    display: none; 
+}
+/* 
 .hide{
     display: none;
-}
+} */
 
 /*Selected State of Card */
 .card.selected {
@@ -135,9 +139,14 @@
 
 /*added*/
 /*Ensures card is not displayed*/
-.card.hide {
+/* .card.hide {
     display: none; 
+} */
+
+.building-cards .card.hide {
+    display: none;
 }
+
 
 /*Ensures card is displayed*/
 .card.visible {
