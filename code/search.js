@@ -128,10 +128,21 @@ buildingCardcontainer.addEventListener('click', event => {
 // }
 // testHighlight();  // Call this somewhere in your initialization to see if highlighting works in isolation
 
+//added new function to reset start and endpoint
+function resetSearchState() {
+    startPoint = null;
+    endPoint = null;
+    document.getElementById('start-search').value = ''; // clear search inputs here
+    document.getElementById('destination-search').value = ''; // clear search inputs here
+}
+
+
 loadBuildings();
 searchBuildings(startSearchInput);
 searchBuildings(destinationSearchInput);
 
 console.log(startSearchInput)
 console.log(destinationSearchInput)
+
+window.resetSearchState = resetSearchState; //exposing the resetsearchstate globally to be used in main
 
