@@ -197,6 +197,87 @@
     font-size: 15px;
 }
 
+/* report form */
+.open-form-button {
+    background-color: #555;
+    color: white;
+    padding: 16px 20px;
+    border: none;
+    cursor: pointer;
+    opacity: 0.8;
+    position: absolute;
+    bottom: 120px;
+    right: 20px;
+    width: 280px;
+}
+
+.form-popup {
+    display: none;
+    position: absolute;
+    bottom: 120px;
+    right: 15px;
+    border: 3px solid #f1f1f1;
+    z-index: 9;
+}
+
+.form-container {
+    max-width: 300px;
+    padding: 10px;
+    background-color: white;
+}
+
+.cancel-btn {
+    max-width: 20px;
+    position: absolute;
+    right: 20px;
+    background: none;
+    border: none;
+}
+
+#x-image {
+    max-width: 20px;
+}
+
+.form-container input[type=text] {
+    /* width: 100%; */
+    display: block;
+    padding: 15px;
+    margin: 5px 0 22px 0;
+    border: none;
+    background: #f1f1f1;
+}
+
+.form-container input[type=text]:focus {
+    background-color: #ddd;
+    outline: none;
+}
+
+.form-container .submit-btn {
+    background-color: #04aa6d;
+    color: white;
+    padding: 16px 20px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 10px;
+    opacity: 0.8;
+}
+
+.form-container .submit-btn:hover, .open-form-button:hover {
+    opacity: 1;
+}
+
+#report-show {
+    white-space: pre;
+    background-color: white;
+    position: absolute;
+    bottom: 160px;
+    right: 20px;
+    max-width: 300px;
+    padding: 10px;
+    /* border: 3px solid #f1f1f1; */
+}
+
 /* avoid stairs toggle switch */
 .avoidStairs-container {
     position: absolute;

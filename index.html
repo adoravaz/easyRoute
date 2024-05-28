@@ -86,6 +86,26 @@
         <p id="total-duration"></p>
       </div>
 
+      <!-- Outline for Reporting Form -->
+      <div class="report-button-container">
+        <button class="open-form-button" id="open-form">Report a Repair</button>
+        <div class="form-popup" id="reportForm">
+          <form action="#" class="form-container" id="report-form">
+            <button type="button" class="cancel-btn">
+              <img src="/x.png" alt="cancel" id="x-image"/>
+            </button>
+            <h1>Report a Repair</h1>
+            <label for="repair-address"><b>Repair Address</b></label>
+            <input type="text" id="repair-address" placeholder="Enter Address" name="repair-address" required>
+            <label for="repair-details"><b>Repair Details</b></label>
+            <input type="text" id="repair-details" name="repair-details" required>
+            <button type="submit" class="submit-btn">Submit</button>
+          </form>
+        </div>
+
+        <p id="report-show"></p>
+      </div>
+
       <!-- Avoid Stairs Switch -->
       <div class="avoidStairs-container">
         <label class="switch" for="avoidStairsSwitch">
@@ -111,6 +131,7 @@
   </div>
   <script type="module" src="/main.js"></script>
   <script type="module" src="/code/search.js"></script>
+  <script type="module" src="/code/form.js"></script>
 </body>
 
 </html>
