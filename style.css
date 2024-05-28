@@ -150,6 +150,26 @@
     left: 20px;
 }
 
+/* logo and title */
+.logo-title {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+}
+
+#logo {
+    width: 30px;
+    margin-right: 10px;
+}
+
+#project-title {
+    font-size: 18px;
+    margin: 0;
+}
+
+/* turn-by-turn directions list */
 .directions-container {
     display: none;
     background-color: white;
@@ -177,7 +197,7 @@
     font-size: 15px;
 }
 
-
+/* avoid stairs toggle switch */
 .avoidStairs-container {
     position: absolute;
     bottom: 80px;
@@ -219,7 +239,7 @@
     transition: .4s;
 }
   
-  .slider:before {
+.slider:before {
     position: absolute;
     content: "";
     height: 26px;

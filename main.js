@@ -2,13 +2,13 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 // import { XRButton } from 'three/addons/webxr/XRButton.js';
 
-import Stats from 'stats.js'
+// import Stats from 'stats.js'
 import Map from './code/map';
 
-const stats = new Stats()
-stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
+// const stats = new Stats()
+// stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
 
-document.body.appendChild(stats.dom)
+// document.body.appendChild(stats.dom)
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
@@ -157,13 +157,13 @@ window.addEventListener('resize', onWindowResize, false);
 const animate = function () {
   requestAnimationFrame(animate);
 
-  stats.begin()
+  // stats.begin()
 
   controls.update()
 
   renderer.render(scene, camera);
 
-  stats.end();
+  // stats.end();
 };
 
 animate();
