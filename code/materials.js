@@ -37,6 +37,19 @@ const highlightedMaterial = new THREE.MeshStandardMaterial({
     metalness: 0.1
 });
 
+//added for materials for the entrances and elevators
+const elevatorMaterials = {
+    accessible: new THREE.MeshBasicMaterial({ color: "green" }),
+    limited_access: new THREE.MeshBasicMaterial({ color: "yellow" }),
+    no_access: new THREE.MeshBasicMaterial({ color: "red" })
+};
+
+const entranceMaterials = {
+    main: new THREE.MeshBasicMaterial({ color: "blue" }),
+    secondary: new THREE.MeshBasicMaterial({ color: "lightblue" }),
+    restricted: new THREE.MeshBasicMaterial({ color: "grey" })
+};
+
 
 function getHighwayMatrial(type) {
     switch (type) {
@@ -77,4 +90,4 @@ function getBuildingMaterial(type) {
 }
 
 
-export { getBuildingMaterial, getHighwayMatrial, highlightedMaterial };
+export { getBuildingMaterial, getHighwayMatrial, highlightedMaterial, elevatorMaterials, entranceMaterials };
