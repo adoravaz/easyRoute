@@ -3,6 +3,7 @@ import Openrouteservice from 'openrouteservice-js'
 import createBuildings from './buildings';
 import createHighways from './highways';
 import makeDirection from './makeDirection';
+import createEntrancesAndElevators from './createEntrancesAndElevators'; //added for the elevators
 import { getProfileInfo } from './profiles';
 import { getBuildingMaterial, highlightedMaterial } from './materials';
 
@@ -89,6 +90,12 @@ class Map extends THREE.Object3D {
             this.highways = routesGroup;
             this.highways.position.y = -0.1
             this.add(this.highways);
+
+            //added for the entrances and elevators
+            const elevandentGroup = await createEntrancesAndElevators();
+            console.log('Entrances and Elevators loaded', elevandentGroup);
+            this.elevandent = elevandentGroup;
+            this.add(this.elevandent);
 
             this.clickable = findBuildings(this.buildings);
 

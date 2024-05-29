@@ -112,7 +112,15 @@ document.getElementById('calcRoute').addEventListener('click', () => {
 
 document.getElementById('clearRoute').addEventListener('click', () => {
   map.clearRoutes();
-  hideBuildingCards(); //added functionality to hid the building cards
+  //search bar functionality to reset search bar and hide all building cards
+  hideBuildingCards(); // Hide all building cards
+  // document.getElementById('start-search').value = ''; // Clear start search input
+  // document.getElementById('destination-search').value = ''; // Clear destination search input
+  if (window.resetSearchState) {
+    window.resetSearchState(); // Reset search states
+  }
+  resetCardSelection();
+  // hideBuildingCards(); //added functionality to hid the building cards
   // reset avoid stairs switch
   document.getElementById('avoidStairsSwitch').checked = false;
   avoidStairs = false;
@@ -120,10 +128,18 @@ document.getElementById('clearRoute').addEventListener('click', () => {
 
 // Function to hide all building cards
 function hideBuildingCards() {
-  const cards = document.querySelectorAll('.card');
+  const cards = document.querySelectorAll('.building-cards .card');
   cards.forEach(card => {
-      card.style.display = 'none'; // Hide each card
-      // card.classList.add('hide'); // Add 'hide' class that sets display to none
+      // card.style.display = 'none'; // Hide each card
+      card.classList.add('hide'); // Add 'hide' class that sets display to none
+  });
+}
+
+// Function to reset selection of cards
+function resetCardSelection() {
+  const selectedCards = document.querySelectorAll('.building-cards .card.selected');
+  selectedCards.forEach(card => {
+    card.classList.remove('selected', 'visible'); // Remove 'selected' and 'visible' classes
   });
 }
 

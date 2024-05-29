@@ -85,6 +85,7 @@ buildingCardcontainer.addEventListener('click', event => {
                 startPoint.element.classList.add('selected', 'visible'); // Make only the selected card visible
                 // startPoint.element.classList.add('selected');
                 map.selectBuildingByCentroid(startPoint.centroid);
+                startSearchInput.value = selectedBuilding.name; // Autofill the start search input
                 console.log("Setting start point:", startPoint);
             } else if (activeInput === 'destination' && endPoint !== selectedBuilding) {
                 if (endPoint) {
@@ -97,6 +98,7 @@ buildingCardcontainer.addEventListener('click', event => {
                 // endPoint.element.classList.add('selected');
                 endPoint.element.classList.add('selected', 'visible'); // Make only the selected card visible
                 map.selectBuildingByCentroid(endPoint.centroid);
+                destinationSearchInput.value = selectedBuilding.name; // Autofill the destination search input
                 console.log("Setting end point:", endPoint);
             }
             // if (startPoint && endPoint && startPoint !== endPoint) {
@@ -128,10 +130,21 @@ buildingCardcontainer.addEventListener('click', event => {
 // }
 // testHighlight();  // Call this somewhere in your initialization to see if highlighting works in isolation
 
+//added new function to reset start and endpoint
+function resetSearchState() {
+    startPoint = null;
+    endPoint = null;
+    document.getElementById('start-search').value = ''; // clear search inputs here
+    document.getElementById('destination-search').value = ''; // clear search inputs here
+}
+
+
 loadBuildings();
 searchBuildings(startSearchInput);
 searchBuildings(destinationSearchInput);
 
 console.log(startSearchInput)
 console.log(destinationSearchInput)
+
+window.resetSearchState = resetSearchState; //exposing the resetsearchstate globally to be used in new node
 
