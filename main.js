@@ -4,6 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 import Stats from 'stats.js'
 import Map from './code/map';
+import { ThreeMFLoader } from 'three/examples/jsm/Addons.js';
 
 const stats = new Stats()
 stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
@@ -11,12 +12,12 @@ stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
 document.body.appendChild(stats.dom)
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 120);
 
 // Position the camera
-camera.position.y = 10;
-//camera.position.x = 10;
-camera.position.z = 5;
+camera.position.y = 1;
+camera.position.x = 0;
+camera.position.z = 1;
 camera.updateProjectionMatrix();
 
 // Renderer
@@ -43,37 +44,43 @@ controls.maxDistance = 1000
 // Mouse 
 const mouse = new THREE.Vector2();
 
-// Helpers
-let gridHelper = new THREE.GridHelper(50, 30, new THREE.Color(0x555555), new THREE.Color(0x333333))
-//scene.add(gridHelper);
-
-let axisHelper = new THREE.AxesHelper(10, 10);
-//scene.add(axisHelper);
+// // Helpers
+// let gridHelper = new THREE.GridHelper(50, 30, new THREE.Color(0x555555), new THREE.Color(0x333333))
+// scene.add(gridHelper);
 
 // Init Light
-let light0 = new THREE.AmbientLight(0xfafafa, 10.25)
+let light0 = new THREE.AmbientLight(0xfafafa, 1)
 
-let light1 = new THREE.PointLight(0xfafafa, 0.4)
-light1.position.set(20, 30, 10)
+let light1 = new THREE.PointLight(0xfafafa, 10.4)
+light1.position.set(20, 20, 10)
 
 scene.add(light0)
 scene.add(light1)
 
 scene.add(
-  new THREE.AxesHelper(3)
+  new THREE.AxesHelper(1)
 )
+
 
 // Raycaster 
 const raycast = new THREE.Raycaster();
 
-// Our Map 
-const map = new Map(scene);
+//Our Map 
+const map = new Map();
+scene.add(map);
+
+// const position = [36.9916, -122.0583]
+// const source = new Source('maptiler', 'pk.eyJ1IjoiYmtjYXN0cm8iLCJhIjoiY2x3c21zMG1zMDh4YjJqb211cHhwMDF3aCJ9.KItRv34-_kaWlOJbtWOSSw') // okEEOZDVSQpRBpvp3VJD
+// const map = new Map(scene, camera, source, position, { nTiles: 3, zoom: 11 })
+// const mapPicker = new MapPicker(camera, map, renderer.domElement)
+// // mapPicker.go(-45, 128)
+
 
 // after initializing the map, exposing map to be available globally
 window.mainMap = map;
 
 renderer.domElement.addEventListener('click', (event) => {
-  console.log("clicked");
+  console.log("clicked", event);
 
   // Calculate mouse position in normalized device coordinates (-1 to +1) for both components
   mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
@@ -87,8 +94,8 @@ renderer.domElement.addEventListener('click', (event) => {
 
   if (intersects.length > 0) {
     map.checkIntersectedBuildings(intersects[0].object)
+    map.showPopup(event.clientX + 40, event.clientY - 40, intersects[0].object)
   }
-
 });
 
 // document.getElementById('calcRoute').addEventListener('click', () => {

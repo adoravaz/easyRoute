@@ -286,7 +286,6 @@ def add_elevation_to_highway(input_geojson, highway_type):
                             ring[i] = new_coordinates[index]
                             index += 1
 
-
 def add_elevation_for_types(file_path,output_path ): 
     
     temp = ['secondary']
@@ -302,7 +301,15 @@ def add_elevation_for_types(file_path,output_path ):
     with open(output_path, 'w') as file:
             json.dump(input_geojson, file, indent=4)
 
-
+def get_map_image_from_google(api_key, center, zoom, image_size, map_type, style, scale):
+    url = f"https://maps.googleapis.com/maps/api/staticmap?center={center}&zoom={zoom}&size={image_size}&scale={scale}&maptype={map_type}&style={style}&key={api_key}"
+    response = requests.get(url)
+    if response.status_code == 200:
+        with open('ucsc_map.png', 'wb') as file:
+            file.write(response.content)
+        print("Map image downloaded successfully as 'ucsc_map.png'")
+    else:
+        print(f"Failed to fetch map image. Status code: {response.status_code}")
 
 # Example usage for count_short...
 # geojson_file = 'UCSC_Buildings_V2.geojson'
@@ -346,4 +353,39 @@ highway_type = 'ser'  # Specify the type of highway you are interested in
 
 # list_highway_types(file_path)
 
-add_elevation_for_types(file_path, output_path)
+API_KEY = 'AIzaSyCAXMTnTOhBoFrgG75ew6OzU0O3LBccHUQ'
+center = '36.9916,-122.0583'
+zoom = 14
+image_size = '1280x1280'
+map_type = 'roadmap'
+style = 'feature:all|element:labels|visibility:off'
+scale = 2
+
+get_map_image_from_google(API_KEY, center, zoom, image_size, map_type, style, scale)
+
+#const center = [-122.0583, 36.9916, 36.9941766]
+# Replace 'your_bing_maps_api_key' with your actual Bing Maps API key
+# API_KEY = 'Ah44htfLRYmXl2O1MtnRGhea3P8GhEgTUiSipXfyS4POn0bYsWTvaqMet-l4YvAu'
+# # Center coordinates for UCSC
+# center = '36.9916,-122.0583'
+# bbox = '36.9773, -122.0720, 37.0029, -122.0485'
+# # Zoom level for the map
+# zoom = 16
+# # Size of the image in pixels
+# image_width = 2000
+# image_height = 2000
+# scale = 2
+# # Map type (Road, Aerial, AerialWithLabels, Birdseye, BirdseyeWithLabels)
+# map_type = 'Road'
+
+# def get_map_image_from_bing(api_key, bbox, image_width, image_height, map_type, scale):
+#     url = f"https://dev.virtualearth.net/REST/v1/Imagery/Map/{map_type}?mapArea={bbox}&mapSize={image_width},{image_height}&format=png&dpi={scale*96}&key={api_key}"
+#     response = requests.get(url)
+#     if response.status_code == 200:
+#         with open('ucsc_bing_map.png', 'wb') as file:
+#             file.write(response.content)
+#         print("Map image downloaded successfully as 'ucsc_bing_map.png'")
+#     else:
+#         print(f"Failed to fetch map image. Status code: {response.status_code}, response text: {response.text}")
+
+# get_map_image_from_bing(API_KEY, bbox, image_width, image_height, map_type, scale)

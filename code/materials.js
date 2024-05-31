@@ -30,7 +30,7 @@ const highwayMaterials = {
 }
 
 const highlightedMaterial = new THREE.MeshStandardMaterial({
-    color: 'yellow',   // Gold color
+    color: 'red',   // Gold color
     emissive: 0xceeb5b, // Orange emissive color for a glowing effect
     emissiveIntensity: 1,
     roughness: 0.5,
@@ -76,5 +76,39 @@ function getBuildingMaterial(type) {
     }
 }
 
+function createShaderMaterial(mapTexture, demTexture) {
+    const vertexShader = `
+        varying vec2 vUv;
+        void main() {
+            vUv = uv;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+    `;
 
-export { getBuildingMaterial, getHighwayMatrial, highlightedMaterial };
+    const fragmentShader = `
+        uniform sampler2D mapTexture;
+        uniform sampler2D demTexture;
+        varying vec2 vUv;
+
+        void main() {
+            vec4 mapColor = texture2D(mapTexture, vUv);
+            vec4 demColor = texture2D(demTexture, vUv);
+            gl_FragColor = vec4(mapColor.rgb, mapColor.a);
+        }
+    `;
+
+    const material = new THREE.ShaderMaterial({
+        uniforms: {
+            mapTexture: { value: mapTexture },
+            demTexture: { value: demTexture }
+        },
+        vertexShader: vertexShader,
+        fragmentShader: fragmentShader
+    });
+
+    return material;
+}
+
+
+
+export { getBuildingMaterial, getHighwayMatrial, createShaderMaterial, highlightedMaterial };

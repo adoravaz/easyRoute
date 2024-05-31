@@ -1,7 +1,5 @@
 import * as THREE from 'three';
-
-const center = [-122.0583, 36.9916, 36.9941766]
-const scale = 10000
+import { center, scale } from './map';
 
 function genGeometry(polygon) {
 

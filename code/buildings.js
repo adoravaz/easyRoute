@@ -1,9 +1,6 @@
 import * as THREE from 'three';
-
+import { center, scale, top_right, bottom_left } from './map';
 import { getBuildingMaterial } from './materials';
-
-const center = [-122.0583, 36.9916, 36.9941766] // lon, lat, elev (note elevation is relative to ORS (openrouteservice) classification)
-const scale = 10000
 
 const buildingsGroup = new THREE.Group();
 
@@ -13,6 +10,10 @@ async function createBuildings() {
         const response = await fetch('/UCSC_Buildings_V3.geojson');
         const data = await response.json();
         LoadBuildings(data);
+        //buildingsGroup.scale.multiplyScalar(.35)
+        //buildingsGroup.rotateX(-Math.PI / 2)
+        buildingsGroup.position.set(-.5, -.5, 0);
+        // buildingsGroup.position.y = .05
         return buildingsGroup;
     } catch (error) {
         throw error;
@@ -50,33 +51,30 @@ function addBuilding(building, info, height = 1) {
         let shape = genShape(polygon, center)
         let geometry = genGeometry(shape, {
             curveSegments: 1,
-            depth: 0.5 * height,
+            depth: height / 400,
             bevelEnabled: false
         })
-
-        geometry.rotateX(Math.PI / 2)
-        geometry.rotateZ(Math.PI)
 
         let mesh = new THREE.Mesh(geometry, getBuildingMaterial(info['building']))
         mesh.geometry.computeBoundingBox();
 
-        // Now move the building to its new spot. 
-        let direction = new THREE.Vector2((centroid[0] - center[0]) * scale, (centroid[1] - center[1]) * scale);
+        mesh.position.z = (centroid[2] - center[2]) / 3000; // This value needs to change 
 
-        mesh.position.x = -direction.x;
-        mesh.position.z = direction.y;
-        mesh.position.y = (centroid[2] / 10) - (center[2])
-
-        // Add info to mesh user data 
         mesh.userData.info = info;
         mesh.userData.centroid = centroid;
         mesh.userData.type = "building"
         mesh.userData.color = mesh.material.color.getHex();
 
-        // Now create a text label 
-
         if (info['name']) {
-            var buildingLabel = createLabel(info['name'], new THREE.Vector3(mesh.position.x, mesh.position.y + (height / 2), mesh.position.z));
+
+            var normalizedCentroid = [
+                ((centroid[0]) - bottom_left[1]) / (top_right[1] - bottom_left[1]),
+                ((centroid[1]) - bottom_left[0]) / (top_right[0] - bottom_left[0]),
+            ]
+            var buildingLabel = createTextSprite(info['name']);
+            buildingLabel.scale.multiplyScalar(1 / 2000)
+            buildingLabel.position.set(normalizedCentroid[0], normalizedCentroid[1], mesh.position.z + (height * 1.25 / 400))
+
             buildingsGroup.add(buildingLabel);
         }
 
@@ -84,13 +82,12 @@ function addBuilding(building, info, height = 1) {
     }
 }
 
-function normalizePolygon(polygon, centroid) {
-    const normalizedPolygon = polygon.map(vertex => [
-        (vertex[0] - centroid[0]) * scale,
-        (vertex[1] - centroid[1]) * scale
+function normalizePolygon(polygon) {
+    const output = polygon.map(vertex => [
+        ((vertex[0]) - bottom_left[1]) / (top_right[1] - bottom_left[1]),
+        ((vertex[1]) - bottom_left[0]) / (top_right[0] - bottom_left[0]),
     ]);
-
-    return normalizedPolygon
+    return output
 }
 
 function genShape(polygon) {
@@ -115,23 +112,54 @@ function genGeometry(shape, settings) {
     return geometry
 }
 
-function createLabel(text, position) {
-    var canvas = document.createElement('canvas');
-    var context = canvas.getContext('2d');
-    context.font = 'Bold 20px Arial';
-    context.fillStyle = 'black';
-    context.fillText(text, 20, 20);
+function createTextSprite(message, parameters = {}) {
+    const fontface = parameters.fontface || 'Times New Roman';
+    const fontsize = parameters.fontsize || 24;
+    const fontweight = parameters.fontweight || '600';
+    const borderThickness = parameters.borderThickness || 1;
+    const borderColor = parameters.borderColor || { r: 0, g: 0, b: 0, a: 1.0 };
+    const backgroundColor = parameters.backgroundColor || { r: 255, g: 255, b: 255, a: 1.0 };
 
-    var texture = new THREE.Texture(canvas);
-    texture.needsUpdate = true;
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    context.font = `${fontweight} ${fontsize}px ${fontface}`; // Include font weight
 
-    var material = new THREE.SpriteMaterial({ map: texture });
-    var sprite = new THREE.Sprite(material);
+    // Calculate canvas size based on text dimensions
+    if (message.length > 25) {
+        message = message.slice(0, 24);
+        message += "..."
+    }
 
-    sprite.scale.set(1.5, 1, 1);
-    sprite.position.set(position.x, position.y, position.z);
+    const metrics = context.measureText(message);
+    const textWidth = metrics.width;
 
-    sprite.userData.type = "text"
+    canvas.width = textWidth * .5;
+    canvas.height = fontsize;
+
+    // Background color
+    context.fillStyle = `rgba(${backgroundColor.r}, ${backgroundColor.g}, ${backgroundColor.b}, ${backgroundColor.a})`;
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Border color
+    context.strokeStyle = `rgba(${borderColor.r}, ${borderColor.g}, ${borderColor.b}, ${borderColor.a})`;
+    context.lineWidth = borderThickness;
+    context.strokeRect(0, 0, canvas.width, canvas.height);
+
+    // Text color
+    context.fillStyle = 'rgba(0.5, 0.5, 0, 1.0)';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText(message, canvas.width / 2, canvas.height / 2);
+
+    // Create texture
+    const texture = new THREE.CanvasTexture(canvas);
+
+    // Create sprite material
+    const spriteMaterial = new THREE.SpriteMaterial({ map: texture });
+
+    // Create sprite
+    const sprite = new THREE.Sprite(spriteMaterial);
+    sprite.scale.set(canvas.width / 10, canvas.height / 10, 1); // Adjust scale based on canvas size
 
     return sprite;
 }

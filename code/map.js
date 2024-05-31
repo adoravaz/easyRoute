@@ -1,16 +1,16 @@
 import * as THREE from 'three';
 import Openrouteservice from 'openrouteservice-js'
 import createBuildings from './buildings';
+import createTerrain from './terrain';
 import createHighways from './highways';
 import makeDirection from './makeDirection';
 import { getProfileInfo } from './profiles';
 import { getBuildingMaterial, highlightedMaterial } from './materials';
 
-// So I want to be able to export this Map as a contain unite where it handles routing between different locations, drawing, etc 
-// The main problem is that I want to be able to use this map with different controllers and in different spaces like XR, mobile, and desktop 
-
-// Things to do: 
-// add multi 
+export const top_right = [37.0135, -122.0308]
+export const bottom_left = [36.9696, -122.0857]
+export const center = [36.9916, -122.0583, 182] // lon, lat, elev = 182 ors (note elevation is relative to ORS (openrouteservice) classification)
+export const scale = 100 // as in how big 100x100 units big 
 
 function findBuildings(mesh, result = []) {
     if (mesh.userData && mesh.userData.type === 'building') {
@@ -24,23 +24,8 @@ function findBuildings(mesh, result = []) {
     return result;
 }
 
-// function dontAskLol(clickedBuildings) {
-//     let output = []
-//     let from = clickedBuildings[0].userData.centroid;
-//     let to = clickedBuildings[1].userData.centroid;
-//     console.log("Getting Directions from " + from + " and " + to);
-
-//     // // Don't ask lol 
-//     // from = [from[0], from[1]];
-//     // to = [to[0], to[1]];
-
-//     // clickedBuildings.forEach((coord) => {
-//     //     output.push([coord.userData.centroid[0],])
-//     // }).
-// }
-
 class Map extends THREE.Object3D {
-    constructor(scene = null) {
+    constructor() {
         super();
 
         if (Map.instance) {
@@ -49,18 +34,13 @@ class Map extends THREE.Object3D {
 
         this.buildings = null;
         this.highways = null;
-        this.rotateY(Math.PI);
-        this.scale.multiplyScalar(.1);
-        scene.add(this);
-
-        this.position.y = 5
+        this.terrain = null;
 
         Map.instance = this;
 
         // Tools 
         this.orsDirections = new Openrouteservice.Directions({ api_key: import.meta.env.VITE_OPENSTREET_API_KEY });
         this.orsElevation = new Openrouteservice.Elevation({ api_key: import.meta.env.VITE_OPENSTREET_API_KEY });
-        this.orsMatrix = new Openrouteservice.Matrix({ api_key: import.meta.env.VITE_OPENSTREET_API_KEY });
 
         this.routes = [];
         this.routeUphillCounters = [];
@@ -70,24 +50,31 @@ class Map extends THREE.Object3D {
         // Profile type 
         this.profile = getProfileInfo('driving-car');
 
+        // Pop up 
+        this.popup = document.getElementById('popup')
+
         this.init();
     }
 
     async init() {
         try {
-            const buildingsGroup = await createBuildings();
-            //console.log('Buildings loaded:', buildingsGroup);
-            this.buildings = buildingsGroup;
+            this.buildings = await createBuildings();
+            console.log('Buildings loaded:');
             this.add(this.buildings);
-            //console.log(this.buildings.children);
 
-            const routesGroup = await createHighways();
-            //console.log('Highways loaded', routesGroup);
-            this.highways = routesGroup;
+            this.highways = await createHighways();
+            console.log('Highways loaded');
             this.highways.position.y = -0.1
             this.add(this.highways);
 
-            this.clickable = findBuildings(this.buildings);
+            // this.terrain = await createTerrain();
+            // console.log('Terrain computed');
+            // this.add(this.terrain);
+
+            this.clickable = findBuildings(this.buildings); // I have sprite and mesh objects in there. 
+
+            this.scale.multiplyScalar(10)
+            this.rotateX(-Math.PI / 2)
 
         } catch (error) {
             console.error('Failed to load buildings:', error);
@@ -116,8 +103,7 @@ class Map extends THREE.Object3D {
             to = [to[0], to[1]];
 
             let mode = document.getElementById('travelProfile').value;
-
-            console.log(mode);
+            console.log("mode", mode);
 
             let temp = this;
             // customize options based on avoid stairs switch
@@ -185,10 +171,8 @@ class Map extends THREE.Object3D {
                     console.error(response);
                 })
 
-        } else { // Matrix direction 
-            // this.orsMatrix.calculate({
-            //     locations: 
-            // })
+        } else {
+
         }
     }
 
@@ -249,23 +233,44 @@ class Map extends THREE.Object3D {
 
     checkIntersectedBuildings(building) {
 
-        console.log(building)
-
+        // We can only select two buildings at a time. Deselect the old building 
         const index = this.clickedBuildings.indexOf(building);
 
         if (index !== -1) {
             this.deselectBuilding(building);
             this.clickedBuildings.splice(index, 1);
-        } else {
+        } else {  // add it to the list 
+            if (this.clickedBuildings.length >= 2) {
+
+                this.deselectBuilding(this.clickedBuildings[0])
+                this.clickedBuildings.shift();
+            }
+
             this.selectBuilding(building);
             this.clickedBuildings.push(building);
         }
     }
 
+    showPopup(x, y, building) {
+
+        this.popup.style.left = `${x}px`;
+        this.popup.style.top = `${y}px`;
+
+        const buildingInfo = building.userData.info
+        this.popup.innerHTML = `
+        <h2>${buildingInfo.name}</h2>
+        <p>${buildingInfo['addr:housenumber']} ${buildingInfo['addr:street']}, ${buildingInfo['addr:city']}, ${buildingInfo['addr:postcode']}</p>
+        `;
+        this.popup.style.display = 'block';
+    }
+
+    hidePopup() {
+        this.popup.style.display = 'none';
+    }
+
     update(time) {
 
     }
-
 }
 
 async function getUphillCounter(routeCoordinates) {
