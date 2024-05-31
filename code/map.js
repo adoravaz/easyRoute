@@ -174,18 +174,12 @@ class Map extends THREE.Object3D {
                     })
 
                     const uphillCounter = getUphillCounter(routeCoordinates).then(function (counter) {
-                        console.log("updated!");
                         temp.routeUphillCounters.push(counter);
+                        document.getElementById('uphill-counters').style.visibility = "visible";
                         document.getElementById('uphill-counter').innerHTML = counter.toString() + " units of elevation.";
 
                         return counter;
                     }).catch(function () { });
-
-                    console.log("uphill counter:");
-                    console.log(uphillCounter);
-
-                    console.log("json:");
-                    console.log(JSON.stringify(json));
                 })
                 .catch(function (err) {
                     let response = JSON.stringify(err, null, "\t")
@@ -211,6 +205,8 @@ class Map extends THREE.Object3D {
             this.remove(route);
         })
 
+        // clear uphill counter
+        document.getElementById('uphill-counters').style.visibility = "hidden";
         this.routeUphillCounters.forEach((route) => {
             console.log("Route uphill counter cleared")
             this.remove(route);
