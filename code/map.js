@@ -52,7 +52,8 @@ class Map extends THREE.Object3D {
 
         // Pop up 
         this.popup = document.getElementById('popup')
-
+        this.popupHeader = document.getElementById('popup_header');
+        this.popupAddress = document.getElementById('popup_address');
         this.init();
     }
 
@@ -257,10 +258,9 @@ class Map extends THREE.Object3D {
         this.popup.style.top = `${y}px`;
 
         const buildingInfo = building.userData.info
-        this.popup.innerHTML = `
-        <h2>${buildingInfo.name}</h2>
-        <p>${buildingInfo['addr:housenumber']} ${buildingInfo['addr:street']}, ${buildingInfo['addr:city']}, ${buildingInfo['addr:postcode']}</p>
-        `;
+        this.popupHeader.innerText = `${buildingInfo.name}`;
+        this.popupAddress.innerText = `${buildingInfo['addr:housenumber']} ${buildingInfo['addr:street']}, ${buildingInfo['addr:city']}, ${buildingInfo['addr:postcode']}`;
+
         this.popup.style.display = 'block';
     }
 

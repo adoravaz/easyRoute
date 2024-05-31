@@ -96,6 +96,7 @@ renderer.domElement.addEventListener('click', (event) => {
     map.checkIntersectedBuildings(intersects[0].object)
     map.showPopup(event.clientX + 40, event.clientY - 40, intersects[0].object)
   }
+
 });
 
 // document.getElementById('calcRoute').addEventListener('click', () => {

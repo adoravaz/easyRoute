@@ -109,10 +109,15 @@
   </div>
 
   <!-- Pop up object -->
-  <div id="popup" class="popup absolute"></div>
+  <div id="popup" class="popup">
+    <div class="popup-header">
+      <h2 id="popup_header"></h2>
+      <button onclick="hidePopup()">✖</button>
+    </div>
+    <p id="popup_address" class="popup-address"></p>
+    <img id="popup_image" src="" alt="Building Image">
+  </div>
 
-  <script type="module" src="/main.js"></script>
-  <script type="module" src="/code/search.js"></script>
   <script>
     document.getElementById('toggleAvoidStairs').addEventListener('click', function () {
       const button = document.getElementById('toggleAvoidStairs');
@@ -126,7 +131,17 @@
         button.textContent = 'Avoid Stairs: Off';
       }
     });
+
+    const popup = document.getElementById("popup");
+
+    function hidePopup() {
+      console.log("hi")
+      popup.style.display = 'none';
+    }
   </script>
+  <script type="module" src="/main.js"></script>
+  <script type="module" src="/code/search.js"></script>
+
 </body>
 
 </html>
