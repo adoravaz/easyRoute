@@ -6,12 +6,16 @@ import makeDirection from './makeDirection';
 import createEntrancesAndElevators from './createEntrancesAndElevators'; //added for the elevators
 import { getProfileInfo } from './profiles';
 import { getBuildingMaterial, highlightedMaterial } from './materials';
+import { texture } from 'three/examples/jsm/nodes/Nodes.js';
 
 // So I want to be able to export this Map as a contain unite where it handles routing between different locations, drawing, etc 
 // The main problem is that I want to be able to use this map with different controllers and in different spaces like XR, mobile, and desktop 
 
 // Things to do: 
 // add multi 
+
+// repair icon image
+const repairIconTexture = new THREE.TextureLoader().load('/repair_icon.png');
 
 function findBuildings(mesh, result = []) {
     if (mesh.userData && mesh.userData.type === 'building') {
@@ -273,6 +277,103 @@ class Map extends THREE.Object3D {
 
     }
 
+    // add repair icon based on entered location
+    addIconAtLocation(iconUrl, geoPosition) {
+        if (iconUrl === '/repair_icon.png') {
+            console.log("geoPosition: " + JSON.stringify(geoPosition));
+            this.addRepairIcon(geoPosition);
+        } else {
+            console.log("invalid icon URL: ", iconUrl);
+        }
+    //     let center = [-122.0583, 36.9916, 36.9941766] // lon, lat, elev (note elevation is relative to ORS (openrouteservice) classification)
+    //     let scale = 10000
+    //     const {longitude, latitude, elevation} = geoPosition;
+    //     // convert coordinates to scene coordinates
+    //     const direction = new THREE.Vector2(
+    //         (longitude - center[0]) * scale,
+    //         (latitude - center[1]) * scale
+    //     );
+    //     // const position = {
+    //     //     x: direction.x,
+    //     //     y: direction.y,
+    //     //     z: (elevation / 10) - center[2]
+    //     // };
+    //     const position = new THREE.Vector3(
+    //         -direction.x,
+    //         (elevation / 10) - center[2],
+    //         direction.y
+    //     );
+    //     const icon = createIcon(iconUrl, position);
+    //     this.add(icon);
+    //     console.log("icon added");
+    }
+
+
+    /** NEED TO DO:
+     * get building heights so that height of icon can be adjusted accordingly
+     * check out why Media Theater, biomedical sciences doesn't work
+     * autofill building names in form
+     * fix lower case in form results display
+     * add ability to remove repair icons (fixed)
+    */
+    addRepairIcon(geoPosition) {
+        const { longitude, latitude, elevation } = geoPosition;
+        const center = [-122.0583, 36.9916, 36.9941766]; // lon, lat, elev
+        const scale = 10000;
+    
+        // Create material for the repair icon sprite
+        const material = new THREE.SpriteMaterial({ map: repairIconTexture });
+    
+        // Create the sprite
+        const repairIcon = new THREE.Sprite(material);
+    
+        // Scale the sprite to an appropriate size
+        repairIcon.scale.set(1, 1, 1);
+    
+        // Convert geographical coordinates to scene coordinates
+        const position = new THREE.Vector2(
+            -(longitude - center[0]) * scale,
+            (latitude - center[1]) * scale
+        );
+        console.log("position from addRepairIcon (lon, lat): " + JSON.stringify(position));
+        // SNE: x: 24.7099999999989, y: -12.094176600000004, z: 75.21000000004108
+    
+        // Set the position of the sprite
+        repairIcon.position.set(position.x, (elevation / 10) - center[2] + 1, position.y);
+        console.log("repairIcon position set (x, z, y): " + JSON.stringify(position.x) + ", " + JSON.stringify((elevation / 10) - center[2] + 1) + ", " + JSON.stringify(position.y));
+    
+        // Add the sprite to the scene
+        this.add(repairIcon);
+    
+        console.log("Repair icon added");
+    }
+
+    // createIcon(iconUrl, position) {
+    //     // Your createIcon implementation here
+    //     const icon = document.createElement('img');
+    //     icon.src = iconUrl;
+    //     icon.style.position = 'absolute';
+    //     icon.style.left = `${position.x}px`;
+    //     icon.style.top = `${position.y}px`;
+    //     icon.style.zIndex = 1000; // Ensure the icon is on top
+    //     icon.className = 'map-icon'; // Add a class for further styling if needed
+    
+    //     return icon;
+    // }
+    
+    // add(icon) {
+    //     // logic to add the icon to the map
+    //     const container = document.getElementById('icon-container');
+    //     if (container) {
+    //         if (icon instanceof HTMLElement) {
+    //             container.appendChild(icon);
+    //         } else {
+    //             console.error('The icon is not a valid DOM element:', icon);
+    //         }
+    //     } else {
+    //         console.error('icon container not found');
+    //     }
+    // }
 }
 
 async function getUphillCounter(routeCoordinates) {

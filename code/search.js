@@ -38,6 +38,8 @@ async function loadBuildings() {
         buildingCardcontainer.append(card);
         return { name: feature.properties.name, element: card, coordinates: feature.geometry.coordinates, centroid: centroid};
     });
+    window.buildings = buildings; // make buildings globally accessible
+    // console.log("buildings from search: " + JSON.stringify(buildings));
 }
 
 function searchBuildings(input) {
