@@ -23,8 +23,14 @@ function addElevator(feature) {
     const material = new THREE.SpriteMaterial({ map: elevatorTexture });
     const elevator = new THREE.Sprite(material);
     elevator.scale.set(1, 1, 1); 
-    const position = new THREE.Vector2(feature.geometry.coordinates[0] - center[0], feature.geometry.coordinates[1] - center[1]).multiplyScalar(scale);
-    elevator.position.set(position.x, 0, position.y);
+    // const position = new THREE.Vector2(feature.geometry.coordinates[0] - center[0], feature.geometry.coordinates[1] - center[1]).multiplyScalar(scale);
+    const position = new THREE.Vector3(
+        (feature.geometry.coordinates[0] - center[0]) * scale, 
+        (feature.geometry.coordinates[2] / 10) - (center[2]), 
+        (feature.geometry.coordinates[1] - center[1]) * scale
+    );
+    //elevator.position.set(position.x, 0, position.y);
+    elevator.position.set(position.x, position.y, position.z);
     entrancesAndElevatorsGroup.add(elevator);
 }
 
@@ -42,13 +48,19 @@ function addEntrance(feature) {
     const material = new THREE.SpriteMaterial({ map: entranceTexture });
     const entrance = new THREE.Sprite(material);
     entrance.scale.set(1.3, 1.3, 1); 
-    const position = new THREE.Vector2(feature.geometry.coordinates[0] - center[0], feature.geometry.coordinates[1] - center[1]).multiplyScalar(scale);
-    entrance.position.set(position.x, 0, position.y);
+    // const position = new THREE.Vector2(feature.geometry.coordinates[0] - center[0], feature.geometry.coordinates[1] - center[1]).multiplyScalar(scale);
+    const position = new THREE.Vector3(
+        (feature.geometry.coordinates[0] - center[0]) * scale, 
+        (feature.geometry.coordinates[2] / 10) - (center[2]), 
+        (feature.geometry.coordinates[1] - center[1]) * scale
+    );
+    // entrance.position.set(position.x, 0, position.y);
+    entrance.position.set(position.x, position.y, position.z);
     entrancesAndElevatorsGroup.add(entrance);
 }
 
 async function createEntrancesAndElevators() {
-    const response = await fetch('/elevatorswithentrances.geojson');
+    const response = await fetch('/elevatorswithentrances_V4 copy.geojson');
     const data = await response.json();
     data.features.forEach(feature => {
         if (feature.properties['highway'] === 'elevator') {
