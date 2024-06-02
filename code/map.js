@@ -6,8 +6,6 @@ import makeDirection from './makeDirection';
 import { getProfileInfo } from './profiles';
 import { getBuildingMaterial, highlightedMaterial } from './materials';
 
-export const center = [36.9916, -122.0583, 182] // lon, lat, elev = 182 ors (note elevation is relative to ORS (openrouteservice) classification)
-
 function findBuildings(mesh, result = []) {
     if (mesh.userData && mesh.userData.type === 'building') {
         result.push(mesh);
@@ -40,6 +38,11 @@ class Map extends THREE.Object3D {
         this.orsDirections = new Openrouteservice.Directions({ api_key: import.meta.env.VITE_OPENSTREET_API_KEY });
         this.orsElevation = new Openrouteservice.Elevation({ api_key: import.meta.env.VITE_OPENSTREET_API_KEY });
 
+        this.center = [36.9916, -122.0583]
+        this.scalar = 1;
+        this.radius = 8;
+        this.zoom = 15;
+
         this.routes = [];
         this.routeUphillCounters = [];
         this.clickedBuildings = [];
@@ -67,22 +70,19 @@ class Map extends THREE.Object3D {
                 tokenMapbox: import.meta.env.VITE_MAPBOX_API_TOKEN, // <---- set your Mapbox API token here
             });
 
-            const origin = [36.9916, -122.0583];
-            const radius = 5.0;
-            this.terrain = await this.tgeo.getTerrainRgb(origin, radius, 15);
+            this.terrain = await this.tgeo.getTerrainRgb(this.center, this.radius, this.zoom);
+            this.terrain.scale.multiplyScalar(this.scalar);
             this.terrain.rotation.x = -Math.PI / 2;
-            const { proj, bbox, projInv } = this.tgeo.getProjection(origin, radius);
+            const { proj, bbox } = this.tgeo.getProjection(this.center, this.radius);
             this.proj = proj;
             this.bbox = bbox;
 
             this.add(this.terrain);
 
-            this.buildings = await createBuildings(this);
+            this.buildings = await createBuildings();
             console.log('Buildings loaded:');
             this.add(this.buildings);
             this.clickable = findBuildings(this.buildings); // I have sprite and mesh objects in there. 
-
-            this.scale.multiplyScalar(10)
 
         } catch (error) {
             console.error('Failed to load buildings:', error);
@@ -113,6 +113,8 @@ class Map extends THREE.Object3D {
                 return [0, 0, 0];
             }
         }
+
+        console.log("terrain is still null");
 
         return [0, 0, 0];
     }

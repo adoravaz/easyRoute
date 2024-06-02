@@ -1,7 +1,7 @@
 
 import { getBuildingMaterial } from './materials';
 
-async function createBuildings(map) {
+async function createBuildings() {
     try {
 
         const response = await fetch('/UCSC_Buildings_V3.geojson');
@@ -17,6 +17,9 @@ async function createBuildings(map) {
         const group = new THREE.Group();
         group.add(titles);
         group.add(buildings);
+
+
+
         return group;
     } catch (error) {
         throw error;
@@ -150,7 +153,7 @@ function genGeometry(shape, settings) {
 
 function createTextSprite(message, parameters = {}) {
     const fontface = parameters.fontface || 'Times New Roman';
-    const fontsize = parameters.fontsize || 24;
+    const fontsize = parameters.fontsize || 28;
     const fontweight = parameters.fontweight || '600';
     const borderThickness = parameters.borderThickness || 1;
     const borderColor = parameters.borderColor || { r: 0, g: 0, b: 0, a: 1.0 };
@@ -161,8 +164,8 @@ function createTextSprite(message, parameters = {}) {
     context.font = `${fontweight} ${fontsize}px ${fontface}`; // Include font weight
 
     // Calculate canvas size based on text dimensions
-    if (message.length > 25) {
-        message = message.slice(0, 24);
+    if (message.length > 20) {
+        message = message.slice(0, 17);
         message += "..."
     }
 
@@ -195,7 +198,7 @@ function createTextSprite(message, parameters = {}) {
 
     // Create sprite
     const sprite = new THREE.Sprite(spriteMaterial);
-    sprite.scale.set(window.innerWidth / 1500000, window.innerHeight / 1500000, 1); // Adjust scale based on canvas size
+    sprite.scale.set(window.innerWidth / 1300000, window.innerHeight / 1300000, 1); // Adjust scale based on canvas size
 
     return sprite;
 }

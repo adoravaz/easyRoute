@@ -16,15 +16,16 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 120);
 
 // Position the camera
-camera.position.y = .5;
-camera.position.x = -.8;
-camera.position.z = -.8;
+camera.position.y = .1;
+camera.position.x = -.05;
+camera.position.z = -.25;
 camera.updateProjectionMatrix();
 
 // Renderer
 const renderer = new THREE.WebGLRenderer({
   antialias: true
 })
+
 renderer.setClearColor(0xfeffa6);
 renderer.setPixelRatio(window.devicePixelRatio)
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -34,7 +35,7 @@ document.getElementById("app").appendChild(renderer.domElement);
 // Map Controls 
 const controls = new MapControls(camera, renderer.domElement);
 controls.enableDamping = true;
-controls.maxDistance = 3
+controls.maxDistance = 3;
 
 // Tool for models.js
 window.gltfLoader = new GLTFLoader();
@@ -47,16 +48,15 @@ let light0 = new THREE.AmbientLight(0xfafafa, 1)
 scene.add(light0)
 
 scene.background = new THREE.Color(0xfeffa6);
-scene.fog = new THREE.Fog(0xfeffa6, .5, 7);
-
+scene.fog = new THREE.Fog(0xfeffa6, 0.3, .7);
 
 const hemiLight = new THREE.HemisphereLight(0xffffff, 0x8d8d8d, 3);
-hemiLight.position.set(0, 20, 0);
+hemiLight.position.set(0, .5, 0);
 scene.add(hemiLight);
 
-scene.add(
-  new THREE.AxesHelper(1)
-)
+// scene.add(
+//   new THREE.AxesHelper(1)
+// )
 
 // Raycaster 
 const raycast = new THREE.Raycaster();

@@ -8,7 +8,7 @@ function genGeometry(polygon) {
         console.log("temp", temp);
         const point = new THREE.Vector3(
             temp[0],
-            temp[1],
+            temp[1] + 0.001,
             temp[2])
         points.push(point)
     }
