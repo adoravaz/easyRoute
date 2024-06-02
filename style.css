@@ -226,6 +226,7 @@
     bottom: 120px;
     right: 15px;
     border: 3px solid #f1f1f1;
+    /* max-height: 200px; */
     z-index: 9;
 }
 
@@ -285,6 +286,27 @@
     max-width: 300px;
     padding: 10px;
     /* border: 3px solid #f1f1f1; */
+}
+
+.repair-building-cards {
+    max-height: 100px;
+    overflow: auto;
+    gap: .25rem;
+    margin-top: 1rem;
+}
+
+.repair-card {
+    border-top: 1px solid black;
+    padding: .5rem;
+}
+
+.repair-card:hover {
+    background-color: rgba(161, 196, 237, 0.453);
+}
+
+.repair-card.selected {
+    border: 1px solid black; /* Blue border for selected card */
+    background-color: #f0f9ff; /* Light blue background for visibility */
 }
 
 /* avoid stairs toggle switch */

@@ -75,6 +75,19 @@ buildingCardContainer.addEventListener('click', event => {
 function resetSearchState() {
   startPoint = null;
   document.getElementById('repair-address').value = ''; // clear search inputs here
+
+  // hide all cards
+  const cards = document.querySelectorAll('.repair-building-cards .repair-card');
+  cards.forEach(card => {
+      // card.style.display = 'none'; // Hide each card
+      card.classList.add('hide'); // Add 'hide' class that sets display to none
+  });
+
+  // hide selected cards
+  const selectedCards = document.querySelectorAll('.repair-building-cards .repair-card.selected');
+  selectedCards.forEach(card => {
+    card.classList.remove('selected', 'visible'); // Remove 'selected' and 'visible' classes
+  });
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
