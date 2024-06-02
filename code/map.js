@@ -1,9 +1,9 @@
+
 import Openrouteservice from 'openrouteservice-js'
 import createBuildings from './buildings';
 import createHighways from './highways';
 import makeDirection from './makeDirection';
 import { getProfileInfo } from './profiles';
-import { createSun } from './models';
 import { getBuildingMaterial, highlightedMaterial } from './materials';
 
 export const center = [36.9916, -122.0583, 182] // lon, lat, elev = 182 ors (note elevation is relative to ORS (openrouteservice) classification)
@@ -68,8 +68,8 @@ class Map extends THREE.Object3D {
             });
 
             const origin = [36.9916, -122.0583];
-            const radius = 11.0;
-            this.terrain = await this.tgeo.getTerrainRgb(origin, radius, 14);
+            const radius = 5.0;
+            this.terrain = await this.tgeo.getTerrainRgb(origin, radius, 15);
             this.terrain.rotation.x = -Math.PI / 2;
             const { proj, bbox, projInv } = this.tgeo.getProjection(origin, radius);
             this.proj = proj;
@@ -165,7 +165,7 @@ class Map extends THREE.Object3D {
                     }).then((res) => {
 
                         const route = makeDirection(res.geometry.coordinates);
-                        console.log("cords:= ", route)
+
                         temp.routes.push(route);
                         temp.add(route);
 
@@ -198,8 +198,6 @@ class Map extends THREE.Object3D {
                     console.log("uphill counter:");
                     console.log(uphillCounter);
 
-                    console.log("json:");
-                    console.log(JSON.stringify(json));
                 })
                 .catch(function (err) {
                     let response = JSON.stringify(err, null, "\t")

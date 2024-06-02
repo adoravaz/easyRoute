@@ -1,14 +1,15 @@
 
-
 function genGeometry(polygon) {
 
     const points = [];
 
     for (let i = 0; i < polygon.length; i++) {
+        const temp = window.map.getRelativePoints(polygon[i][1], polygon[i][0]);
+        console.log("temp", temp);
         const point = new THREE.Vector3(
-            -(polygon[i][0] - center[0]) * scale,
-            (polygon[i][2] / 10) - (center[2]),
-            (polygon[i][1] - center[1]) * scale)
+            temp[0],
+            temp[1],
+            temp[2])
         points.push(point)
     }
 

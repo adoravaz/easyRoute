@@ -1,3 +1,4 @@
+
 import { getBuildingMaterial } from './materials';
 
 async function createBuildings(map) {

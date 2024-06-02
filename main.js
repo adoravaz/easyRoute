@@ -1,5 +1,4 @@
 
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { MapControls } from 'three/examples/jsm/Addons.js';
 import { MapTilerProvider, MapBoxProvider, MapView, UnitsUtils } from 'geo-three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -33,11 +32,9 @@ renderer.shadowMap.enabled = true;
 document.getElementById("app").appendChild(renderer.domElement);
 
 // Map Controls 
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true
-controls.dampingFactor = .25
-controls.screenSpacePanning = true
-controls.maxDistance = 1000
+const controls = new MapControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.maxDistance = 3
 
 // Tool for models.js
 window.gltfLoader = new GLTFLoader();
@@ -108,18 +105,18 @@ let avoidStairs = false;
 //   avoidStairs = event.target.checked;
 // });
 
-// document.getElementById('calcRoute').addEventListener('click', () => {
-//   // map.clearRoutes();  // Clear previous routes if any
-//   map.generateDirections(avoidStairs);
-// });
+document.getElementById('calcRoute').addEventListener('click', () => {
+  // map.clearRoutes();  // Clear previous routes if any
+  map.generateDirections(avoidStairs);
+});
 
-// document.getElementById('clearRoute').addEventListener('click', () => {
-//   map.clearRoutes();
-//   hideBuildingCards(); //added functionality to hid the building cards
-//   // reset avoid stairs switch
-//   //document.getElementById('avoidStairsSwitch').checked = false;
-//   avoidStairs = false;
-// })
+document.getElementById('clearRoute').addEventListener('click', () => {
+  map.clearRoutes();
+  hideBuildingCards(); //added functionality to hid the building cards
+  // reset avoid stairs switch
+  //document.getElementById('avoidStairsSwitch').checked = false;
+  avoidStairs = false;
+})
 
 // Function to hide all building cards
 function hideBuildingCards() {
