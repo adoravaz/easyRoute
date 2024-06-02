@@ -2,7 +2,37 @@ import Map from './map';
 
 const map = window.mainMap; // main map is accessible globally
 
-document.addEventListener("DOMContentLoaded", () => {
+// initialize and define buildings array (with building heights)
+let buildings = [];
+async function loadBuildings() {
+  try {
+    const res = await fetch('/UCSC_Buildings_V3.geojson');
+    console.log('loaded buildings')
+    const data = await res.json();
+    buildings = data.features.map(feature => {
+        const centroid = feature.geometry.centroid;
+        return { name: feature.properties.name, levels: (feature.properties['building:levels']) ? feature.properties['building:levels'] : 1, centroid: centroid};
+    });
+    // console.log("buildings from loadBuildingd: " + JSON.stringify(buildings));
+  } catch (error) {
+    console.log("Failed to load buildings: ", error);
+  }
+}
+
+// call loadBuildings to populate the buildings array
+// await loadBuildings();
+
+document.addEventListener("DOMContentLoaded", async () => {
+  // Disable the submit button initially
+  const submitButton = document.querySelector('#report-form .submit-btn');
+  submitButton.disabled = true;
+
+  // call loadBuildings to populate the buildings array
+  await loadBuildings();
+
+  // Enable the submit button after buildings are loaded
+  submitButton.disabled = false;
+
   // event listeners for the buttons
   document.querySelector('.open-form-button').addEventListener('click', openForm);
   document.getElementById("report-form").addEventListener("submit", handleSubmit);
@@ -13,17 +43,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // function for opening repair form
 function openForm() {
+  console.log("openForm called");
   document.getElementById("open-form").style.display = "none";
   document.getElementById("report-show").innerHTML = '';
   document.getElementById("reportForm").style.display = "block";
   console.log('form opened');
 }
 
-function handleSubmit(event) {
+async function handleSubmit(event) {
   event.preventDefault();
   console.log("submit form clicked");
 
-  const buildings = window.buildings; // buildings data is accessible globally
+  // const buildings = window.buildings; // buildings data is accessible globally
 
   const address = document.getElementById("repair-address").value.trim();
   const details = document.getElementById("repair-details").value;
@@ -36,17 +67,22 @@ function handleSubmit(event) {
 
   if (address) {
     // console.log("buildings: " + JSON.stringify(buildings));
-    const selectBuilding = buildings.find(b =>
-      b.name.toLowerCase() === address.toLowerCase()
-    );
+    const selectBuilding = buildings.find(b => {
+      if (b.name && address) {
+        return b.name.toLowerCase() === address.toLowerCase();
+      }
+      return false
+    });
     console.log("selectBuildings: " + JSON.stringify(selectBuilding));
 
     if (selectBuilding) {
       const {centroid} = selectBuilding;
+      const {levels} = selectBuilding;
       map.addIconAtLocation('/repair_icon.png', {
         longitude: centroid[0],
         latitude: centroid[1],
-        elevation: centroid[2]
+        elevation: centroid[2],
+        levels: levels
       });
     } else {
       alert('Building not found.');
@@ -101,6 +137,7 @@ function handleSubmit(event) {
 
 // function for closing form if it's canceled (i.e. not submitted)
 function cancelForm() {
+  document.getElementById("report-form").reset();
   document.getElementById("reportForm").style.display = "none";
   document.getElementById("open-form").style.display = "block";
   console.log("form canceled");

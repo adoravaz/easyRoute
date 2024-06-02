@@ -311,13 +311,12 @@ class Map extends THREE.Object3D {
 
     /** NEED TO DO:
      * get building heights so that height of icon can be adjusted accordingly
-     * check out why Media Theater, biomedical sciences doesn't work
      * autofill building names in form
      * fix lower case in form results display
      * add ability to remove repair icons (fixed)
     */
     addRepairIcon(geoPosition) {
-        const { longitude, latitude, elevation } = geoPosition;
+        const {longitude, latitude, elevation, levels} = geoPosition;
         const center = [-122.0583, 36.9916, 36.9941766]; // lon, lat, elev
         const scale = 10000;
     
@@ -339,8 +338,8 @@ class Map extends THREE.Object3D {
         // SNE: x: 24.7099999999989, y: -12.094176600000004, z: 75.21000000004108
     
         // Set the position of the sprite
-        repairIcon.position.set(position.x, (elevation / 10) - center[2] + 1, position.y);
-        console.log("repairIcon position set (x, z, y): " + JSON.stringify(position.x) + ", " + JSON.stringify((elevation / 10) - center[2] + 1) + ", " + JSON.stringify(position.y));
+        repairIcon.position.set(position.x, (elevation / 10) - center[2] + (levels*1.5), position.y);
+        console.log("repairIcon position set (x, z, y): " + JSON.stringify(position.x) + ", " + JSON.stringify((elevation / 10) - center[2] + (levels*1.5)) + ", " + JSON.stringify(position.y) + ", levels: " + levels);
     
         // Add the sprite to the scene
         this.add(repairIcon);
