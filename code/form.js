@@ -2,6 +2,12 @@ import Map from './map';
 
 const map = window.mainMap; // main map is accessible globally
 
+const buildingCardtemplate = document.querySelector("[repair-data-building-template]");
+const buildingCardContainer = document.querySelector("[repair-data-building-cards-container]");
+const addressSearchInput = document.querySelector("#repair-address");
+
+let startPoint = null;
+
 // initialize and define buildings array (with building heights)
 let buildings = [];
 async function loadBuildings() {
@@ -10,8 +16,15 @@ async function loadBuildings() {
     console.log('loaded buildings')
     const data = await res.json();
     buildings = data.features.map(feature => {
-        const centroid = feature.geometry.centroid;
-        return { name: feature.properties.name, levels: (feature.properties['building:levels']) ? feature.properties['building:levels'] : 1, centroid: centroid};
+      const card = buildingCardtemplate.content.cloneNode(true).children[0];
+      const header = card.querySelector("[repair-data-header]");
+      const body = card.querySelector("[repair-data-body]");
+      const centroid = feature.geometry.centroid;
+      header.textContent = feature.properties.name;
+      body.textContent = `${feature.properties['addr:street']} ${feature.properties['addr:housenumber']}, ${feature.properties['addr:city']} ${feature.properties['addr:postcode']}`;
+      card.classList.add('hide');
+      buildingCardContainer.append(card);
+      return { name: feature.properties.name, element: card, levels: (feature.properties['building:levels']) ? feature.properties['building:levels'] : 1, centroid: centroid};
     });
     // console.log("buildings from loadBuildingd: " + JSON.stringify(buildings));
   } catch (error) {
@@ -19,8 +32,50 @@ async function loadBuildings() {
   }
 }
 
-// call loadBuildings to populate the buildings array
-// await loadBuildings();
+// from search.js
+function searchBuildings(input) {
+  input.addEventListener("input", e => {
+      const value = e.target.value.toLowerCase();
+          if (value === "") {
+              buildings.forEach(building => {
+              building.element.classList.add("hide");
+           });
+         }else{
+              buildings.forEach(building => {
+              const isVisible = building.name?.toLowerCase().includes(value) || building.address?.toLowerCase().includes(value);
+              building.element.classList.toggle("hide", !isVisible);
+          });
+      }
+  });
+}
+
+buildingCardContainer.addEventListener('click', event => {
+  const card = event.target.closest('.repair-card');
+  if (card) {
+    const selectedBuilding = buildings.find(b => b.name === card.querySelector("[repair-data-header]").textContent);
+      buildings.forEach(building => { // Hide all cards initially
+        building.element.classList.add('hide');
+    });
+    if (startPoint !== selectedBuilding) {
+      if (startPoint) {
+        startPoint.element.classList.remove('selected', 'visible');
+        startPoint.element.classList.add('hide'); // Hide previous start point card
+      }
+      startPoint = selectedBuilding;
+      startPoint.element.classList.add('selected', 'visible'); // Make only the selected card visible
+      addressSearchInput.value = selectedBuilding.name; // Autofill the start search input
+    }
+    if (startPoint) {
+      startPoint.element.classList.remove('hide');
+      buildingCardContainer.prepend(startPoint.element); // Ensures start point card is always at the top
+    }
+  }
+});
+
+function resetSearchState() {
+  startPoint = null;
+  document.getElementById('repair-address').value = ''; // clear search inputs here
+}
 
 document.addEventListener("DOMContentLoaded", async () => {
   // Disable the submit button initially
@@ -29,6 +84,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // call loadBuildings to populate the buildings array
   await loadBuildings();
+  searchBuildings(addressSearchInput);
 
   // Enable the submit button after buildings are loaded
   submitButton.disabled = false;
@@ -96,6 +152,7 @@ async function handleSubmit(event) {
   event.target.reset();
   document.getElementById("reportForm").style.display = "none";
   document.getElementById("open-form").style.display = "block";
+  resetSearchState();
   console.log("form reset and closed");
 }
 
@@ -140,5 +197,6 @@ function cancelForm() {
   document.getElementById("report-form").reset();
   document.getElementById("reportForm").style.display = "none";
   document.getElementById("open-form").style.display = "block";
+  resetSearchState();
   console.log("form canceled");
 }

@@ -102,10 +102,24 @@
               <img src="/x.png" alt="cancel" id="x-image"/>
             </button>
             <h1>Report a Repair</h1>
+
             <label for="repair-address"><b>Repair Address</b></label>
-            <input type="text" id="repair-address" placeholder="Enter Address" name="repair-address" required>
+            <input type="search" id="repair-address" data-search placeholder="Enter Address" name="repair-address" required>
+            <!-- building cards for repair address search -->
+            <div class="building-cards" repair-data-building-cards-container></div>
+            <template repair-data-building-template>
+              <div class="repair-card">
+                <div class="repair-header" repair-data-header></div>
+                <div class="repair-body" repair-data-body></div>
+              </div>
+              <div class="repair-card hide">
+                <div class="repair-header" repair-data-header></div>
+                <div class="repair-body" repair-data-body></div>
+              </div>
+            </template>
+
             <label for="repair-details"><b>Repair Details</b></label>
-            <input type="text" id="repair-details" name="repair-details" required>
+            <input type="text" id="repair-details" placeholder="Enter details" name="repair-details" required>
             <button type="submit" class="submit-btn">Submit</button>
           </form>
         </div>
