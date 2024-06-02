@@ -1,10 +1,12 @@
-import * as THREE from 'three';
+
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-// import { XRButton } from 'three/addons/webxr/XRButton.js';
+import { MapControls } from 'three/examples/jsm/Addons.js';
+import { MapTilerProvider, MapBoxProvider, MapView, UnitsUtils } from 'geo-three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { createSun, createBananaDuck } from './code/models';
 
 import Stats from 'stats.js'
 import Map from './code/map';
-import { ThreeMFLoader } from 'three/examples/jsm/Addons.js';
 
 const stats = new Stats()
 stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
@@ -12,27 +14,23 @@ stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
 document.body.appendChild(stats.dom)
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 120);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 120);
 
 // Position the camera
-camera.position.y = 1;
-camera.position.x = 0;
-camera.position.z = 1;
+camera.position.y = .5;
+camera.position.x = -.8;
+camera.position.z = -.8;
 camera.updateProjectionMatrix();
 
 // Renderer
 const renderer = new THREE.WebGLRenderer({
   antialias: true
 })
-renderer.setClearColor("white");
+renderer.setClearColor(0xfeffa6);
 renderer.setPixelRatio(window.devicePixelRatio)
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
-renderer.xr.enabled = true;
-renderer.sortObjects = false;
 document.getElementById("app").appendChild(renderer.domElement);
-
-// document.body.appendChild(XRButton.createButton(renderer, { 'optionalFeatures': ['depth-sensing'] }));
 
 // Map Controls 
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -41,26 +39,27 @@ controls.dampingFactor = .25
 controls.screenSpacePanning = true
 controls.maxDistance = 1000
 
+// Tool for models.js
+window.gltfLoader = new GLTFLoader();
+
 // Mouse 
 const mouse = new THREE.Vector2();
 
-// // Helpers
-// let gridHelper = new THREE.GridHelper(50, 30, new THREE.Color(0x555555), new THREE.Color(0x333333))
-// scene.add(gridHelper);
-
 // Init Light
 let light0 = new THREE.AmbientLight(0xfafafa, 1)
-
-let light1 = new THREE.PointLight(0xfafafa, 10.4)
-light1.position.set(20, 20, 10)
-
 scene.add(light0)
-scene.add(light1)
+
+scene.background = new THREE.Color(0xfeffa6);
+scene.fog = new THREE.Fog(0xfeffa6, .5, 7);
+
+
+const hemiLight = new THREE.HemisphereLight(0xffffff, 0x8d8d8d, 3);
+hemiLight.position.set(0, 20, 0);
+scene.add(hemiLight);
 
 scene.add(
   new THREE.AxesHelper(1)
 )
-
 
 // Raycaster 
 const raycast = new THREE.Raycaster();
@@ -69,18 +68,14 @@ const raycast = new THREE.Raycaster();
 const map = new Map();
 scene.add(map);
 
-// const position = [36.9916, -122.0583]
-// const source = new Source('maptiler', 'pk.eyJ1IjoiYmtjYXN0cm8iLCJhIjoiY2x3c21zMG1zMDh4YjJqb211cHhwMDF3aCJ9.KItRv34-_kaWlOJbtWOSSw') // okEEOZDVSQpRBpvp3VJD
-// const map = new Map(scene, camera, source, position, { nTiles: 3, zoom: 11 })
-// const mapPicker = new MapPicker(camera, map, renderer.domElement)
-// // mapPicker.go(-45, 128)
-
+const sun = await createSun();
+scene.add(sun);
 
 // after initializing the map, exposing map to be available globally
-window.mainMap = map;
+// window.mainMap = map;
 
 renderer.domElement.addEventListener('click', (event) => {
-  console.log("clicked", event);
+  // console.log("clicked", event);
 
   // Calculate mouse position in normalized device coordinates (-1 to +1) for both components
   mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
@@ -99,13 +94,13 @@ renderer.domElement.addEventListener('click', (event) => {
 
 });
 
-// document.getElementById('calcRoute').addEventListener('click', () => {
-//   if (map.clickedBuildings.length >= 2) {
-//       map.generateDirections();
-//   } else {
-//       console.error("Not enough buildings selected for a route.");
-//   }
-// });
+document.getElementById('calcRoute').addEventListener('click', () => {
+  if (map.clickedBuildings.length >= 2) {
+    //map.generateDirections();
+  } else {
+    console.error("Not enough buildings selected for a route.");
+  }
+});
 
 // avoid stairs switch toggled
 let avoidStairs = false;
@@ -113,18 +108,18 @@ let avoidStairs = false;
 //   avoidStairs = event.target.checked;
 // });
 
-document.getElementById('calcRoute').addEventListener('click', () => {
-  // map.clearRoutes();  // Clear previous routes if any
-  map.generateDirections(avoidStairs);
-});
+// document.getElementById('calcRoute').addEventListener('click', () => {
+//   // map.clearRoutes();  // Clear previous routes if any
+//   map.generateDirections(avoidStairs);
+// });
 
-document.getElementById('clearRoute').addEventListener('click', () => {
-  map.clearRoutes();
-  hideBuildingCards(); //added functionality to hid the building cards
-  // reset avoid stairs switch
-  //document.getElementById('avoidStairsSwitch').checked = false;
-  avoidStairs = false;
-})
+// document.getElementById('clearRoute').addEventListener('click', () => {
+//   map.clearRoutes();
+//   hideBuildingCards(); //added functionality to hid the building cards
+//   // reset avoid stairs switch
+//   //document.getElementById('avoidStairsSwitch').checked = false;
+//   avoidStairs = false;
+// })
 
 // Function to hide all building cards
 function hideBuildingCards() {
@@ -150,6 +145,7 @@ function updateDirectionsList(directions, routeTotal) {
   totalDistance.textContent = `Total Distance: ${routeTotal.distance} meters`;
   totalDuration.textContent = `Total Duration: ${(routeTotal.duration / 60).toFixed(2)} min`;
 }
+
 // expose updateDirectionsList to global scope so it can be called from map.js
 window.updateDirectionsList = updateDirectionsList;
 
@@ -167,7 +163,7 @@ const animate = function () {
 
   stats.begin()
 
-  controls.update()
+  //controls.update()
 
   renderer.render(scene, camera);
 

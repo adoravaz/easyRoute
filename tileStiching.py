@@ -3,7 +3,7 @@ from PIL import Image
 import io
 
 # Replace 'your_google_maps_api_key' with your actual Google Maps API key
-API_KEY = 'AIzaSyCAXMTnTOhBoFrgG75ew6OzU0O3LBccHUQ'
+
 # Custom rectangle coordinates (south latitude, west longitude, north latitude, east longitude)
 south_lat = 36.9870
 west_lng = -122.0640

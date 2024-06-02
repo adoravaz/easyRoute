@@ -1,4 +1,3 @@
-import * as THREE from 'three';
 
 const buildingMaterials = {
     university: new THREE.MeshBasicMaterial({ color: "lightskyblue" }),

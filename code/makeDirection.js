@@ -1,5 +1,4 @@
-import * as THREE from 'three';
-import { center, scale } from './map';
+
 
 function genGeometry(polygon) {
 

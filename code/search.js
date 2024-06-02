@@ -1,4 +1,4 @@
-import Map_v2 from './map';
+
 import Openrouteservice from 'openrouteservice-js'
 import createBuildings from './buildings';
 import createHighways from './highways';
@@ -13,8 +13,7 @@ const destinationSearchInput = document.querySelector("#destination-search");
 // console.log(destinationSearchInput)
 
 let buildings = [];
-const map = new Map_v2();
-window.mainMap = map;
+// window.mainMap = map;
 
 // console.log("map", map);
 

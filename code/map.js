@@ -1,16 +1,12 @@
-import * as THREE from 'three';
 import Openrouteservice from 'openrouteservice-js'
 import createBuildings from './buildings';
-import createTerrain from './terrain';
 import createHighways from './highways';
 import makeDirection from './makeDirection';
 import { getProfileInfo } from './profiles';
+import { createSun } from './models';
 import { getBuildingMaterial, highlightedMaterial } from './materials';
 
-export const top_right = [37.0135, -122.0308]
-export const bottom_left = [36.9696, -122.0857]
 export const center = [36.9916, -122.0583, 182] // lon, lat, elev = 182 ors (note elevation is relative to ORS (openrouteservice) classification)
-export const scale = 100 // as in how big 100x100 units big 
 
 function findBuildings(mesh, result = []) {
     if (mesh.userData && mesh.userData.type === 'building') {
@@ -34,9 +30,11 @@ class Map extends THREE.Object3D {
 
         this.buildings = null;
         this.highways = null;
+        this.tgeo = null;
         this.terrain = null;
 
         Map.instance = this;
+        window.map = this;
 
         // Tools 
         this.orsDirections = new Openrouteservice.Directions({ api_key: import.meta.env.VITE_OPENSTREET_API_KEY });
@@ -46,6 +44,11 @@ class Map extends THREE.Object3D {
         this.routeUphillCounters = [];
         this.clickedBuildings = [];
         this.clickable = [];
+
+        this.proj = null;
+        this.bbox = null;
+
+        this.raycaster = new THREE.Raycaster();
 
         // Profile type 
         this.profile = getProfileInfo('driving-car');
@@ -59,28 +62,59 @@ class Map extends THREE.Object3D {
 
     async init() {
         try {
-            this.buildings = await createBuildings();
+
+            this.tgeo = new ThreeGeo({
+                tokenMapbox: import.meta.env.VITE_MAPBOX_API_TOKEN, // <---- set your Mapbox API token here
+            });
+
+            const origin = [36.9916, -122.0583];
+            const radius = 11.0;
+            this.terrain = await this.tgeo.getTerrainRgb(origin, radius, 14);
+            this.terrain.rotation.x = -Math.PI / 2;
+            const { proj, bbox, projInv } = this.tgeo.getProjection(origin, radius);
+            this.proj = proj;
+            this.bbox = bbox;
+
+            this.add(this.terrain);
+
+            this.buildings = await createBuildings(this);
             console.log('Buildings loaded:');
             this.add(this.buildings);
-
-            this.highways = await createHighways();
-            console.log('Highways loaded');
-            this.highways.position.y = -0.1
-            this.add(this.highways);
-
-            // this.terrain = await createTerrain();
-            // console.log('Terrain computed');
-            // this.add(this.terrain);
-
             this.clickable = findBuildings(this.buildings); // I have sprite and mesh objects in there. 
 
             this.scale.multiplyScalar(10)
-            this.rotateX(-Math.PI / 2)
 
         } catch (error) {
             console.error('Failed to load buildings:', error);
         }
 
+    }
+
+    // This function takes in a lat and a long and returns an array of points [x, y, z] use these to update objects to the right position. 
+    getRelativePoints(lat, long) {
+
+        if (this.terrain != null) {
+
+            const temp = this.proj([lat, long]);
+
+            const origin = new THREE.Vector3(temp[0], 5, -temp[1]);
+
+            const direction = new THREE.Vector3(0, -1, 0);
+            direction.normalize();
+
+            this.raycaster.set(origin, direction);
+
+            const intersects = this.raycaster.intersectObjects(this.terrain.children, true); // true to check all descendants
+
+            if (intersects.length > 0) {
+                return [origin.x, intersects[0].point.y, origin.z]; // [x, y, z]
+            } else {
+                //console.log('No intersections found.');
+                return [0, 0, 0];
+            }
+        }
+
+        return [0, 0, 0];
     }
     // This function draws the route. 
     generateDirections(avoidStairs) {

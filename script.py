@@ -3,7 +3,6 @@ import math
 import requests
 from shapely.geometry import shape, Polygon, MultiLineString
 
-api_key = '5b3ce3597851110001cf6248f4c2894628b444238faa26e91c70c3f3'
 
 def list_highway_types(geojson_file):
 
