@@ -78,6 +78,13 @@ function addBuilding(building, info, height = 1) {
         if (info['name']) {
             var buildingLabel = createLabel(info['name'], new THREE.Vector3(mesh.position.x, mesh.position.y + (height / 2), mesh.position.z));
             buildingsGroup.add(buildingLabel);
+            if (info['name'] == 'Science & Engineering Library') {
+                console.log("SNE - x: " + JSON.stringify(mesh.position.x) + ", y: " + JSON.stringify(mesh.position.y) + ", z: " + JSON.stringify(mesh.position.z) + ", height: " + height);
+            } else if (info['name'] == 'Media Theater') {
+                console.log("Media Theater - x: " + JSON.stringify(mesh.position.x) + ", y: " + JSON.stringify(mesh.position.y) + ", z: " + JSON.stringify(mesh.position.z) + ", height: " + height);
+            } else if (info['name'] == 'Engineering 2') {
+                console.log("Engineering 2 - x: " + JSON.stringify(mesh.position.x) + ", y: " + JSON.stringify(mesh.position.y) + ", z: " + JSON.stringify(mesh.position.z) + ", height: " + height);
+            }
         }
 
         buildingsGroup.add(mesh)
