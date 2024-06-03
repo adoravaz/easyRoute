@@ -1,6 +1,5 @@
 
 import { MapControls } from 'three/examples/jsm/Addons.js';
-import { MapTilerProvider, MapBoxProvider, MapView, UnitsUtils } from 'geo-three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { createSun, createBananaDuck } from './code/models';
 
@@ -13,7 +12,7 @@ stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
 document.body.appendChild(stats.dom)
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 120);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.0001, 120);
 
 // Position the camera
 camera.position.y = .1;
