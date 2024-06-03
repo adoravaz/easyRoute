@@ -311,8 +311,6 @@ class Map extends THREE.Object3D {
 
     /** NEED TO DO:
      * get building heights so that height of icon can be adjusted accordingly
-     * autofill building names in form
-     * fix lower case in form results display
      * add ability to remove repair icons (fixed)
     */
     addRepairIcon(geoPosition) {
@@ -331,14 +329,14 @@ class Map extends THREE.Object3D {
     
         // Convert geographical coordinates to scene coordinates
         const position = new THREE.Vector2(
-            -(longitude - center[0]) * scale,
+            (longitude - center[0]) * scale,
             (latitude - center[1]) * scale
         );
         console.log("position from addRepairIcon (lon, lat): " + JSON.stringify(position));
         // SNE: x: 24.7099999999989, y: -12.094176600000004, z: 75.21000000004108
     
         // Set the position of the sprite
-        repairIcon.position.set(position.x, (elevation / 10) - center[2] + (levels*1.5), position.y);
+        repairIcon.position.set(-position.x, (elevation / 10) - center[2] + (levels), position.y);
         console.log("repairIcon position set (x, z, y): " + JSON.stringify(position.x) + ", " + JSON.stringify((elevation / 10) - center[2] + (levels*1.5)) + ", " + JSON.stringify(position.y) + ", levels: " + levels);
     
         // Add the sprite to the scene
