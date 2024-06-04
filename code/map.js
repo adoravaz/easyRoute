@@ -212,9 +212,6 @@ class Map extends THREE.Object3D {
                         return counter;
                     }).catch(function () { });
 
-                    console.log("uphill counter:");
-                    console.log(uphillCounter);
-
                 })
                 .catch(function (err) {
                     let response = JSON.stringify(err, null, "\t")
@@ -237,11 +234,6 @@ class Map extends THREE.Object3D {
             console.log("Route cleared")
             this.remove(route);
         })
-
-        // this.routeUphillCounters.forEach((route) => {
-        //     console.log("Route uphill counter cleared")
-        //     this.remove(route);
-        // })
 
         // clear uphill counter
         document.getElementById('uphill-counters').style.visibility = "hidden";
