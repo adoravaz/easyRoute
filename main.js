@@ -1,9 +1,7 @@
-
 import { MapControls } from 'three/examples/jsm/Addons.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { createSun, createBananaDuck } from './code/models';
-
-// import Stats from 'stats.js'
+import Sun from './code/sun';
+import Stats from 'stats.js'
 import Map from './code/map';
 
 // const stats = new Stats()
@@ -15,14 +13,14 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.0001, 120);
 
 // Position the camera
-camera.position.y = .1;
-camera.position.x = -.05;
-camera.position.z = -.25;
+camera.position.y = 0.128633;
+camera.position.x = -0.290214;
+camera.position.z = -0.093298;
 camera.updateProjectionMatrix();
 
 // Renderer
 const renderer = new THREE.WebGLRenderer({
-  antialias: true
+  antialias: true,
 })
 
 renderer.setClearColor(0xfeffa6);
@@ -34,7 +32,7 @@ document.getElementById("app").appendChild(renderer.domElement);
 // Map Controls 
 const controls = new MapControls(camera, renderer.domElement);
 controls.enableDamping = true;
-controls.maxDistance = 3;
+controls.maxDistance = 1;
 
 // Tool for models.js
 window.gltfLoader = new GLTFLoader();
@@ -46,11 +44,11 @@ const mouse = new THREE.Vector2();
 let light0 = new THREE.AmbientLight(0xfafafa, 1)
 scene.add(light0)
 
-scene.background = new THREE.Color(0xfeffa6);
-scene.fog = new THREE.Fog(0xfeffa6, 0.3, .7);
+scene.background = new THREE.Color(0x6196ff);
+scene.fog = new THREE.Fog(0x6196ff, 0.4, 1);
 
 const hemiLight = new THREE.HemisphereLight(0xffffff, 0x8d8d8d, 3);
-hemiLight.position.set(0, .5, 0);
+hemiLight.position.set(0, .4, 0);
 scene.add(hemiLight);
 
 // scene.add(
@@ -64,14 +62,10 @@ const raycast = new THREE.Raycaster();
 const map = new Map();
 scene.add(map);
 
-const sun = await createSun();
-scene.add(sun);
-
-// after initializing the map, exposing map to be available globally
-window.mainMap = map;
+const sun = new Sun();
+// scene.add(sun);
 
 renderer.domElement.addEventListener('click', (event) => {
-  // console.log("clicked", event);
 
   // Calculate mouse position in normalized device coordinates (-1 to +1) for both components
   mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
@@ -92,7 +86,7 @@ renderer.domElement.addEventListener('click', (event) => {
 
 document.getElementById('calcRoute').addEventListener('click', () => {
   if (map.clickedBuildings.length >= 2) {
-    //map.generateDirections();
+    map.generateDirections();
   } else {
     console.error("Not enough buildings selected for a route.");
   }
@@ -103,6 +97,8 @@ let avoidStairs = false;
 // document.getElementById('avoidStairsSwitch').addEventListener('change', (event) => {
 //   avoidStairs = event.target.checked;
 // });
+
+//added
 document.getElementById('toggleAvoidStairs').addEventListener('click', function () {
   const button = document.getElementById('toggleAvoidStairs');
   if (button.classList.contains('bg-gray-500')) {
@@ -144,7 +140,6 @@ document.getElementById('clearRoute').addEventListener('click', () => {
 function hideBuildingCards() {
   const cards = document.querySelectorAll('.building-cards .card');
   cards.forEach(card => {
-      // card.style.display = 'none'; // Hide each card
       card.classList.add('hide'); // Add 'hide' class that sets display to none
   });
 }

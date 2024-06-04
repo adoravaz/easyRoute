@@ -55,6 +55,7 @@
       </select>
     </div>
 
+    <!-- Building cards -->
     <div class="building-cards" data-building-cards-container></div>
     <template data-building-template>
       <div class="card">
@@ -79,11 +80,16 @@
     <button id="clearRoute" class="w-full p-2 bg-red-500 text-white rounded hover:opacity-50">Clear Route</button>
 
     <!-- Turn-By-Turn Directions List -->
-    <div id="directions-container" class="pt-2">
-      <h3 id="directions-title" class="text-xl mb-2">Directions:</h3>
+    <div id="directions-container" class="pt-2 overflow-y-auto max-h-[200px]" style="display: none;">
+      <h3 class="text-xl mb-2">Directions:</h3>
       <ul id="directions-list" class="list-disc pl-5 overflow-hidden max-h-[400px]"></ul>
       <p id="total-distance" class="mt-2"></p>
       <p id="total-duration"></p>
+
+      <!-- Uphill Counters -->
+      <div id="uphill-counters" style="font-size: 15px; margin-top: 10px;">
+        <p id="uphill-counter" class="text-black"></p>
+      </div>
     </div>
   </div>
 
@@ -132,23 +138,24 @@
     </div>
   </div>
 
-  <script>
-    const popup = document.getElementById("popup");
+    <script>
+      const popup = document.getElementById("popup");
 
-    function hidePopup() {
-      console.log("hi")
-      popup.style.display = 'none';
-    }
-  </script>
+      function hidePopup() {
+        popup.style.display = 'none';
+      }
+    </script>
 
-  <script src="./code/deps/three/build/three.min.js"></script>
-  <script src="./code/deps/three/examples/js/controls/OrbitControls.js"></script>
-  <script src="./code/deps/three/examples/js/libs/stats.min.js"></script>
+    <!-- <script type="module" src="/code/search.js"></script> -->
 
-  <script src="./code/three-geo/three-geo.min.js"></script>
-  <script type="module" src="/main.js"></script>
-  <script type="module" src="/code/search.js"></script>
-  <script type="module" src="/code/form.js"></script>
+    <script src="./code/deps/three/build/three.min.js"></script>
+    <script src="./code/deps/three/examples/js/controls/OrbitControls.js"></script>
+    <script src="./code/deps/three/examples/js/libs/stats.min.js"></script>
+
+    <script src="./code/three-geo/three-geo.min.js"></script>
+    <script type="module" src="/main.js"></script>
+    <script type="module" src="/code/search.js"></script>
+    <script type="module" src="/code/form.js"></script>
 </body>
 
 </html>

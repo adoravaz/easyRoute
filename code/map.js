@@ -1,9 +1,9 @@
-import * as THREE from 'three';
 import Openrouteservice from 'openrouteservice-js'
 import createBuildings from './buildings';
 import createHighways from './highways';
 import makeDirection from './makeDirection';
 import createEntrancesAndElevators from './createEntrancesAndElevators'; //added for the elevators
+
 import { getProfileInfo } from './profiles';
 import { getBuildingMaterial, highlightedMaterial } from './materials';
 
@@ -44,8 +44,8 @@ class Map extends THREE.Object3D {
 
         this.center = [36.9916, -122.0583]
         this.scalar = 1;
-        this.radius = 8;
-        this.zoom = 15;
+        this.radius = 4;
+        this.zoom = 16;
 
         this.routes = [];
         this.routeUphillCounters = [];
@@ -69,7 +69,6 @@ class Map extends THREE.Object3D {
 
     async init() {
         try {
-
             this.tgeo = new ThreeGeo({
                 tokenMapbox: import.meta.env.VITE_MAPBOX_API_TOKEN, // <---- set your Mapbox API token here
             });
@@ -83,29 +82,110 @@ class Map extends THREE.Object3D {
 
             this.add(this.terrain);
 
-            this.buildings = await createBuildings();
-            console.log('Buildings loaded:');
-            this.add(this.buildings);
-            //console.log(this.buildings.children);
-
-            // const routesGroup = await createHighways();
-            //console.log('Highways loaded', routesGroup);
-            // this.highways = routesGroup;
-            // this.highways.position.y = -0.1
-            // this.add(this.highways);
-
             //added for the entrances and elevators
             const elevandentGroup = await createEntrancesAndElevators();
             console.log('Entrances and Elevators loaded', elevandentGroup);
             this.elevandent = elevandentGroup;
             this.add(this.elevandent);
 
-            this.clickable = findBuildings(this.buildings);
+            this.buildings = await createBuildings();
+            console.log('Buildings loaded:');
+            this.add(this.buildings);
+            this.clickable = findBuildings(this.buildings); // I have sprite and mesh objects in there. 
+
+            // this.highways = await createHighways();
+            // this.add(this.highways);
 
         } catch (error) {
             console.error('Failed to load buildings:', error);
         }
+    }
 
+    // This function takes in a lat and a long and returns an array of points [x, y, z] use these to update objects to the right position. 
+    getRelativePoints(lat, long) {
+
+        if (this.terrain != null) {
+
+            const temp = this.proj([lat, long]);
+
+            const origin = new THREE.Vector3(temp[0], 5, -temp[1]);
+
+            const direction = new THREE.Vector3(0, -1, 0);
+            direction.normalize();
+
+            this.raycaster.set(origin, direction);
+
+            const intersects = this.raycaster.intersectObjects(this.terrain.children, true); // true to check all descendants
+
+            if (intersects.length > 0) {
+                return [origin.x, intersects[0].point.y, origin.z]; // [x, y, z]
+            } else {
+                //console.log('No intersections found.');
+                return [0, 0, 0];
+            }
+        }
+
+        console.log("terrain is still null");
+
+        return [0, 0, 0];
+    }
+
+    // This function takes in a lat and a long and returns an array of points [x, y, z] use these to update objects to the right position. 
+    getRelativePoints(lat, long) {
+
+        if (this.terrain != null) {
+
+            const temp = this.proj([lat, long]);
+
+            const origin = new THREE.Vector3(temp[0], 5, -temp[1]);
+
+            const direction = new THREE.Vector3(0, -1, 0);
+            direction.normalize();
+
+            this.raycaster.set(origin, direction);
+
+            const intersects = this.raycaster.intersectObjects(this.terrain.children, true); // true to check all descendants
+
+            if (intersects.length > 0) {
+                return [origin.x, intersects[0].point.y, origin.z]; // [x, y, z]
+            } else {
+                //console.log('No intersections found.');
+                return [0, 0, 0];
+            }
+        }
+
+        console.log("terrain is still null");
+
+        return [0, 0, 0];
+    }
+
+    // This function takes in a lat and a long and returns an array of points [x, y, z] use these to update objects to the right position. 
+    getRelativePoints(lat, long) {
+
+        if (this.terrain != null) {
+
+            const temp = this.proj([lat, long]);
+
+            const origin = new THREE.Vector3(temp[0], 5, -temp[1]);
+
+            const direction = new THREE.Vector3(0, -1, 0);
+            direction.normalize();
+
+            this.raycaster.set(origin, direction);
+
+            const intersects = this.raycaster.intersectObjects(this.terrain.children, true); // true to check all descendants
+
+            if (intersects.length > 0) {
+                return [origin.x, intersects[0].point.y, origin.z]; // [x, y, z]
+            } else {
+                //console.log('No intersections found.');
+                return [0, 0, 0];
+            }
+        }
+
+        console.log("terrain is still null");
+
+        return [0, 0, 0];
     }
 
     // This function takes in a lat and a long and returns an array of points [x, y, z] use these to update objects to the right position. 
@@ -147,23 +227,20 @@ class Map extends THREE.Object3D {
 
             let from = this.clickedBuildings[0].userData.centroid;
             let to = this.clickedBuildings[1].userData.centroid;
-            console.log("Clicked Buildings", this.clickedBuildings);
 
-            console.log(from)
-            console.log(to)
+            console.log("Clicked Buildings", this.clickedBuildings);
             console.log("Getting Directions from " + from + " and " + to);
 
             // Don't ask lol 
             from = [from[0], from[1]];
             to = [to[0], to[1]];
 
-            let mode = document.getElementById('travelProfile').value;
-            console.log("mode", mode);
-
             let temp = this;
             // customize options based on avoid stairs switch
             const options = avoidStairs ? { avoid_features: ['steps'] } : {};
+            const mode = document.getElementById('travelProfile').value;
 
+            console.log("mode, options", mode, options);
             this.orsDirections.calculate({
                 coordinates: [from, to],
                 profile: mode,
@@ -202,22 +279,46 @@ class Map extends THREE.Object3D {
                         // update directions list
                         window.updateDirectionsList(directions, routeTotal);
                         document.getElementById('directions-container').style.display = 'block';
+
+                        getUphillCounter(routeCoordinates).then(function (counter) {
+                            console.log("uphill counter:", counter);
+                            temp.routeUphillCounters.push(counter);
+
+                            let color = "#000000";
+                            if (counter < 5) {
+                                color = "#00c800";
+                            } else if (counter > 30) {
+                                color = "#c80000";
+                            } else {
+                                let rOffset = Math.round((counter - 5) / (30 - 5) * 200);
+                                let gOffset = 200 - rOffset;
+
+                                rOffset = rOffset.toString(16);
+                                gOffset = gOffset.toString(16);
+
+                                if (rOffset.length == 1) {
+                                    rOffset = "0" + rOffset;
+                                }
+                                if (gOffset.length == 1) {
+                                    gOffset = "0" + gOffset;
+                                }
+
+                                color = "#" + rOffset + gOffset + "00";
+                            }
+
+                            if (counter == 1) {
+                                document.getElementById('uphill-counter').innerHTML = "For this route, you must climb <b>" + counter.toString() + " unit of elevation</b>.";
+                            } else {
+                                document.getElementById('uphill-counter').innerHTML = "For this route, you must climb <b>" + counter.toString() + " units of elevation</b>.";
+                            }
+                            document.getElementById('uphill-counter').style.color = color;
+
+                            route.material.color = new THREE.Color(color);
+                        }).catch(function () { });
                     }).catch((error) => {
                         let response = JSON.stringify(error, null, "\t")
                         console.error(response);
                     })
-
-                    const uphillCounter = getUphillCounter(routeCoordinates).then(function (counter) {
-                        temp.routeUphillCounters.push(counter);
-                        document.getElementById('uphill-counters').style.visibility = "visible";
-                        document.getElementById('uphill-counter').innerHTML = counter.toString() + " units of elevation.";
-
-                        return counter;
-                    }).catch(function () { });
-
-                    console.log("uphill counter:");
-                    console.log(uphillCounter);
-
                 })
                 .catch(function (err) {
                     let response = JSON.stringify(err, null, "\t")
@@ -241,6 +342,12 @@ class Map extends THREE.Object3D {
             this.remove(route);
         })
 
+        // this.routeUphillCounters.forEach((route) => {
+        //     console.log("Route uphill counter cleared")
+        //     this.remove(route);
+        // })
+
+        // clear uphill counter
         this.routeUphillCounters.forEach((route) => {
             console.log("Route uphill counter cleared")
             this.remove(route);
@@ -324,10 +431,6 @@ class Map extends THREE.Object3D {
         this.popup.style.display = 'none';
     }
 
-    update(time) {
-
-    }
-
     // add repair icon based on entered location
     addIconAtLocation(iconUrl, geoPosition) {
         if (iconUrl === '/repair_icon.png') {
@@ -368,6 +471,10 @@ class Map extends THREE.Object3D {
     
         console.log("Repair icon added");
     }
+
+    update(time) {
+
+    }
 }
 
 async function getUphillCounter(routeCoordinates) {
@@ -391,6 +498,7 @@ async function getUphillCounter(routeCoordinates) {
             if (prev != -1 && elevations[key] > prev) {
                 counter += elevations[key] - prev;
             }
+
             prev = elevations[key];
         }
 

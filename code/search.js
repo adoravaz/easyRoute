@@ -100,20 +100,20 @@ buildingCardcontainer.addEventListener('click', event => {
                 destinationSearchInput.value = selectedBuilding.name; // Autofill the destination search input
                 console.log("Setting end point:", endPoint);
             }
-            if (startPoint) {
-                startPoint.element.classList.remove('hide');
-                buildingCardcontainer.prepend(startPoint.element); // Ensures start point card is always at the top
-            }
-            // Move the destination card below the start card if both are selected
-            if (endPoint) {
-                endPoint.element.classList.remove('hide');
-            if (startPoint) {
-                startPoint.element.insertAdjacentElement('afterend', endPoint.element);
-            } else {
-                buildingCardcontainer.prepend(endPoint.element);
-            }
+        if (startPoint) {
+            startPoint.element.classList.remove('hide');
+            buildingCardcontainer.prepend(startPoint.element); // Ensures start point card is always at the top
         }
-    }
+        // Move the destination card below the start card if both are selected
+        if (endPoint) {
+            endPoint.element.classList.remove('hide');
+        if (startPoint) {
+            startPoint.element.insertAdjacentElement('afterend', endPoint.element);
+        } else {
+            buildingCardcontainer.prepend(endPoint.element);
+         }
+     }
+ }
     // Ensure selected cards are visible
     // if (startPoint) startPoint.element.classList.remove('hide');
     // if (endPoint) endPoint.element.classList.remove('hide');

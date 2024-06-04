@@ -17,9 +17,6 @@ async function createBuildings() {
         const group = new THREE.Group();
         group.add(titles);
         group.add(buildings);
-
-
-
         return group;
     } catch (error) {
         throw error;
@@ -72,15 +69,8 @@ function createBuildingTitles(buildings) {
 
         if (info['name']) {
             var buildingLabel = createTextSprite(info['name']);
-            buildingLabel.position.set(position[0], position[1] + (building.userData.height*0.001), position[2])
+            buildingLabel.position.set(position[0], position[1] + (building.userData.height * 0.001), position[2])
             //buildingLabel.rotation.x = Math.PI / 2;
-            if (info['name'] == 'Science & Engineering Library') {
-                console.log("SNE - x: " + JSON.stringify(position[0]) + ", y: " + JSON.stringify(position[1] + (building.userData.height*0.001)) + ", z: " + JSON.stringify(position[2]) + ", height: " + building.userData.height);
-            } else if (info['name'] == 'Media Theater') {
-                console.log("Media Theater - x: " + JSON.stringify(position[0]) + ", y: " + JSON.stringify(position[1] + (building.userData.height*0.001)) + ", z: " + JSON.stringify(position[2]) + ", height: " + building.userData.height);
-            } else if (info['name'] == 'Engineering 2') {
-                console.log("Engineering 2 - x: " + JSON.stringify(position[0]) + ", y: " + JSON.stringify(position[1] + (building.userData.height*0.001)) + ", z: " + JSON.stringify(position[2]) + ", height: " + building.userData.height);
-            }
             titlesGroup.add(buildingLabel);
         }
 
