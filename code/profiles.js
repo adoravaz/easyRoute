@@ -43,14 +43,14 @@ const travelProfiles = {
     }
 };
 
-// Example of how to retrieve a profile
-function getProfileInfo(type, mode) {
-    if (travelProfiles[type] && travelProfiles[type][mode]) {
-        return travelProfiles[type][mode];
-    } else {
-        console.log("Invalid type or mode");
-        return null; // or throw an error based on your error handling policy
+function getProfileInfo(mode) {
+    for (const type in travelProfiles) {
+        if (travelProfiles[type][mode]) {
+            return travelProfiles[type][mode];
+        }
     }
+    console.log("Invalid mode");
+    return null;
 }
 
 // Example usage

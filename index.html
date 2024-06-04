@@ -5,24 +5,49 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/newlogo.svg" />
   <linK rel="stylesheet" href="style.css" />
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="style.css">
   <title>UCSCMap</title>
 </head>
 
-<body>
-  <div>
+<body id="app" class="bg-gray-100 flex justify-end items-start h-screen overflow-hidden">
+
+  <div class="flex flex-col justify-center gap-2 bg-white rounded-lg shadow-lg p-6 w-80 fixed top-5 right-5">
     <!-- Search Bar -->
     <div class="search-wrapper start-search-wrapper">
       <!-- Starting Point Search Bar -->
-      <label for="start-search">Start:</label>
-      <input type="search" id="start-search" data-search placeholder="Enter start location">
+      <label for="start-search" class="block mb-2">Start:</label>
+      <input type="search" id="start-search" data-search placeholder="Enter start location"
+        class="w-full p-2 border border-gray-300 rounded">
     </div>
 
     <!-- Destination Search Bar -->
     <div class="search-wrapper destination-search-wrapper">
-      <label for="destination-search">Destination:</label>
-      <input type="search" id="destination-search" data-destination-search placeholder="Enter end location">
+      <label for="destination-search" class="block mb-2">Destination:</label>
+      <input type="search" id="destination-search" data-destination-search placeholder="Enter end location"
+        class="w-full p-2 border border-gray-300 rounded">
+    </div>
+
+    <!-- Travel Profile Selection -->
+    <div class="profile-section">
+      <label for="travelProfile" class="block mb-2">Select Travel Profile:</label>
+      <select id="travelProfile" class="w-full p-2 border border-gray-300 rounded">
+        <optgroup label="Driving">
+          <option value="driving-car">Driving - Car</option>
+          <option value="driving-hgv">Driving - HGV</option>
+        </optgroup>
+        <optgroup label="Cycling">
+          <option value="cycling-regular">Cycling - Regular</option>
+          <option value="cycling-road">Cycling - Road</option>
+          <option value="cycling-mountain">Cycling - Mountain</option>
+          <option value="cycling-electric">Cycling - Electric</option>
+        </optgroup>
+        <optgroup label="Walking">
+          <option value="foot-walking">Walking</option>
+          <option value="foot-hiking">Hiking</option>
+        </optgroup>
+        <option value="wheelchair">Wheelchair</option>
+      </select>
     </div>
 
     <div class="building-cards" data-building-cards-container></div>
@@ -36,103 +61,118 @@
         <div class="body" data-body></div>
       </div>
     </template>
-  </div>
-  <!-- Calculate and Clear Route Buttons-->
 
-  <div>
-    <div id="app" class="container">
-      <div class="logo-title">
-        <img id="logo" src="/newlogo.svg" alt="EasyRoute Logo" />
-        <p id="project-title">EasyRoute</p>
+    <!-- Avoid Stairs Button -->
+    <div class="flex items-center">
+      <button id="toggleAvoidStairs" class="w-full p-2 bg-gray-500 text-white rounded hover:opacity-50">Avoid Stairs:
+        Off</button>
+    </div>
+
+    <button id="calcRoute" class="w-full p-2 bg-blue-500 text-white rounded hover:opacity-50">Calculate
+      Route</button>
+    <button id="clearRoute" class="w-full p-2 bg-red-500 text-white rounded hover:opacity-50">Clear Route</button>
+
+    <!-- Turn-By-Turn Directions List -->
+    <div id="directions-container" class="pt-2 overflow-y-auto max-h-[200px]" style="display: none;">
+      <h3 class="text-xl mb-2">Directions:</h3>
+      <ul id="directions-list" class="list-disc pl-5 overflow-hidden max-h-[400px]"></ul>
+      <p id="total-distance" class="mt-2"></p>
+      <p id="total-duration"></p>
+
+      <!-- Uphill Counters -->
+      <div id="uphill-counters" style="font-size: 15px; margin-top: 10px;">
+        <p id="uphill-counter" class="text-black"></p>
       </div>
-
-      <div id="legend-container">
-        <!-- <div>
-          <button id="toggle-buildings-legend">Buildings</button>
-          <button id="toggle-highways-legend">Highways</button>
-        </div> -->
-        <div id="buildings-legend-content" class="legend-content">
-          <h4>Buildings</h4>
-          <ul>
-            <li style="color: lightskyblue;"> University</li>
-            <li style="color: greenyellow;"> Apartments</li>
-            <li style="color: purple;"> Roof</li>
-            <li style="color: orange;"> Dormitory</li>
-            <li style="color: pink;"> House</li>
-            <li style="color: khaki;"> Trailer</li>
-            <li style="color: green;"> Greenhouse</li>
-            <li style="color: aquamarine;"> Farm Auxiliary</li>
-            <li style="color: darkblue;"> Industrial</li>
-          </ul>
-        </div>
-        <div id="highways-legend-content" class="legend-content">
-          <h4>Highways</h4>
-          <ul>
-            <li style="color: black;"> Pedestrian</li>
-            <li style="color: coral;"> Residential</li>
-            <li style="color: lightgreen;"> Secondary</li>
-            <li style="color: rgb(150, 150, 150);"> Service</li>
-            <li style="color: burlywood;"> Footway</li>
-            <li style="color: red;"> Steps</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="user profile">
-
-      </div>
-
-      <!-- Turn-By-Turn Directions List -->
-      <div id="directions-container" class="directions-container">
-        <h3>Directions</h3>
-        <ul id="directions-list"></ul>
-        <p id="total-distance"></p>
-        <p id="total-duration"></p>
-      </div>
-
-      <!-- Outline for Reporting Form -->
-      <div class="report-button-container">
-        <button class="open-form-button" id="open-form">Report a Repair</button>
-        <div class="form-popup" id="reportForm">
-          <form action="#" class="form-container" id="report-form">
-            <button type="button" class="cancel-btn">
-              <img src="/x.png" alt="cancel" id="x-image"/>
-            </button>
-            <h1>Report a Repair</h1>
-            <label for="repair-address"><b>Repair Address</b></label>
-            <input type="text" id="repair-address" placeholder="Enter Address" name="repair-address" required>
-            <label for="repair-details"><b>Repair Details</b></label>
-            <input type="text" id="repair-details" name="repair-details" required>
-            <button type="submit" class="submit-btn">Submit</button>
-          </form>
-        </div>
-
-        <p id="report-show"></p>
-      </div>
-
-      <!-- Avoid Stairs Switch -->
-      <div class="avoidStairs-container">
-        <label class="switch" for="avoidStairsSwitch">
-          <input type="checkbox" id="avoidStairsSwitch">
-          <span class="slider round"></span>
-        </label>
-        <span id="avoid-stairs">Avoid stairs</span>
-      </div>
-
-      <button id="calcRoute" class="my-button-1">Calculate Route</button>
-      <button id="clearRoute" class="my-button-2">Clear Route</button>
     </div>
   </div>
 
-  <!-- Uphill Counters -->
-  <div>
-    <div id="uphill-counters" style="position:fixed;bottom:20px;left:20px;visibility:hidden;">
-      <label for="uphill">For this route, you will have to climb:</label>
-      <p id="uphill-counter"></p>
+  <!-- Outline for Reporting Form -->
+  <div class="report-button-container">
+    <button class="open-form-button" id="open-form">Report a Repair</button>
+    <div class="form-popup" id="reportForm">
+      <form action="#" class="form-container" id="report-form">
+        <button type="button" class="cancel-btn">
+          <img src="/x.png" alt="cancel" id="x-image"/>
+        </button>
+        <h1>Report a Repair</h1>
+        <label for="repair-address"><b>Repair Address</b></label>
+        <input type="text" id="repair-address" placeholder="Enter Address" name="repair-address" required>
+        <label for="repair-details"><b>Repair Details</b></label>
+        <input type="text" id="repair-details" name="repair-details" required>
+        <button type="submit" class="submit-btn">Submit</button>
+      </form>
+    </div>
+
+    <p id="report-show"></p>
+  </div>
+
+  <!-- Buildings Legend -->
+  <div class="absolute left-0 z-50 top-20 bg-white rounded-lg shadow-lg p-6">
+    <div id="buildings-legend-content" class="legend-content mt-4">
+      <h3 class="text-lg mb-2">Buildings</h3>
+      <ul class="list-disc pl-5">
+        <li><img src="/university.png" alt="" style="width: 20px;"> University</li>
+        <li><img src="/apartment.png" alt="" style="width: 20px;"> Apartments</li>
+        <li><img src="/dorm.png" alt="" style="width: 20px;"> Dormitory</li>
+        <li><img src="/building.png" alt="" style="width: 20px;">Miscellaneous</li>
+        <!-- <li style="color: rgb(92, 90, 90);">Miscellaneous</li> -->
+      </ul>
+    </div>
+
+    <!-- Highways Legend -->
+    <div id="highways-legend-content" class="legend-content mt-4">
+      <h3 class="text-lg mb-2">Highways</h3>
+      <ul class="list-disc pl-5">
+        <li style="color: black;">Pedestrian</li>
+        <li style="color: coral;">Residential</li>
+        <li style="color: lightgreen;">Secondary</li>
+        <li style="color: rgb(150, 150, 150);">Service</li>
+        <li style="color: burlywood;">Footway</li>
+        <li style="color: red;">Steps</li>
+      </ul>
     </div>
   </div>
 
+  <!-- Pop up object -->
+  <div id="popup" class="popup">
+    <div class="popup-header">
+      <h2 id="popup_header"></h2>
+      <button onclick="hidePopup()">✖</button>
+    </div>
+    <p id="popup_address" class="popup-address"></p>
+    <img id="popup_image" src="" alt="Building Image">
   </div>
+
+  <script>
+    // document.getElementById('toggleAvoidStairs').addEventListener('click', function () {
+    //   const button = document.getElementById('toggleAvoidStairs');
+    //   if (button.classList.contains('bg-gray-500')) {
+    //     button.classList.remove('bg-gray-500');
+    //     button.classList.add('bg-green-500');
+    //     button.textContent = 'Avoid Stairs: On';
+    //   } else {
+    //     button.classList.remove('bg-green-500');
+    //     button.classList.add('bg-gray-500');
+    //     button.textContent = 'Avoid Stairs: Off';
+    //   }
+    // });
+
+    const popup = document.getElementById("popup");
+
+    function hidePopup() {
+      console.log("hi")
+      popup.style.display = 'none';
+    }
+  </script>
+
+
+  <!-- <script type="module" src="/code/search.js"></script> -->
+
+  <script src="./code/deps/three/build/three.min.js"></script>
+  <script src="./code/deps/three/examples/js/controls/OrbitControls.js"></script>
+  <script src="./code/deps/three/examples/js/libs/stats.min.js"></script>
+
+  <script src="./code/three-geo/three-geo.min.js"></script>
   <script type="module" src="/main.js"></script>
   <script type="module" src="/code/search.js"></script>
   <script type="module" src="/code/form.js"></script>

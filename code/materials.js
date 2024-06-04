@@ -1,16 +1,15 @@
-import * as THREE from 'three';
-
 const buildingMaterials = {
-    university: new THREE.MeshBasicMaterial({ color: "lightskyblue" }),
-    apartments: new THREE.MeshBasicMaterial({ color: "greenyellow" }),
-    roof: new THREE.MeshBasicMaterial({ color: "purple" }),
-    dormitory: new THREE.MeshBasicMaterial({ color: "orange" }),
-    house: new THREE.MeshBasicMaterial({ color: "pink" }),
-    trailer: new THREE.MeshBasicMaterial({ color: "khaki" }),
-    greenhouse: new THREE.MeshBasicMaterial({ color: "green" }),
-    farm_auxiliary: new THREE.MeshBasicMaterial({ color: "aquamarine" }),
-    industrial: new THREE.MeshBasicMaterial({ color: "darkblue" }),
-    default: new THREE.MeshBasicMaterial({ color: "deeppink" }),
+    university: new THREE.MeshBasicMaterial({ color: "#3d85c6" }), //dark blue
+    apartments: new THREE.MeshBasicMaterial({ color: "#4C967D" }),
+    dormitory: new THREE.MeshBasicMaterial({ color: "#fba826" }),
+    // Make other buildings less prominent
+    house: new THREE.MeshBasicMaterial({ color: "lightgray" }),
+    trailer: new THREE.MeshBasicMaterial({ color: "lightgray" }),
+    greenhouse: new THREE.MeshBasicMaterial({ color: "lightgray" }),
+    farm_auxiliary: new THREE.MeshBasicMaterial({ color: "lightgray" }),
+    industrial: new THREE.MeshBasicMaterial({ color: "lightgray" }),
+    roof: new THREE.MeshBasicMaterial({ color: "lightgray" }), // include roofs but want them less visible
+    default: new THREE.MeshBasicMaterial({ color: "lightgray" }), // Default for any unspecified building type
 };
 
 const highwayMaterials = {
@@ -30,7 +29,7 @@ const highwayMaterials = {
 }
 
 const highlightedMaterial = new THREE.MeshStandardMaterial({
-    color: 'yellow',   // Gold color
+    color: 'red',   // Gold color
     emissive: 0xceeb5b, // Orange emissive color for a glowing effect
     emissiveIntensity: 1,
     roughness: 0.5,
@@ -87,6 +86,39 @@ function getBuildingMaterial(type) {
         case "industrial": return buildingMaterials.industrial
         default: return buildingMaterials.default;
     }
+}
+
+function createShaderMaterial(mapTexture, demTexture) {
+    const vertexShader = `
+        varying vec2 vUv;
+        void main() {
+            vUv = uv;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+    `;
+
+    const fragmentShader = `
+        uniform sampler2D mapTexture;
+        uniform sampler2D demTexture;
+        varying vec2 vUv;
+
+        void main() {
+            vec4 mapColor = texture2D(mapTexture, vUv);
+            vec4 demColor = texture2D(demTexture, vUv);
+            gl_FragColor = vec4(mapColor.rgb, mapColor.a);
+        }
+    `;
+
+    const material = new THREE.ShaderMaterial({
+        uniforms: {
+            mapTexture: { value: mapTexture },
+            demTexture: { value: demTexture }
+        },
+        vertexShader: vertexShader,
+        fragmentShader: fragmentShader
+    });
+
+    return material;
 }
 
 
