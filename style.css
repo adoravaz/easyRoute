@@ -84,6 +84,7 @@
 .legend-content img {
     vertical-align: middle;
     margin-right: 5px;
+   /* margin-left: 10px;  /* Adds some space between the text and the icon */
 }
 
 /* Adding Styles for the Search Bar */
