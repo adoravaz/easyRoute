@@ -259,27 +259,29 @@
 .open-form-button {
     background-color: #555;
     color: white;
-    padding: 16px 20px;
+    padding: 3px 6px;
     border: none;
     cursor: pointer;
     opacity: 0.8;
-    position: absolute;
-    bottom: 50px;
-    right: 20px;
-    width: 280px;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    font-size: 14px;
+    /* position: absolute; */
+    /* bottom: 5px; */
+    /* right: 20px; */
+    /* width: 280px; */
 }
 
 .form-popup {
     display: none;
     position: absolute;
-    bottom: 120px;
-    right: 15px;
+    /* bottom: 120px; */
+    /* right: 15px; */
     border: 3px solid #f1f1f1;
     z-index: 9;
 }
 
 .form-container {
-    max-width: 300px;
     padding: 10px;
     background-color: white;
 }
@@ -287,13 +289,32 @@
 .cancel-btn {
     max-width: 20px;
     position: absolute;
-    right: 20px;
+    right: 10px;
     background: none;
     border: none;
 }
 
 #x-image {
     max-width: 20px;
+}
+
+#form-title {
+    font-weight: bold;
+    font-size: large;
+}
+
+.form-container input[type=search] {
+    /* width: 100%; */
+    display: block;
+    padding: 15px;
+    margin: 5px 0 22px 0;
+    border: none;
+    background: #f1f1f1;
+}
+
+.form-container input[type=search]:focus {
+    background-color: #ddd;
+    outline: none;
 }
 
 .form-container input[type=text] {
@@ -325,17 +346,17 @@
     opacity: 1;
 }
 
-#report-show {
-    white-space: pre;
-    background-color: white;
-    position: absolute;
-    bottom: 110px;
-    right: 20px;
-    max-width: 300px;
-    padding: 10px;
-    display: none;
+/* #report-show { */
+    /* white-space: pre; */
+    /* background-color: white; */
+    /* position: absolute; */
+    /* bottom: 110px; */
+    /* right: 20px; */
+    /* max-width: 300px; */
+    /* padding: 10px; */
+    /* display: none; */
     /* border: 3px solid #f1f1f1; */
-}
+/* } */
 
 #repair-address {
     width: 100%;

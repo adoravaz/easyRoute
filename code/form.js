@@ -112,8 +112,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 function openForm() {
   console.log("openForm called");
   document.getElementById("open-form").style.display = "none";
-  document.getElementById("report-show").innerHTML = '';
-  document.getElementById("report-show").style.display = "block";
+  // document.getElementById("report-show").innerHTML = '';
+  // document.getElementById("report-show").style.display = "block";
   document.getElementById("reportForm").style.display = "block";
   console.log('form opened');
 }
@@ -128,7 +128,7 @@ async function handleSubmit(event) {
   const details = document.getElementById("repair-details").value;
   // display repair details
   const results = "Address:\r\n" + address + "\r\n" + "Details:\r\n" + details;
-  document.getElementById("report-show").textContent = results;
+  // document.getElementById("report-show").textContent = results;
   console.log("results displayed");
   console.log("address: " + address);
   console.log("details: " + details);
@@ -164,7 +164,7 @@ async function handleSubmit(event) {
   event.target.reset();
   document.getElementById("reportForm").style.display = "none";
   document.getElementById("open-form").style.display = "block";
-  document.getElementById("report-show").style.display = "block";
+  // document.getElementById("report-show").style.display = "block";
   resetSearchState();
   console.log("form reset and closed");
 }
@@ -173,7 +173,7 @@ async function handleSubmit(event) {
 function cancelForm() {
   document.getElementById("report-form").reset();
   document.getElementById("reportForm").style.display = "none";
-  document.getElementById("report-show").style.display = "none";
+  // document.getElementById("report-show").style.display = "none";
   document.getElementById("open-form").style.display = "block";
   resetSearchState();
   console.log("form canceled");

@@ -90,39 +90,6 @@
   <!-- Repair Icons -->
   <div id="icon-container"></div>
 
-  <!-- Outline for Reporting Form -->
-  <div class="report-button-container">
-    <button class="open-form-button" id="open-form">Report a Repair</button>
-    <div class="form-popup" id="reportForm">
-      <form action="#" class="form-container" id="report-form">
-        <button type="button" class="cancel-btn">
-          <img src="/x.png" alt="cancel" id="x-image"/>
-        </button>
-        <h1>Report a Repair</h1>
-        <label for="repair-address"><b>Repair Address</b></label>
-        <input type="search" id="repair-address" data-search placeholder="Enter Address" name="repair-address" required>
-        <!-- building cards for repair address search -->
-        <div class="repair-building-cards" repair-data-building-cards-container></div>
-        <template repair-data-building-template>
-          <div class="repair-card">
-            <div class="repair-header" repair-data-header></div>
-            <div class="repair-body" repair-data-body></div>
-          </div>
-          <div class="repair-card hide">
-            <div class="repair-header" repair-data-header></div>
-            <div class="repair-body" repair-data-body></div>
-          </div>
-        </template>
-
-        <label for="repair-details"><b>Repair Details</b></label>
-        <input type="text" id="repair-details" placeholder="Enter details" name="repair-details" required>
-        <button type="submit" class="submit-btn">Submit</button>
-      </form>
-    </div>
-
-    <p id="report-show"></p>
-  </div>
-
   <!-- Buildings Legend -->
   <div class="absolute left-0 z-50 top-20 bg-white rounded-lg shadow-lg p-6">
     <div id="buildings-legend-content" class="legend-content mt-4">
@@ -162,6 +129,38 @@
     </div>
     <p id="popup_address" class="popup-address"></p>
     <img id="popup_image" src="" alt="Building Image">
+    <!-- Outline for Reporting Form -->
+    <div class="report-button-container">
+      <button class="open-form-button" id="open-form">Report a Repair</button>
+      <div class="form-popup" id="reportForm">
+        <form action="#" class="form-container" id="report-form">
+          <button type="button" class="cancel-btn">
+            <img src="/x.png" alt="cancel" id="x-image"/>
+          </button>
+          <h1 id="form-title">Report a Repair</h1>
+          <label for="repair-address"><b>Repair Address</b></label>
+          <input type="search" id="repair-address" data-search placeholder="Enter Address" name="repair-address" required>
+          <!-- building cards for repair address search -->
+          <div class="repair-building-cards" repair-data-building-cards-container></div>
+          <template repair-data-building-template>
+            <div class="repair-card">
+              <div class="repair-header" repair-data-header></div>
+              <div class="repair-body" repair-data-body></div>
+            </div>
+            <div class="repair-card hide">
+              <div class="repair-header" repair-data-header></div>
+              <div class="repair-body" repair-data-body></div>
+            </div>
+          </template>
+
+          <label for="repair-details"><b>Repair Details</b></label>
+          <input type="text" id="repair-details" placeholder="Enter details" name="repair-details" required>
+          <button type="submit" class="submit-btn">Submit</button>
+        </form>
+      </div>
+
+      <!-- <p id="report-show"></p> -->
+    </div>
   </div>
 
   <script>
