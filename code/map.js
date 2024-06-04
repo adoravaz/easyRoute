@@ -78,7 +78,7 @@ class Map extends THREE.Object3D {
             this.bbox = bbox;
 
             this.add(this.terrain);
-        
+
             //added for the entrances and elevators
             const elevandentGroup = await createEntrancesAndElevators();
             console.log('Entrances and Elevators loaded', elevandentGroup);
@@ -247,46 +247,46 @@ class Map extends THREE.Object3D {
                         // update directions list
                         window.updateDirectionsList(directions, routeTotal);
                         document.getElementById('directions-container').style.display = 'block';
+
+                        getUphillCounter(routeCoordinates).then(function (counter) {
+                            console.log("uphill counter:", counter);
+                            temp.routeUphillCounters.push(counter);
+
+                            let color = "#000000";
+                            if (counter < 5) {
+                                color = "#00c800";
+                            } else if (counter > 30) {
+                                color = "#c80000";
+                            } else {
+                                let rOffset = Math.round((counter - 5) / (30 - 5) * 200);
+                                let gOffset = 200 - rOffset;
+
+                                rOffset = rOffset.toString(16);
+                                gOffset = gOffset.toString(16);
+
+                                if (rOffset.length == 1) {
+                                    rOffset = "0" + rOffset;
+                                }
+                                if (gOffset.length == 1) {
+                                    gOffset = "0" + gOffset;
+                                }
+
+                                color = "#" + rOffset + gOffset + "00";
+                            }
+
+                            if (counter == 1) {
+                                document.getElementById('uphill-counter').innerHTML = "For this route, you must climb <b>" + counter.toString() + " unit of elevation</b>.";
+                            } else {
+                                document.getElementById('uphill-counter').innerHTML = "For this route, you must climb <b>" + counter.toString() + " units of elevation</b>.";
+                            }
+                            document.getElementById('uphill-counter').style.color = color;
+
+                            route.material.color = new THREE.Color(color);
+                        }).catch(function () { });
                     }).catch((error) => {
                         let response = JSON.stringify(error, null, "\t")
                         console.error(response);
                     })
-              
-                    getUphillCounter(routeCoordinates).then(function (counter) {
-                        console.log("uphill counter:", counter);
-                        temp.routeUphillCounters.push(counter);
-
-                        let color = "#000000";
-                        if (counter < 5) {
-                            color = "#00c800";
-                        } else if (counter > 30) {
-                            color = "#c80000";
-                        } else {
-                            let rOffset = Math.round((counter - 5) / (30 - 5) * 200);
-                            let gOffset = 200 - rOffset;
-
-                            rOffset = rOffset.toString(16);
-                            gOffset = gOffset.toString(16);
-
-                            if (rOffset.length == 1) {
-                                rOffset = "0" + rOffset;
-                            }
-                            if (gOffset.length == 1) {
-                                gOffset = "0" + gOffset;
-                            }
-
-                            color = "#" + rOffset + gOffset + "00";
-                        }
-
-                        if (counter == 1) {
-                            document.getElementById('uphill-counter').innerHTML = "For this route, you must climb <b>" + counter.toString() + " unit of elevation</b>.";
-                        } else {
-                            document.getElementById('uphill-counter').innerHTML = "For this route, you must climb <b>" + counter.toString() + " units of elevation</b>.";
-                        }
-                        document.getElementById('uphill-counter').style.color = color;
-
-                        return counter;
-                    }).catch(function () { });
                 })
                 .catch(function (err) {
                     let response = JSON.stringify(err, null, "\t")
