@@ -1,5 +1,3 @@
-import Map from './map';
-
 const map = window.mainMap; // main map is accessible globally
 
 const buildingCardtemplate = document.querySelector("[repair-data-building-template]");
@@ -115,6 +113,7 @@ function openForm() {
   console.log("openForm called");
   document.getElementById("open-form").style.display = "none";
   document.getElementById("report-show").innerHTML = '';
+  document.getElementById("report-show").style.display = "block";
   document.getElementById("reportForm").style.display = "block";
   console.log('form opened');
 }
@@ -165,50 +164,16 @@ async function handleSubmit(event) {
   event.target.reset();
   document.getElementById("reportForm").style.display = "none";
   document.getElementById("open-form").style.display = "block";
+  document.getElementById("report-show").style.display = "block";
   resetSearchState();
   console.log("form reset and closed");
 }
-
-// function for closing form after it's submitted
-// function closeForm() {
-//   console.log("submit form clicked");
-  
-//   const address = document.getElementById("repair-address").value.trim().toLowerCase();
-//   const details = document.getElementById("repair-details").value;
-
-//   if (address) {
-//     const selectBuilding = buildings.find(b =>
-//       b.name.toLowerCase() === address
-//     );
-
-//     if (selectBuilding) {
-//       const {centroid} = selectBuilding;
-//       map.addIconAtLocation('public/repair_icon.png', {
-//         longitude: centroid[0],
-//         latitude: centroid[1],
-//         elevation: centroid[2]
-//       });
-//     } else {
-//       alert('Building not found.');
-//     }
-//   } else {
-//     alert('Please enter a building name or address.');
-//   }
-
-//   // display repair details
-//   const results = "Address:\r\n" + address.value + "\r\n" + "Details:\r\n" + details.value;
-//   document.getElementById("report-show").textContent = results;
-
-//   document.getElementById("report-form").reset();
-//   document.getElementById("reportForm").style.display = "none";
-//   document.getElementById("open-form").style.display = "block";
-// }
-
 
 // function for closing form if it's canceled (i.e. not submitted)
 function cancelForm() {
   document.getElementById("report-form").reset();
   document.getElementById("reportForm").style.display = "none";
+  document.getElementById("report-show").style.display = "none";
   document.getElementById("open-form").style.display = "block";
   resetSearchState();
   console.log("form canceled");

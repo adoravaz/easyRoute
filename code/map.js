@@ -6,13 +6,6 @@ import makeDirection from './makeDirection';
 import createEntrancesAndElevators from './createEntrancesAndElevators'; //added for the elevators
 import { getProfileInfo } from './profiles';
 import { getBuildingMaterial, highlightedMaterial } from './materials';
-import { texture } from 'three/examples/jsm/nodes/Nodes.js';
-
-// So I want to be able to export this Map as a contain unite where it handles routing between different locations, drawing, etc 
-// The main problem is that I want to be able to use this map with different controllers and in different spaces like XR, mobile, and desktop 
-
-// Things to do: 
-// add multi 
 
 // repair icon image
 const repairIconTexture = new THREE.TextureLoader().load('/repair_icon.png');
@@ -29,23 +22,8 @@ function findBuildings(mesh, result = []) {
     return result;
 }
 
-// function dontAskLol(clickedBuildings) {
-//     let output = []
-//     let from = clickedBuildings[0].userData.centroid;
-//     let to = clickedBuildings[1].userData.centroid;
-//     console.log("Getting Directions from " + from + " and " + to);
-
-//     // // Don't ask lol 
-//     // from = [from[0], from[1]];
-//     // to = [to[0], to[1]];
-
-//     // clickedBuildings.forEach((coord) => {
-//     //     output.push([coord.userData.centroid[0],])
-//     // }).
-// }
-
 class Map extends THREE.Object3D {
-    constructor(scene = null) {
+    constructor() {
         super();
 
         if (Map.instance) {
@@ -54,46 +32,67 @@ class Map extends THREE.Object3D {
 
         this.buildings = null;
         this.highways = null;
-        this.rotateY(Math.PI);
-        this.scale.multiplyScalar(.1);
-        scene.add(this);
-
-        this.position.y = 5
+        this.tgeo = null;
+        this.terrain = null;
 
         Map.instance = this;
+        window.map = this;
 
         // Tools 
         this.orsDirections = new Openrouteservice.Directions({ api_key: import.meta.env.VITE_OPENSTREET_API_KEY });
         this.orsElevation = new Openrouteservice.Elevation({ api_key: import.meta.env.VITE_OPENSTREET_API_KEY });
-        this.orsMatrix = new Openrouteservice.Matrix({ api_key: import.meta.env.VITE_OPENSTREET_API_KEY });
+
+        this.center = [36.9916, -122.0583]
+        this.scalar = 1;
+        this.radius = 8;
+        this.zoom = 15;
 
         this.routes = [];
         this.routeUphillCounters = [];
         this.clickedBuildings = [];
         this.clickable = [];
 
-        // Profile type 
-        this.profile = getProfileInfo('walking', 'walking');
+        this.proj = null;
+        this.bbox = null;
+
+        this.raycaster = new THREE.Raycaster();
 
         // Profile type 
-        this.profile = getProfileInfo('walking', 'walking');
+        this.profile = getProfileInfo('driving-car');
 
+        // Pop up 
+        this.popup = document.getElementById('popup')
+        this.popupHeader = document.getElementById('popup_header');
+        this.popupAddress = document.getElementById('popup_address');
         this.init();
     }
 
     async init() {
         try {
-            const buildingsGroup = await createBuildings();
-            //console.log('Buildings loaded:', buildingsGroup);
-            this.buildings = buildingsGroup;
+
+            this.tgeo = new ThreeGeo({
+                tokenMapbox: import.meta.env.VITE_MAPBOX_API_TOKEN, // <---- set your Mapbox API token here
+            });
+
+            this.terrain = await this.tgeo.getTerrainRgb(this.center, this.radius, this.zoom);
+            this.terrain.scale.multiplyScalar(this.scalar);
+            this.terrain.rotation.x = -Math.PI / 2;
+            const { proj, bbox } = this.tgeo.getProjection(this.center, this.radius);
+            this.proj = proj;
+            this.bbox = bbox;
+
+            this.add(this.terrain);
+
+            this.buildings = await createBuildings();
+            console.log('Buildings loaded:');
             this.add(this.buildings);
             //console.log(this.buildings.children);
 
-            const routesGroup = await createHighways();
+            // const routesGroup = await createHighways();
             //console.log('Highways loaded', routesGroup);
-            this.highways = routesGroup;
-            this.highways.position.y = -0.1
-            this.add(this.highways);
+            // this.highways = routesGroup;
+            // this.highways.position.y = -0.1
+            // this.add(this.highways);
 
             //added for the entrances and elevators
             const elevandentGroup = await createEntrancesAndElevators();
@@ -107,6 +106,35 @@ class Map extends THREE.Object3D {
             console.error('Failed to load buildings:', error);
         }
 
+    }
+
+    // This function takes in a lat and a long and returns an array of points [x, y, z] use these to update objects to the right position. 
+    getRelativePoints(lat, long) {
+
+        if (this.terrain != null) {
+
+            const temp = this.proj([lat, long]);
+
+            const origin = new THREE.Vector3(temp[0], 5, -temp[1]);
+
+            const direction = new THREE.Vector3(0, -1, 0);
+            direction.normalize();
+
+            this.raycaster.set(origin, direction);
+
+            const intersects = this.raycaster.intersectObjects(this.terrain.children, true); // true to check all descendants
+
+            if (intersects.length > 0) {
+                return [origin.x, intersects[0].point.y, origin.z]; // [x, y, z]
+            } else {
+                //console.log('No intersections found.');
+                return [0, 0, 0];
+            }
+        }
+
+        console.log("terrain is still null");
+
+        return [0, 0, 0];
     }
     // This function draws the route. 
     generateDirections(avoidStairs) {
@@ -129,14 +157,16 @@ class Map extends THREE.Object3D {
             from = [from[0], from[1]];
             to = [to[0], to[1]];
 
-            let temp = this;
+            let mode = document.getElementById('travelProfile').value;
+            console.log("mode", mode);
 
+            let temp = this;
             // customize options based on avoid stairs switch
-            const options = avoidStairs ? {avoid_features: ['steps']} : {};
+            const options = avoidStairs ? { avoid_features: ['steps'] } : {};
 
             this.orsDirections.calculate({
                 coordinates: [from, to],
-                profile: temp.profile.profile,
+                profile: mode,
                 format: "geojson",
                 api_version: 'v2',
                 options: options,
@@ -155,14 +185,14 @@ class Map extends THREE.Object3D {
                     }).then((res) => {
 
                         const route = makeDirection(res.geometry.coordinates);
-                        console.log("cords:= ", route)
+
                         temp.routes.push(route);
                         temp.add(route);
 
                         // parse json response into directions array
                         const segments = json.features[0].properties.segments[0]; // contains distance, duration, instruction for directions
                         // distance and duration for entire route
-                        const routeTotal = {distance: segments.distance, duration: segments.duration};
+                        const routeTotal = { distance: segments.distance, duration: segments.duration };
                         // turn-by-turn directions
                         let directions = segments.steps.map((step) => ({
                             distance: step.distance,
@@ -178,8 +208,8 @@ class Map extends THREE.Object3D {
                     })
 
                     const uphillCounter = getUphillCounter(routeCoordinates).then(function (counter) {
-                        console.log("updated!");
                         temp.routeUphillCounters.push(counter);
+                        document.getElementById('uphill-counters').style.visibility = "visible";
                         document.getElementById('uphill-counter').innerHTML = counter.toString() + " units of elevation.";
 
                         return counter;
@@ -188,18 +218,14 @@ class Map extends THREE.Object3D {
                     console.log("uphill counter:");
                     console.log(uphillCounter);
 
-                    console.log("json:");
-                    console.log(JSON.stringify(json));
                 })
                 .catch(function (err) {
                     let response = JSON.stringify(err, null, "\t")
                     console.error(response);
                 })
 
-        } else { // Matrix direction 
-            // this.orsMatrix.calculate({
-            //     locations: 
-            // })
+        } else {
+
         }
     }
 
@@ -224,7 +250,7 @@ class Map extends THREE.Object3D {
         this.clickedBuildings = [];
 
         // clear directions list and hide the container
-        window.updateDirectionsList([], {distance: 0, duration: 0});
+        window.updateDirectionsList([], { distance: 0, duration: 0 });
         document.getElementById('directions-container').style.display = 'none';
     }
 
@@ -260,17 +286,38 @@ class Map extends THREE.Object3D {
 
     checkIntersectedBuildings(building) {
 
-        console.log(building)
-
+        // We can only select two buildings at a time. Deselect the old building 
         const index = this.clickedBuildings.indexOf(building);
 
         if (index !== -1) {
             this.deselectBuilding(building);
             this.clickedBuildings.splice(index, 1);
-        } else {
+        } else {  // add it to the list 
+            if (this.clickedBuildings.length >= 2) {
+
+                this.deselectBuilding(this.clickedBuildings[0])
+                this.clickedBuildings.shift();
+            }
+
             this.selectBuilding(building);
             this.clickedBuildings.push(building);
         }
+    }
+
+    showPopup(x, y, building) {
+
+        this.popup.style.left = `${x}px`;
+        this.popup.style.top = `${y}px`;
+
+        const buildingInfo = building.userData.info
+        this.popupHeader.innerText = `${buildingInfo.name}`;
+        this.popupAddress.innerText = `${buildingInfo['addr:housenumber']} ${buildingInfo['addr:street']}, ${buildingInfo['addr:city']}, ${buildingInfo['addr:postcode']}`;
+
+        this.popup.style.display = 'block';
+    }
+
+    hidePopup() {
+        this.popup.style.display = 'none';
     }
 
     update(time) {
@@ -285,29 +332,7 @@ class Map extends THREE.Object3D {
         } else {
             console.log("invalid icon URL: ", iconUrl);
         }
-    //     let center = [-122.0583, 36.9916, 36.9941766] // lon, lat, elev (note elevation is relative to ORS (openrouteservice) classification)
-    //     let scale = 10000
-    //     const {longitude, latitude, elevation} = geoPosition;
-    //     // convert coordinates to scene coordinates
-    //     const direction = new THREE.Vector2(
-    //         (longitude - center[0]) * scale,
-    //         (latitude - center[1]) * scale
-    //     );
-    //     // const position = {
-    //     //     x: direction.x,
-    //     //     y: direction.y,
-    //     //     z: (elevation / 10) - center[2]
-    //     // };
-    //     const position = new THREE.Vector3(
-    //         -direction.x,
-    //         (elevation / 10) - center[2],
-    //         direction.y
-    //     );
-    //     const icon = createIcon(iconUrl, position);
-    //     this.add(icon);
-    //     console.log("icon added");
     }
-
 
     /** NEED TO DO:
      * get building heights so that height of icon can be adjusted accordingly
@@ -325,52 +350,31 @@ class Map extends THREE.Object3D {
         const repairIcon = new THREE.Sprite(material);
     
         // Scale the sprite to an appropriate size
-        repairIcon.scale.set(1, 1, 1);
-    
+        repairIcon.scale.set(0.001, 0.001, 0.001);
+        let position = window.map.getRelativePoints(latitude, longitude);
         // Convert geographical coordinates to scene coordinates
-        const position = new THREE.Vector2(
-            (longitude - center[0]) * scale,
-            (latitude - center[1]) * scale
-        );
+        // const position = new THREE.Vector2(
+        //     (longitude - center[0]) * scale,
+        //     (latitude - center[1]) * scale
+        // );
         console.log("position from addRepairIcon (lon, lat): " + JSON.stringify(position));
         // SNE: x: 24.7099999999989, y: -12.094176600000004, z: 75.21000000004108
-    
+        /* WHAT WE WANT:
+            Engineering 2 - x: -0.03653762744349004, y: 0.027197348814988715, z: -0.09237682727959462, height: 5 
+            SNE - x: -0.01906323468879839, y: 0.022629188805589746, z: -0.07408626253553885, height: 1
+            Media Theater - x: -0.02611265279015801, y: 0.020111946201806348, z: -0.035883454819152005, height: 1
+        */
+        // incorrect SNE: -122.060771, -10.594176600000004, 36.999121, levels: 1
+
         // Set the position of the sprite
-        repairIcon.position.set(-position.x, (elevation / 10) - center[2] + (levels), position.y);
-        console.log("repairIcon position set (x, z, y): " + JSON.stringify(position.x) + ", " + JSON.stringify((elevation / 10) - center[2] + (levels*1.5)) + ", " + JSON.stringify(position.y) + ", levels: " + levels);
+        repairIcon.position.set(position[0], position[1] + levels*0.001 + 0.001, position[2]);
+        console.log("repairIcon position set (x, z, y): " + JSON.stringify(position[0]) + ", " + JSON.stringify(position[1] + levels*0.001) + ", " + JSON.stringify(position[2]) + ", levels: " + levels);
     
         // Add the sprite to the scene
         this.add(repairIcon);
     
         console.log("Repair icon added");
     }
-
-    // createIcon(iconUrl, position) {
-    //     // Your createIcon implementation here
-    //     const icon = document.createElement('img');
-    //     icon.src = iconUrl;
-    //     icon.style.position = 'absolute';
-    //     icon.style.left = `${position.x}px`;
-    //     icon.style.top = `${position.y}px`;
-    //     icon.style.zIndex = 1000; // Ensure the icon is on top
-    //     icon.className = 'map-icon'; // Add a class for further styling if needed
-    
-    //     return icon;
-    // }
-    
-    // add(icon) {
-    //     // logic to add the icon to the map
-    //     const container = document.getElementById('icon-container');
-    //     if (container) {
-    //         if (icon instanceof HTMLElement) {
-    //             container.appendChild(icon);
-    //         } else {
-    //             console.error('The icon is not a valid DOM element:', icon);
-    //         }
-    //     } else {
-    //         console.error('icon container not found');
-    //     }
-    // }
 }
 
 async function getUphillCounter(routeCoordinates) {

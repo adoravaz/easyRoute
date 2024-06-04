@@ -1,38 +1,62 @@
-.container {
-    width: 100%;
-    height: 100%;
-    position:relative;
-    background-color: rgb(206, 224, 44);
-    z-index: 0; /* Ensure the container has a base z-index */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.popup {
+    position: absolute;
+    display: none;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    pointer-events: auto;
+    max-width: 300px;
+    z-index: 1000;
 }
 
-.my-button-1 {
-    position: absolute;
-    bottom: 50px;
-    right: 20px;
+.popup img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 10px;
 }
 
-.my-button-2 {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.popup-header h2 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.popup-header button {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.popup-address {
+    font-size: 14px;
+    color: #555;
 }
 
 /* styles.css */
 #legend-container {
-    position: absolute;
-    top: 60px;
-    left: 5px;
+    /* position: absolute; */
+    /* top: 60px; */
+    /* left: 5px; */
     background: rgba(255, 255, 255, 0);
-    border: 1px solid #ccc;
-    padding: 8px;
+    /* border: 1px solid #ccc; */
+    /* padding: 8px; */
     width: auto;
     z-index: 1000;
     transition: transform 0.3s ease-in-out;
-}
-
-.legend-content {
-    /* display: none; */
 }
 
 .toggle-button {
@@ -51,90 +75,105 @@
 .legend-container.open .legend-content {
     display: block;
     height: 100%;
-    position: absolute;
+    /* position: absolute; */
     background-color: rgb(206, 224, 44);
-    z-index: 0; /* Ensure the container has a base z-index */
-}
-
-.app {
-    position: absolute;
-    bottom: 0px;
-    right: 0px;
+    z-index: 0;
+    /* Ensure the container has a base z-index */
 }
 
 /* Adding Styles for the Search Bar */
 .search-wrapper {
-    position: absolute; /* Keeps the search bar positioned relative to its nearest positioned ancestor */
-    right: 10px; /* Right margin to keep it off the edge */
-    width: 300px; /* Fixed width */
+    /* position: absolute; */
+    /* Keeps the search bar positioned relative to its nearest positioned ancestor */
+    right: 10px;
+    /* Right margin to keep it off the edge */
+
+    /* Fixed width */
     display: flex;
-    flex-direction: column; /* Stacks child elements vertically */
-    gap: 0.25rem; /* Space between child elements */
-    z-index: 1000; /* Ensures the search bar is above other content */
-    padding: 10px; /* Padding around the content */
-    background: rgba(255, 255, 255, 0.9); /* Semi-transparent background */
-    border-radius: 8px; /* Rounded corners */
+    flex-direction: column;
+    /* Stacks child elements vertically */
+    /* gap: 0.25rem; */
+    /* Space between child elements */
+    z-index: 1000;
+    /* Ensures the search bar is above other content */
+    /* padding: 10px; */
+    /* Padding around the content */
+    background: rgba(255, 255, 255, 0.9);
+    /* Semi-transparent background */
+    border-radius: 8px;
+    /* Rounded corners */
 }
 
 /* Individual search bars */
 .search-bar {
-    height: 40px; /* Fixed height for each search input */
-    margin-bottom: 10px; /* Space between the search bars */
+    height: 40px;
+    /* Fixed height for each search input */
+    margin-bottom: 10px;
+    /* Space between the search bars */
 }
 
 /* First search wrapper for starting point */
 .start-search-wrapper {
-    top: 5px; /* Distance from the top edge */
+    top: 5px;
+    /* Distance from the top edge */
 }
 
 /* Second search wrapper for destination */
 .destination-search-wrapper {
-    top: 70px; /* Adjust this value based on the height and margin of the first search bar */
+    top: 70px;
+    /* Adjust this value based on the height and margin of the first search bar */
 }
 
-.building-cards{
-    position: absolute; /* Absolute positioning to align under the search bar */
-    top: 115px; /* Adjusted based on the height of your search bar */
-    right: 10px; /* Aligns to the right */
-    width: 300px; 
+.building-cards {
+    /* position: absolute; */
+    /* Absolute positioning to align under the search bar */
+    /* top: 115px; */
+    /* Adjusted based on the height of your search bar */
+    /* right: 10px; */
+    /* Aligns to the right */
+    /* width: 300px; */
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /*controls how big we are going to let the search results take up the screen*/
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    /*controls how big we are going to let the search results take up the screen*/
     gap: .25rem;
     margin-top: 1rem;
-    text-align: right; /* Aligns the content of each card to the right */
-    z-index: 1000; /* Higher z-index to keep it above the map */
-    overflow-y: auto; /* Allows scrolling within the container */
-    max-height: 300px; /* Limit the height to ensure it does not take up too much space */
-} 
+    text-align: right;
+    /* Aligns the content of each card to the right */
+    z-index: 1000;
+    /* Higher z-index to keep it above the map */
+    overflow-y: auto;
+    /* Allows scrolling within the container */
+    max-height: 300px;
+    /* Limit the height to ensure it does not take up too much space */
+}
 
-.card{
+.card {
     border: 1px solid black;
     background-color: white;
     padding: .5rem;
-    text-align: right; /* Aligns the content of each card to the right */
+    text-align: right;
+    /* Aligns the content of each card to the right */
 }
 
-.card > .header{
+.card>.header {
     margin-bottom: .25rem;
 }
 
-.card > .body{
+.card>.body {
     font-size: .8rem;
     color: #777;
 }
 
 .hide {
-    display: none; 
-}
-/* 
-.hide{
     display: none;
-} */
+}
 
 /*Selected State of Card */
 .card.selected {
-    border-color: #007bff; /* Blue border for selected card */
-    background-color: #f0f9ff; /* Light blue background for visibility */
+    border-color: #007bff;
+    /* Blue border for selected card */
+    background-color: #f0f9ff;
+    /* Light blue background for visibility */
 }
 
 /*added*/
@@ -166,6 +205,10 @@
     left: 0;
     display: flex;
     align-items: center;
+    background-color: white;
+    padding: 6px;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 
 #logo {
@@ -179,6 +222,10 @@
 }
 
 /* turn-by-turn directions list */
+#directions-title {
+    display: none;
+}
+
 .directions-container {
     display: none;
     background-color: white;
@@ -187,7 +234,9 @@
     top: 250px;
     width: 300px;
     max-height: 300px;
-    overflow-y: auto; /* allow scrolling */
+    max-height: 400px;
+    overflow-y: auto;
+    /* allow scrolling */
     z-index: 1000;
     padding: 10px;
     border: 1px solid black;
@@ -215,7 +264,7 @@
     cursor: pointer;
     opacity: 0.8;
     position: absolute;
-    bottom: 120px;
+    bottom: 50px;
     right: 20px;
     width: 280px;
 }
@@ -226,7 +275,6 @@
     bottom: 120px;
     right: 15px;
     border: 3px solid #f1f1f1;
-    /* max-height: 200px; */
     z-index: 9;
 }
 
@@ -281,11 +329,16 @@
     white-space: pre;
     background-color: white;
     position: absolute;
-    bottom: 160px;
+    bottom: 110px;
     right: 20px;
     max-width: 300px;
     padding: 10px;
+    display: none;
     /* border: 3px solid #f1f1f1; */
+}
+
+#repair-address {
+    width: 100%;
 }
 
 .repair-building-cards {
@@ -363,15 +416,15 @@
     transition: .4s;
 }
 
-input:checked + .slider {
+input:checked+.slider {
     background-color: #2196F3;
 }
-  
-input:focus + .slider {
+
+input:focus+.slider {
     box-shadow: 0 0 1px #2196F3;
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
     -webkit-transform: translateX(26px);
     -ms-transform: translateX(26px);
     transform: translateX(26px);
@@ -381,7 +434,7 @@ input:checked + .slider:before {
 .slider.round {
     border-radius: 30px;
 }
-  
+
 .slider.round:before {
     border-radius: 50%;
 }

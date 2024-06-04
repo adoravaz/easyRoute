@@ -12,11 +12,10 @@ const destinationSearchInput = document.querySelector("#destination-search");
 // console.log(startSearchInput)
 // console.log(destinationSearchInput)
 
-let buildings = []; 
-const map = new Map();
+let buildings = [];
 window.mainMap = map;
 
-// console.log("map", map);
+console.log("map", map);
 
 let startPoint = null;
 let endPoint = null;
@@ -36,19 +35,19 @@ async function loadBuildings() {
         body.textContent = `${feature.properties['addr:street']} ${feature.properties['addr:housenumber']}, ${feature.properties['addr:city']} ${feature.properties['addr:postcode']}`;
         card.classList.add('hide');
         buildingCardcontainer.append(card);
-        return { name: feature.properties.name, element: card, coordinates: feature.geometry.coordinates, centroid: centroid};
+        return { name: feature.properties.name, element: card, coordinates: feature.geometry.coordinates, centroid: centroid };
     });
 }
 
 function searchBuildings(input) {
     input.addEventListener("input", e => {
         const value = e.target.value.toLowerCase();
-            if (value === "") {
-                buildings.forEach(building => {
+        if (value === "") {
+            buildings.forEach(building => {
                 building.element.classList.add("hide");
-             });
-           }else{
-                buildings.forEach(building => {
+            });
+        } else {
+            buildings.forEach(building => {
                 const isVisible = building.name?.toLowerCase().includes(value) || building.address?.toLowerCase().includes(value)
                 // const isVisible = building.name ? building.name.toLowerCase().includes(value) : false;
                 building.element.classList.toggle("hide", !isVisible);
@@ -101,15 +100,11 @@ buildingCardcontainer.addEventListener('click', event => {
                 destinationSearchInput.value = selectedBuilding.name; // Autofill the destination search input
                 console.log("Setting end point:", endPoint);
             }
-            // if (startPoint && endPoint && startPoint !== endPoint) {
-            //     map.generateDirections(startPoint.centroid, endPoint.centroid);
-            // }
-            // Move the start card to the top of the container if it exists
             if (startPoint) {
                 startPoint.element.classList.remove('hide');
                 buildingCardcontainer.prepend(startPoint.element); // Ensures start point card is always at the top
             }
-             // Move the destination card below the start card if both are selected
+            // Move the destination card below the start card if both are selected
             if (endPoint) {
                 endPoint.element.classList.remove('hide');
             if (startPoint) {
