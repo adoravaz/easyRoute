@@ -1,6 +1,7 @@
-import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-// import { XRButton } from 'three/addons/webxr/XRButton.js';
+
+import { MapControls } from 'three/examples/jsm/Addons.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { createSun, createBananaDuck } from './code/models';
 
 // import Stats from 'stats.js'
 import Map from './code/map';
@@ -11,69 +12,66 @@ import Map from './code/map';
 // document.body.appendChild(stats.dom)
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.0001, 120);
 
 // Position the camera
-camera.position.y = 10;
-//camera.position.x = 10;
-camera.position.z = 5;
+camera.position.y = .1;
+camera.position.x = -.05;
+camera.position.z = -.25;
 camera.updateProjectionMatrix();
 
 // Renderer
 const renderer = new THREE.WebGLRenderer({
   antialias: true
 })
-renderer.setClearColor("white");
+
+renderer.setClearColor(0xfeffa6);
 renderer.setPixelRatio(window.devicePixelRatio)
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
-renderer.xr.enabled = true;
-renderer.sortObjects = false;
 document.getElementById("app").appendChild(renderer.domElement);
 
-// document.body.appendChild(XRButton.createButton(renderer, { 'optionalFeatures': ['depth-sensing'] }));
-
 // Map Controls 
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true
-controls.dampingFactor = .25
-controls.screenSpacePanning = true
-controls.maxDistance = 1000
+const controls = new MapControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.maxDistance = 3;
+
+// Tool for models.js
+window.gltfLoader = new GLTFLoader();
 
 // Mouse 
 const mouse = new THREE.Vector2();
 
-// Helpers
-let gridHelper = new THREE.GridHelper(50, 30, new THREE.Color(0x555555), new THREE.Color(0x333333))
-//scene.add(gridHelper);
-
-let axisHelper = new THREE.AxesHelper(10, 10);
-//scene.add(axisHelper);
-
 // Init Light
-let light0 = new THREE.AmbientLight(0xfafafa, 10.25)
-
-let light1 = new THREE.PointLight(0xfafafa, 0.4)
-light1.position.set(20, 30, 10)
-
+let light0 = new THREE.AmbientLight(0xfafafa, 1)
 scene.add(light0)
-scene.add(light1)
 
-scene.add(
-  new THREE.AxesHelper(3)
-)
+scene.background = new THREE.Color(0xfeffa6);
+scene.fog = new THREE.Fog(0xfeffa6, 0.3, .7);
+
+const hemiLight = new THREE.HemisphereLight(0xffffff, 0x8d8d8d, 3);
+hemiLight.position.set(0, .5, 0);
+scene.add(hemiLight);
+
+// scene.add(
+//   new THREE.AxesHelper(1)
+// )
 
 // Raycaster 
 const raycast = new THREE.Raycaster();
 
-// Our Map 
-const map = new Map(scene);
+//Our Map 
+const map = new Map();
+scene.add(map);
+
+const sun = await createSun();
+scene.add(sun);
 
 // after initializing the map, exposing map to be available globally
 window.mainMap = map;
 
 renderer.domElement.addEventListener('click', (event) => {
-  console.log("clicked");
+  // console.log("clicked", event);
 
   // Calculate mouse position in normalized device coordinates (-1 to +1) for both components
   mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
@@ -87,22 +85,38 @@ renderer.domElement.addEventListener('click', (event) => {
 
   if (intersects.length > 0) {
     map.checkIntersectedBuildings(intersects[0].object)
+    map.showPopup(event.clientX + 40, event.clientY - 40, intersects[0].object)
   }
 
 });
 
-// document.getElementById('calcRoute').addEventListener('click', () => {
-//   if (map.clickedBuildings.length >= 2) {
-//       map.generateDirections();
-//   } else {
-//       console.error("Not enough buildings selected for a route.");
-//   }
-// });
+document.getElementById('calcRoute').addEventListener('click', () => {
+  if (map.clickedBuildings.length >= 2) {
+    //map.generateDirections();
+  } else {
+    console.error("Not enough buildings selected for a route.");
+  }
+});
 
 // avoid stairs switch toggled
 let avoidStairs = false;
-document.getElementById('avoidStairsSwitch').addEventListener('change', (event) => {
-  avoidStairs = event.target.checked;
+// document.getElementById('avoidStairsSwitch').addEventListener('change', (event) => {
+//   avoidStairs = event.target.checked;
+// });
+//added
+document.getElementById('toggleAvoidStairs').addEventListener('click', function () {
+  const button = document.getElementById('toggleAvoidStairs');
+  if (button.classList.contains('bg-gray-500')) {
+    button.classList.remove('bg-gray-500');
+    button.classList.add('bg-green-500');
+    button.textContent = 'Avoid Stairs: On';
+    avoidStairs = true;
+  } else {
+    button.classList.remove('bg-green-500');
+    button.classList.add('bg-gray-500');
+    button.textContent = 'Avoid Stairs: Off';
+    avoidStairs = false;
+  }
 });
 
 document.getElementById('calcRoute').addEventListener('click', () => {
@@ -122,7 +136,7 @@ document.getElementById('clearRoute').addEventListener('click', () => {
   resetCardSelection();
   // hideBuildingCards(); //added functionality to hid the building cards
   // reset avoid stairs switch
-  document.getElementById('avoidStairsSwitch').checked = false;
+  //document.getElementById('avoidStairsSwitch').checked = false;
   avoidStairs = false;
 })
 
@@ -152,12 +166,13 @@ function updateDirectionsList(directions, routeTotal) {
   directions.forEach((direction) => {
     const li = document.createElement('li');
     li.className = 'direction-item';
-    li.textContent = `${direction.instruction} (Distance: ${direction.distance} meters, Duration: ${(direction.duration/60).toFixed(2)} min)`;
+    li.textContent = `${direction.instruction} (Distance: ${direction.distance} meters, Duration: ${(direction.duration / 60).toFixed(2)} min)`;
     directionsList.appendChild(li);
   });
   totalDistance.textContent = `Total Distance: ${routeTotal.distance} meters`;
-  totalDuration.textContent = `Total Duration: ${(routeTotal.duration/60).toFixed(2)} min`;
+  totalDuration.textContent = `Total Duration: ${(routeTotal.duration / 60).toFixed(2)} min`;
 }
+
 // expose updateDirectionsList to global scope so it can be called from map.js
 window.updateDirectionsList = updateDirectionsList;
 
@@ -175,7 +190,7 @@ const animate = function () {
 
   // stats.begin()
 
-  controls.update()
+  //controls.update()
 
   renderer.render(scene, camera);
 
