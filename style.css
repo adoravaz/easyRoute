@@ -78,7 +78,7 @@
     /* position: absolute; */
     background-color: rgb(206, 224, 44);
     z-index: 0;
-    /* Ensure the container has a base z-index */
+    /* Ensure the container has a base z-index *
 }
 
 .legend-content img {
@@ -173,10 +173,6 @@
 .hide {
     display: none; 
 }
-/* 
-.hide{
-    display: none;
-} */
 
 /*Selected State of Card */
 .card.selected {
@@ -185,12 +181,6 @@
     background-color: #f0f9ff;
     /* Light blue background for visibility */
 }
-
-/*added*/
-/*Ensures card is not displayed*/
-/* .card.hide {
-    display: none; 
-} */
 
 .building-cards .card.hide {
     display: none;
@@ -378,7 +368,7 @@
     -webkit-transition: .4s;
     transition: .4s;
 }
-  
+
 .slider:before {
     position: absolute;
     content: "";
@@ -403,13 +393,4 @@ input:checked+.slider:before {
     -webkit-transform: translateX(26px);
     -ms-transform: translateX(26px);
     transform: translateX(26px);
-}
-
-/* Rounded sliders */
-.slider.round {
-    border-radius: 30px;
-}
-
-.slider.round:before {
-    border-radius: 50%;
 }

@@ -50,6 +50,7 @@
       </select>
     </div>
 
+    <!-- Building cards -->
     <div class="building-cards" data-building-cards-container></div>
     <template data-building-template>
       <div class="card">
@@ -134,8 +135,7 @@
         <p id="uphill-counter" class="w-full p-2 bg-white-500 text-black"></p>
       </div>
     </div>
-  </div>
-
+    
   <!-- Pop up object -->
   <div id="popup" class="popup">
     <div class="popup-header">
@@ -145,21 +145,7 @@
     <p id="popup_address" class="popup-address"></p>
   </div>
   
-
   <script>
-    // document.getElementById('toggleAvoidStairs').addEventListener('click', function () {
-    //   const button = document.getElementById('toggleAvoidStairs');
-    //   if (button.classList.contains('bg-gray-500')) {
-    //     button.classList.remove('bg-gray-500');
-    //     button.classList.add('bg-green-500');
-    //     button.textContent = 'Avoid Stairs: On';
-    //   } else {
-    //     button.classList.remove('bg-green-500');
-    //     button.classList.add('bg-gray-500');
-    //     button.textContent = 'Avoid Stairs: Off';
-    //   }
-    // });
-
     const popup = document.getElementById("popup");
 
     function hidePopup() {
@@ -167,7 +153,6 @@
       popup.style.display = 'none';
     }
   </script>
-
 
   <!-- <script type="module" src="/code/search.js"></script> -->
 
