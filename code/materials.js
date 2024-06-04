@@ -1,32 +1,16 @@
-
 const buildingMaterials = {
-    university: new THREE.MeshBasicMaterial({ color: "lightskyblue" }),
-    apartments: new THREE.MeshBasicMaterial({ color: "greenyellow" }),
-    roof: new THREE.MeshBasicMaterial({ color: "purple" }),
-    dormitory: new THREE.MeshBasicMaterial({ color: "orange" }),
-    house: new THREE.MeshBasicMaterial({ color: "pink" }),
-    trailer: new THREE.MeshBasicMaterial({ color: "khaki" }),
-    greenhouse: new THREE.MeshBasicMaterial({ color: "green" }),
-    farm_auxiliary: new THREE.MeshBasicMaterial({ color: "aquamarine" }),
-    industrial: new THREE.MeshBasicMaterial({ color: "darkblue" }),
-    default: new THREE.MeshBasicMaterial({ color: "deeppink" }),
+    university: new THREE.MeshBasicMaterial({ color: "#3d85c6" }), //dark blue
+    apartments: new THREE.MeshBasicMaterial({ color: "#4C967D" }),
+    dormitory: new THREE.MeshBasicMaterial({ color: "#fba826" }),
+    // Make other buildings less prominent
+    house: new THREE.MeshBasicMaterial({ color: "lightgray" }),
+    trailer: new THREE.MeshBasicMaterial({ color: "lightgray" }),
+    greenhouse: new THREE.MeshBasicMaterial({ color: "lightgray" }),
+    farm_auxiliary: new THREE.MeshBasicMaterial({ color: "lightgray" }),
+    industrial: new THREE.MeshBasicMaterial({ color: "lightgray" }),
+    roof: new THREE.MeshBasicMaterial({ color: "lightgray" }), // include roofs but want them less visible
+    default: new THREE.MeshBasicMaterial({ color: "lightgray" }), // Default for any unspecified building type
 };
-
-const highwayMaterials = {
-    pedestrian: new THREE.LineBasicMaterial({ color: "black" }),
-    residential: new THREE.LineBasicMaterial({ color: "coral" }),
-    service: new THREE.LineBasicMaterial({ color: 0x969696 }),
-    tertiary: new THREE.LineBasicMaterial({ color: "skyblue" }),
-    secondary: new THREE.LineBasicMaterial({ color: "lightgreen" }),
-    track: new THREE.LineBasicMaterial({ color: "brown" }),
-    secondary_link: new THREE.LineBasicMaterial({ color: "magenta" }), // Wheel chair ramp
-    cycleway: new THREE.LineBasicMaterial({ color: "Bisque" }),
-    footway: new THREE.LineBasicMaterial({ color: 'burlywood' }),
-    path: new THREE.LineBasicMaterial({ color: 0xE6E6FA }),
-    steps: new THREE.LineDashedMaterial({ color: "red", linewidth: 1, scale: 1, dashSize: .4, gapSize: .4, opacity: 0.2 }),
-    living_street: new THREE.LineBasicMaterial({ color: 0xfffdb8 }),
-    default: new THREE.LineBasicMaterial({ color: "black" }),
-}
 
 const highlightedMaterial = new THREE.MeshStandardMaterial({
     color: 'red',   // Gold color

@@ -14,23 +14,24 @@ async function loadBuildings() {
     console.log('loaded buildings')
     const data = await res.json();
     buildings = data.features.map(feature => {
-      const card = buildingCardtemplate.content.cloneNode(true).children[0];
-      const header = card.querySelector("[repair-data-header]");
-      const body = card.querySelector("[repair-data-body]");
+      // const card = buildingCardtemplate.content.cloneNode(true).children[0];
+      // const header = card.querySelector("[repair-data-header]");
+      // const body = card.querySelector("[repair-data-body]");
       const centroid = feature.geometry.centroid;
-      header.textContent = feature.properties.name;
-      body.textContent = `${feature.properties['addr:street']} ${feature.properties['addr:housenumber']}, ${feature.properties['addr:city']} ${feature.properties['addr:postcode']}`;
-      card.classList.add('hide');
-      buildingCardContainer.append(card);
-      return { name: feature.properties.name, element: card, levels: (feature.properties['building:levels']) ? feature.properties['building:levels'] : 1, centroid: centroid};
+      // header.textContent = feature.properties.name;
+      // body.textContent = `${feature.properties['addr:street']} ${feature.properties['addr:housenumber']}, ${feature.properties['addr:city']} ${feature.properties['addr:postcode']}`;
+      // card.classList.add('hide');
+      // buildingCardContainer.append(card);
+      return { name: feature.properties.name, levels: (feature.properties['building:levels']) ? feature.properties['building:levels'] : 1, centroid: centroid};
     });
-    // console.log("buildings from loadBuildingd: " + JSON.stringify(buildings));
+    // console.log("buildings from loadBuildings: " + JSON.stringify(buildings));
   } catch (error) {
     console.log("Failed to load buildings: ", error);
   }
 }
 
 // from search.js
+/*
 function searchBuildings(input) {
   input.addEventListener("input", e => {
       const value = e.target.value.toLowerCase();
@@ -87,6 +88,7 @@ function resetSearchState() {
     card.classList.remove('selected', 'visible'); // Remove 'selected' and 'visible' classes
   });
 }
+*/
 
 document.addEventListener("DOMContentLoaded", async () => {
   // Disable the submit button initially
@@ -95,7 +97,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // call loadBuildings to populate the buildings array
   await loadBuildings();
-  searchBuildings(addressSearchInput);
+  // searchBuildings(addressSearchInput);
 
   // Enable the submit button after buildings are loaded
   submitButton.disabled = false;
@@ -115,9 +117,9 @@ function openForm() {
   // document.getElementById("report-show").innerHTML = '';
   // document.getElementById("report-show").style.display = "block";
   document.getElementById("reportForm").style.display = "block";
-  // const popup_name = document.getElementById('popup_header').innerText;
-  // document.getElementById("repair-address").innerText = popup_name;
-  // console.log("popup_name: " + popup_name);
+  const popup_name = document.getElementById('popup_header').innerText;
+  document.getElementById("repair-address").innerText = popup_name;
+  console.log("popup_name: " + popup_name);
   console.log('form opened');
 }
 
@@ -127,7 +129,7 @@ async function handleSubmit(event) {
 
   // const buildings = window.buildings; // buildings data is accessible globally
 
-  const address = document.getElementById("repair-address").value.trim();
+  const address = document.getElementById("repair-address").innerText;
   const details = document.getElementById("repair-details").value;
   // display repair details
   const results = "Address:\r\n" + address + "\r\n" + "Details:\r\n" + details;
@@ -140,6 +142,7 @@ async function handleSubmit(event) {
     // console.log("buildings: " + JSON.stringify(buildings));
     const selectBuilding = buildings.find(b => {
       if (b.name && address) {
+        console.log("checking lowercase");
         return b.name.toLowerCase() === address.toLowerCase();
       }
       return false

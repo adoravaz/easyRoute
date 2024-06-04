@@ -93,30 +93,12 @@
   <!-- Buildings Legend -->
   <div class="absolute left-0 z-50 top-20 bg-white rounded-lg shadow-lg p-6">
     <div id="buildings-legend-content" class="legend-content mt-4">
-      <h4 class="text-lg mb-2">Buildings</h4>
+      <h4 class="text-lg mb-2">Legend</h4>
       <ul class="list-disc pl-5">
-        <li style="color: lightskyblue;">University</li>
-        <li style="color: greenyellow;">Apartments</li>
-        <li style="color: purple;">Roof</li>
-        <li style="color: orange;">Dormitory</li>
-        <li style="color: pink;">House</li>
-        <li style="color: khaki;">Trailer</li>
-        <li style="color: green;">Greenhouse</li>
-        <li style="color: aquamarine;">Farm Auxiliary</li>
-        <li style="color: darkblue;">Industrial</li>
-      </ul>
-    </div>
-
-    <!-- Highways Legend -->
-    <div id="highways-legend-content" class="legend-content mt-4">
-      <h4 class="text-lg mb-2">Highways</h4>
-      <ul class="list-disc pl-5">
-        <li style="color: black;">Pedestrian</li>
-        <li style="color: coral;">Residential</li>
-        <li style="color: lightgreen;">Secondary</li>
-        <li style="color: rgb(150, 150, 150);">Service</li>
-        <li style="color: burlywood;">Footway</li>
-        <li style="color: red;">Steps</li>
+        <li class="flex item-center pb-2"><img src="/university.png" alt="University" style="width: 20px;" class="mr-2"> University</li>
+        <li class="flex item-center pb-2"><img src="/apartment.png" alt="Apartments" style="width: 20px;" class="mr-2"> Apartments </li>
+        <li class="flex item-center pb-2"><img src="/dorm.png" alt="Dormitory" style="width: 20px;" class="mr-2"> Dormitory </li>
+        <li class="flex item-center pb-2"><img src="/building.png" alt="Miscellaneous" style="width: 20px;" class="mr-2"> Miscellaneous</li>
       </ul>
     </div>
   </div>
@@ -127,8 +109,7 @@
       <h2 id="popup_header"></h2>
       <button onclick="hidePopup()">✖</button>
     </div>
-    <p id="popup_address" class="popup-address"></p>
-    <img id="popup_image" src="" alt="Building Image">
+    <p id="popup_address" class="popup-address pb-2"></p>
     <!-- Outline for Reporting Form -->
     <div class="report-button-container">
       <button class="open-form-button" id="open-form">Report a Repair</button>
@@ -139,9 +120,10 @@
           </button>
           <h1 id="form-title">Report a Repair</h1>
           <label for="repair-address"><b>Repair Address</b></label>
-          <input type="search" id="repair-address" data-search placeholder="Enter Address" name="repair-address" required>
+          <p id="repair-address"></p>
+          <!-- <input type="search" id="repair-address" data-search placeholder="Enter Address" name="repair-address" required> -->
           <!-- building cards for repair address search -->
-          <div class="repair-building-cards" repair-data-building-cards-container></div>
+          <!-- <div class="repair-building-cards" repair-data-building-cards-container></div>
           <template repair-data-building-template>
             <div class="repair-card">
               <div class="repair-header" repair-data-header></div>
@@ -151,7 +133,7 @@
               <div class="repair-header" repair-data-header></div>
               <div class="repair-body" repair-data-body></div>
             </div>
-          </template>
+          </template> -->
 
           <label for="repair-details"><b>Repair Details</b></label>
           <input type="text" id="repair-details" placeholder="Enter details" name="repair-details" required>
