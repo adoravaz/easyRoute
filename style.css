@@ -81,6 +81,11 @@
     /* Ensure the container has a base z-index */
 }
 
+.legend-content img {
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
 /* Adding Styles for the Search Bar */
 .search-wrapper {
     /* position: absolute; */
