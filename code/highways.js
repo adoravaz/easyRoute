@@ -1,23 +1,20 @@
-
 import { getHighwayMatrial } from './materials';
-
+import { Line } from 'three';
 
 let alltypes = ['pedestrian', 'track', 'crossing', 'secondary', 'steps', 'footway',
     'traffic_signals', 'living_street', 'secondary_link',
     'service', 'cycleway', 'turning_circle', 'proposed', 'tertiary', 'path']
-let temp = ['pedestrian', 'secondary', 'service', 'footway', 'steps']
-let test = ['residential']
+let temp = ['pedestrian', 'service', 'steps', 'cycleway', 'footway']
+let test = ['steps']
 
-const routesGroup = new THREE.Group();
-
-const highwayTypes = new Set(temp);
+const highwayTypes = new Set(test);
 
 async function createHighways() {
     try {
-        // const response = await fetch('/UCSC_Highways.geojson');
         const response = await fetch('/UCSC_Highways_V7.geojson')
         const data = await response.json();
-        LoadHighways(data);
+        const routesGroup = LoadHighways(data);
+        console.log("highway loaded. Item length ", routesGroup.children.length);
         return routesGroup;
     } catch (error) {
         throw error;
@@ -26,19 +23,26 @@ async function createHighways() {
 
 function LoadHighways(data) {
     let features = data.features
+    const group = new THREE.Group();
 
     for (let i = 0; i < features.length; i++) {
         let feature = features[i]
         if (feature.properties['highway']) {
-            addHighway(feature.geometry, feature.properties)
+            let highway = addHighway(feature.geometry, feature.properties)
+
+            if (highway) {
+                group.add(highway)
+            }
         }
     }
+
+    return group;
 }
 
 function addHighway(data, info) {
 
     if (!highwayTypes.has(info.highway) || data.type === "Polygon") {
-        return
+        return null
     }
 
     // This is because fel.geometry.coordinates is an array of arrays of coords that make up all the polygons need for a building
@@ -52,12 +56,19 @@ function addHighway(data, info) {
             polygon = genGeometry(data.coordinates);
         }
 
-        let line = new THREE.Line(polygon, getHighwayMatrial(info.highway))
+        let line = new Line(polygon, getHighwayMatrial(info.highway))
+        line.geometry.computeBoundingBox();
 
         line.userData.type = "line"
 
-        routesGroup.add(line);
+        if (line.material.isLineDashedMaterial) {
+            line.computeLineDistances();
+        }
+
+        return line;
     }
+
+    return null;
 }
 
 // Ok so my problem is that line segements renders the vertex in steps of two so I have to account for that. 
@@ -67,15 +78,11 @@ function genGeometry(polygon) {
     const points = [];
 
     for (let i = 0; i < polygon.length; i++) {
-        const point = new THREE.Vector3(-(polygon[i][1] - center[1]) * (1 / scale), 0, (polygon[i][0] - center[0]) * (1 / scale))
-        points.push(point)
+        const point = window.map.getRelativePoints(polygon[i][1], polygon[i][0])
+        points.push(new THREE.Vector3(point[0], point[1] + 0.0005, point[2]));
     }
 
-    // console.log("geometry points", points);
-
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
-
-
     return geometry;
 }
 

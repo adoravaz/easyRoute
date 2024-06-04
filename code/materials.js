@@ -1,3 +1,4 @@
+import { MeshLineMaterial } from 'three.meshline';
 
 const buildingMaterials = {
     university: new THREE.MeshBasicMaterial({ color: "lightskyblue" }),
@@ -18,12 +19,12 @@ const highwayMaterials = {
     service: new THREE.LineBasicMaterial({ color: 0x969696 }),
     tertiary: new THREE.LineBasicMaterial({ color: "skyblue" }),
     secondary: new THREE.LineBasicMaterial({ color: "lightgreen" }),
-    track: new THREE.LineBasicMaterial({ color: "brown" }),
+    track: new THREE.LineBasicMaterial({ color: "white" }),
     secondary_link: new THREE.LineBasicMaterial({ color: "magenta" }), // Wheel chair ramp
     cycleway: new THREE.LineBasicMaterial({ color: "Bisque" }),
-    footway: new THREE.LineBasicMaterial({ color: 'burlywood' }),
+    footway: new THREE.LineBasicMaterial({ color: 'white' }),
     path: new THREE.LineBasicMaterial({ color: 0xE6E6FA }),
-    steps: new THREE.LineDashedMaterial({ color: "red", linewidth: 1, scale: 1, dashSize: .4, gapSize: .4, opacity: 0.2 }),
+    steps: new THREE.LineDashedMaterial({ color: "red", linewidth: 1, scale: 1, dashSize: .0005, gapSize: .0002, opacity: 1 }),
     living_street: new THREE.LineBasicMaterial({ color: 0xfffdb8 }),
     default: new THREE.LineBasicMaterial({ color: "black" }),
 }
@@ -36,6 +37,10 @@ const highlightedMaterial = new THREE.MeshStandardMaterial({
     metalness: 0.1
 });
 
+export const routeMaterial = new MeshLineMaterial({
+    color: "yellow",
+    lineWidth: 0.0003,
+});
 
 function getHighwayMatrial(type) {
     switch (type) {

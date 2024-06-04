@@ -1,8 +1,7 @@
 
 import { MapControls } from 'three/examples/jsm/Addons.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { createSun, createBananaDuck } from './code/models';
-
+import Sun from './code/sun';
 import Stats from 'stats.js'
 import Map from './code/map';
 
@@ -22,7 +21,7 @@ camera.updateProjectionMatrix();
 
 // Renderer
 const renderer = new THREE.WebGLRenderer({
-  antialias: true
+  antialias: true,
 })
 
 renderer.setClearColor(0xfeffa6);
@@ -64,14 +63,10 @@ const raycast = new THREE.Raycaster();
 const map = new Map();
 scene.add(map);
 
-const sun = await createSun();
+const sun = new Sun();
 scene.add(sun);
 
-// after initializing the map, exposing map to be available globally
-// window.mainMap = map;
-
 renderer.domElement.addEventListener('click', (event) => {
-  // console.log("clicked", event);
 
   // Calculate mouse position in normalized device coordinates (-1 to +1) for both components
   mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
@@ -92,7 +87,7 @@ renderer.domElement.addEventListener('click', (event) => {
 
 document.getElementById('calcRoute').addEventListener('click', () => {
   if (map.clickedBuildings.length >= 2) {
-    //map.generateDirections();
+    map.generateDirections();
   } else {
     console.error("Not enough buildings selected for a route.");
   }

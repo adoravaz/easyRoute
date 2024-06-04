@@ -65,7 +65,6 @@ class Map extends THREE.Object3D {
 
     async init() {
         try {
-
             this.tgeo = new ThreeGeo({
                 tokenMapbox: import.meta.env.VITE_MAPBOX_API_TOKEN, // <---- set your Mapbox API token here
             });
@@ -84,10 +83,12 @@ class Map extends THREE.Object3D {
             this.add(this.buildings);
             this.clickable = findBuildings(this.buildings); // I have sprite and mesh objects in there. 
 
+            // this.highways = await createHighways();
+            // this.add(this.highways);
+
         } catch (error) {
             console.error('Failed to load buildings:', error);
         }
-
     }
 
     // This function takes in a lat and a long and returns an array of points [x, y, z] use these to update objects to the right position. 
@@ -129,22 +130,22 @@ class Map extends THREE.Object3D {
 
             let from = this.clickedBuildings[0].userData.centroid;
             let to = this.clickedBuildings[1].userData.centroid;
-            console.log("Clicked Buildings", this.clickedBuildings);
 
-            console.log(from)
-            console.log(to)
+            console.log("Clicked Buildings", this.clickedBuildings);
             console.log("Getting Directions from " + from + " and " + to);
 
             // Don't ask lol 
             from = [from[0], from[1]];
             to = [to[0], to[1]];
 
-            let mode = document.getElementById('travelProfile').value;
-            console.log("mode", mode);
 
             let temp = this;
+
             // customize options based on avoid stairs switch
             const options = avoidStairs ? { avoid_features: ['steps'] } : {};
+            const mode = document.getElementById('travelProfile').value;
+
+            console.log("mode, options", mode, options);
 
             this.orsDirections.calculate({
                 coordinates: [from, to],
@@ -189,16 +190,13 @@ class Map extends THREE.Object3D {
                         console.error(response);
                     })
 
-                    const uphillCounter = getUphillCounter(routeCoordinates).then(function (counter) {
-                        console.log("updated!");
+                    getUphillCounter(routeCoordinates).then(function (counter) {
+                        console.log("uphill counter:", counter);
                         temp.routeUphillCounters.push(counter);
                         document.getElementById('uphill-counter').innerHTML = counter.toString() + " units of elevation.";
 
                         return counter;
                     }).catch(function () { });
-
-                    console.log("uphill counter:");
-                    console.log(uphillCounter);
 
                 })
                 .catch(function (err) {
@@ -328,6 +326,7 @@ async function getUphillCounter(routeCoordinates) {
             if (prev != -1 && elevations[key] > prev) {
                 counter += elevations[key] - prev;
             }
+
             prev = elevations[key];
         }
 
