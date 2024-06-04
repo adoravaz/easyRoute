@@ -71,7 +71,7 @@
     /* position: absolute; */
     background-color: rgb(206, 224, 44);
     z-index: 0;
-    /* Ensure the container has a base z-index *
+    /* Ensure the container has a base z-index */
 }
 
 .legend-content img {
@@ -183,12 +183,6 @@
 /*Ensures card is displayed*/
 .card.visible {
     display: block;
-}
-
-.uphill-counters {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
 }
 
 /* logo and title */

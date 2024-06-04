@@ -76,6 +76,7 @@ class Map extends THREE.Object3D {
             const { proj, bbox } = this.tgeo.getProjection(this.center, this.radius);
             this.proj = proj;
             this.bbox = bbox;
+
             this.add(this.terrain);
         
             //added for the entrances and elevators
@@ -95,6 +96,35 @@ class Map extends THREE.Object3D {
         } catch (error) {
             console.error('Failed to load buildings:', error);
         }
+    }
+
+    // This function takes in a lat and a long and returns an array of points [x, y, z] use these to update objects to the right position. 
+    getRelativePoints(lat, long) {
+
+        if (this.terrain != null) {
+
+            const temp = this.proj([lat, long]);
+
+            const origin = new THREE.Vector3(temp[0], 5, -temp[1]);
+
+            const direction = new THREE.Vector3(0, -1, 0);
+            direction.normalize();
+
+            this.raycaster.set(origin, direction);
+
+            const intersects = this.raycaster.intersectObjects(this.terrain.children, true); // true to check all descendants
+
+            if (intersects.length > 0) {
+                return [origin.x, intersects[0].point.y, origin.z]; // [x, y, z]
+            } else {
+                //console.log('No intersections found.');
+                return [0, 0, 0];
+            }
+        }
+
+        console.log("terrain is still null");
+
+        return [0, 0, 0];
     }
 
     // This function takes in a lat and a long and returns an array of points [x, y, z] use these to update objects to the right position. 
@@ -225,12 +255,38 @@ class Map extends THREE.Object3D {
                     getUphillCounter(routeCoordinates).then(function (counter) {
                         console.log("uphill counter:", counter);
                         temp.routeUphillCounters.push(counter);
-                        document.getElementById('uphill-counters').style.visibility = "visible";
-                        document.getElementById('uphill-counter').innerHTML = counter.toString() + " units of elevation.";
+
+                        let color = "#000000";
+                        if (counter < 5) {
+                            color = "#00c800";
+                        } else if (counter > 30) {
+                            color = "#c80000";
+                        } else {
+                            let rOffset = Math.round((counter - 5) / (30 - 5) * 200);
+                            let gOffset = 200 - rOffset;
+
+                            rOffset = rOffset.toString(16);
+                            gOffset = gOffset.toString(16);
+
+                            if (rOffset.length == 1) {
+                                rOffset = "0" + rOffset;
+                            }
+                            if (gOffset.length == 1) {
+                                gOffset = "0" + gOffset;
+                            }
+
+                            color = "#" + rOffset + gOffset + "00";
+                        }
+
+                        if (counter == 1) {
+                            document.getElementById('uphill-counter').innerHTML = "For this route, you must climb <b>" + counter.toString() + " unit of elevation</b>.";
+                        } else {
+                            document.getElementById('uphill-counter').innerHTML = "For this route, you must climb <b>" + counter.toString() + " units of elevation</b>.";
+                        }
+                        document.getElementById('uphill-counter').style.color = color;
 
                         return counter;
                     }).catch(function () { });
-
                 })
                 .catch(function (err) {
                     let response = JSON.stringify(err, null, "\t")
@@ -254,8 +310,12 @@ class Map extends THREE.Object3D {
             this.remove(route);
         })
 
+        // this.routeUphillCounters.forEach((route) => {
+        //     console.log("Route uphill counter cleared")
+        //     this.remove(route);
+        // })
+
         // clear uphill counter
-        document.getElementById('uphill-counters').style.visibility = "hidden";
         this.routeUphillCounters.forEach((route) => {
             console.log("Route uphill counter cleared")
             this.remove(route);

@@ -102,7 +102,7 @@ buildingCardcontainer.addEventListener('click', event => {
             }
         if (startPoint) {
             startPoint.element.classList.remove('hide');
-            buildingCardcontainer.prepend(startPoint.element); // Ensures start point card is always at the top 
+            buildingCardcontainer.prepend(startPoint.element); // Ensures start point card is always at the top
         }
         // Move the destination card below the start card if both are selected
         if (endPoint) {

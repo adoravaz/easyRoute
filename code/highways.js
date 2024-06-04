@@ -1,3 +1,4 @@
+
 import { getHighwayMatrial } from './materials';
 import { Line } from 'three';
 
@@ -78,6 +79,7 @@ function genGeometry(polygon) {
     const points = [];
 
     for (let i = 0; i < polygon.length; i++) {
+
         const point = window.map.getRelativePoints(polygon[i][1], polygon[i][0])
         points.push(new THREE.Vector3(point[0], point[1] + 0.0005, point[2]));
     }

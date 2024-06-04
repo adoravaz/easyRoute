@@ -12,6 +12,7 @@ async function createBuildings() {
         const titles = createBuildingTitles(buildings);
 
         buildings.rotation.x = -Math.PI / 2
+        //buildings.position.set(-0.5, .1, .5);
 
         const group = new THREE.Group();
         group.add(titles);
