@@ -316,7 +316,7 @@ class Map extends THREE.Object3D {
         this.popup.style.display = 'block';
 
         // display building's repair details if available
-        const repairDetails = ("Reported Repairs: " + window.repairDetailsMap[buildingInfo.name]) || "";
+        const repairDetails = (window.repairDetailsMap[buildingInfo.name]) ? ("Reported Repairs: " + window.repairDetailsMap[buildingInfo.name]) : "";
         document.getElementById('report-show').innerText = repairDetails; // clear previous details
     }
 
@@ -350,7 +350,7 @@ class Map extends THREE.Object3D {
         const repairIcon = new THREE.Sprite(material);
     
         // Scale the sprite to an appropriate size
-        repairIcon.scale.set(0.001, 0.001, 0.001);
+        repairIcon.scale.set(0.002, 0.002, 0.002);
         let position = window.map.getRelativePoints(latitude, longitude);
         console.log("position from addRepairIcon (lon, lat): " + JSON.stringify(position));
         /* WHAT WE WANT:
