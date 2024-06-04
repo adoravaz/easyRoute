@@ -314,6 +314,10 @@ class Map extends THREE.Object3D {
         this.popupAddress.innerText = `${buildingInfo['addr:housenumber']} ${buildingInfo['addr:street']}, ${buildingInfo['addr:city']}, ${buildingInfo['addr:postcode']}`;
 
         this.popup.style.display = 'block';
+
+        // display building's repair details if available
+        const repairDetails = ("Reported Repairs: " + window.repairDetailsMap[buildingInfo.name]) || "";
+        document.getElementById('report-show').innerText = repairDetails; // clear previous details
     }
 
     hidePopup() {

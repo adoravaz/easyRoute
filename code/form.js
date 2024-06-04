@@ -1,6 +1,6 @@
 const map = window.mainMap; // main map is accessible globally
 
-let startPoint = null;
+window.repairDetailsMap = {}; // stores repair details for each building
 
 // initialize and define buildings array (with building heights)
 let buildings = [];
@@ -58,8 +58,10 @@ async function handleSubmit(event) {
   const address = document.getElementById("repair-address").innerText;
   const details = document.getElementById("repair-details").value;
   // display repair details
-  const results = "Address:\r\n" + address + "\r\n" + "Details:\r\n" + details;
-  // document.getElementById("report-show").textContent = results;
+  const results = "Reported Repairs:\r\n" + details;
+  document.getElementById("report-show").textContent = results; // show repair details in popup
+  //save repair details in repairDetailsMap
+  window.repairDetailsMap[address] = details;
   console.log("results displayed");
   console.log("address: " + address);
   console.log("details: " + details);
@@ -67,7 +69,7 @@ async function handleSubmit(event) {
   if (address) {
     // console.log("buildings: " + JSON.stringify(buildings));
     const selectBuilding = buildings.find(b => {
-      if (b.name && address) {
+      if (b.name) {
         console.log("checking lowercase");
         return b.name.toLowerCase() === address.toLowerCase();
       }
@@ -76,8 +78,7 @@ async function handleSubmit(event) {
     console.log("selectBuildings: " + JSON.stringify(selectBuilding));
 
     if (selectBuilding) {
-      const {centroid} = selectBuilding;
-      const {levels} = selectBuilding;
+      const {centroid, levels} = selectBuilding;
       map.addIconAtLocation('/repair_icon.png', {
         longitude: centroid[0],
         latitude: centroid[1],
@@ -97,7 +98,6 @@ async function handleSubmit(event) {
   document.getElementById("reportForm").style.display = "none";
   document.getElementById("open-form").style.display = "block";
   // document.getElementById("report-show").style.display = "block";
-  resetSearchState();
   console.log("form reset and closed");
 }
 
@@ -107,6 +107,5 @@ function cancelForm() {
   document.getElementById("reportForm").style.display = "none";
   // document.getElementById("report-show").style.display = "none";
   document.getElementById("open-form").style.display = "block";
-  resetSearchState();
   console.log("form canceled");
 }
