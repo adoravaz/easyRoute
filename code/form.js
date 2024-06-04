@@ -1,9 +1,5 @@
 const map = window.mainMap; // main map is accessible globally
 
-const buildingCardtemplate = document.querySelector("[repair-data-building-template]");
-const buildingCardContainer = document.querySelector("[repair-data-building-cards-container]");
-const addressSearchInput = document.querySelector("#repair-address");
-
 let startPoint = null;
 
 // initialize and define buildings array (with building heights)
@@ -14,14 +10,7 @@ async function loadBuildings() {
     console.log('loaded buildings')
     const data = await res.json();
     buildings = data.features.map(feature => {
-      // const card = buildingCardtemplate.content.cloneNode(true).children[0];
-      // const header = card.querySelector("[repair-data-header]");
-      // const body = card.querySelector("[repair-data-body]");
       const centroid = feature.geometry.centroid;
-      // header.textContent = feature.properties.name;
-      // body.textContent = `${feature.properties['addr:street']} ${feature.properties['addr:housenumber']}, ${feature.properties['addr:city']} ${feature.properties['addr:postcode']}`;
-      // card.classList.add('hide');
-      // buildingCardContainer.append(card);
       return { name: feature.properties.name, levels: (feature.properties['building:levels']) ? feature.properties['building:levels'] : 1, centroid: centroid};
     });
     // console.log("buildings from loadBuildings: " + JSON.stringify(buildings));
@@ -30,66 +19,6 @@ async function loadBuildings() {
   }
 }
 
-// from search.js
-/*
-function searchBuildings(input) {
-  input.addEventListener("input", e => {
-      const value = e.target.value.toLowerCase();
-          if (value === "") {
-              buildings.forEach(building => {
-              building.element.classList.add("hide");
-           });
-         }else{
-              buildings.forEach(building => {
-              const isVisible = building.name?.toLowerCase().includes(value) || building.address?.toLowerCase().includes(value);
-              building.element.classList.toggle("hide", !isVisible);
-          });
-      }
-  });
-}
-
-buildingCardContainer.addEventListener('click', event => {
-  const card = event.target.closest('.repair-card');
-  if (card) {
-    const selectedBuilding = buildings.find(b => b.name === card.querySelector("[repair-data-header]").textContent);
-      buildings.forEach(building => { // Hide all cards initially
-        building.element.classList.add('hide');
-    });
-    if (startPoint !== selectedBuilding) {
-      if (startPoint) {
-        startPoint.element.classList.remove('selected', 'visible');
-        startPoint.element.classList.add('hide'); // Hide previous start point card
-      }
-      startPoint = selectedBuilding;
-      startPoint.element.classList.add('selected', 'visible'); // Make only the selected card visible
-      addressSearchInput.value = selectedBuilding.name; // Autofill the start search input
-    }
-    if (startPoint) {
-      startPoint.element.classList.remove('hide');
-      buildingCardContainer.prepend(startPoint.element); // Ensures start point card is always at the top
-    }
-  }
-});
-
-function resetSearchState() {
-  startPoint = null;
-  document.getElementById('repair-address').value = ''; // clear search inputs here
-
-  // hide all cards
-  const cards = document.querySelectorAll('.repair-building-cards .repair-card');
-  cards.forEach(card => {
-      // card.style.display = 'none'; // Hide each card
-      card.classList.add('hide'); // Add 'hide' class that sets display to none
-  });
-
-  // hide selected cards
-  const selectedCards = document.querySelectorAll('.repair-building-cards .repair-card.selected');
-  selectedCards.forEach(card => {
-    card.classList.remove('selected', 'visible'); // Remove 'selected' and 'visible' classes
-  });
-}
-*/
-
 document.addEventListener("DOMContentLoaded", async () => {
   // Disable the submit button initially
   const submitButton = document.querySelector('#report-form .submit-btn');
@@ -97,7 +26,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // call loadBuildings to populate the buildings array
   await loadBuildings();
-  // searchBuildings(addressSearchInput);
 
   // Enable the submit button after buildings are loaded
   submitButton.disabled = false;
@@ -126,8 +54,6 @@ function openForm() {
 async function handleSubmit(event) {
   event.preventDefault();
   console.log("submit form clicked");
-
-  // const buildings = window.buildings; // buildings data is accessible globally
 
   const address = document.getElementById("repair-address").innerText;
   const details = document.getElementById("repair-details").value;

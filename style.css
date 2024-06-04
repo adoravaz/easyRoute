@@ -234,7 +234,6 @@
     top: 250px;
     width: 300px;
     max-height: 300px;
-    max-height: 400px;
     overflow-y: auto;
     /* allow scrolling */
     z-index: 1000;

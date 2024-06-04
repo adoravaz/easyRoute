@@ -334,10 +334,6 @@ class Map extends THREE.Object3D {
         }
     }
 
-    /** NEED TO DO:
-     * get building heights so that height of icon can be adjusted accordingly
-     * add ability to remove repair icons (fixed)
-    */
     addRepairIcon(geoPosition) {
         const {longitude, latitude, elevation, levels} = geoPosition;
         const center = [-122.0583, 36.9916, 36.9941766]; // lon, lat, elev
@@ -352,19 +348,12 @@ class Map extends THREE.Object3D {
         // Scale the sprite to an appropriate size
         repairIcon.scale.set(0.001, 0.001, 0.001);
         let position = window.map.getRelativePoints(latitude, longitude);
-        // Convert geographical coordinates to scene coordinates
-        // const position = new THREE.Vector2(
-        //     (longitude - center[0]) * scale,
-        //     (latitude - center[1]) * scale
-        // );
         console.log("position from addRepairIcon (lon, lat): " + JSON.stringify(position));
-        // SNE: x: 24.7099999999989, y: -12.094176600000004, z: 75.21000000004108
         /* WHAT WE WANT:
             Engineering 2 - x: -0.03653762744349004, y: 0.027197348814988715, z: -0.09237682727959462, height: 5 
             SNE - x: -0.01906323468879839, y: 0.022629188805589746, z: -0.07408626253553885, height: 1
             Media Theater - x: -0.02611265279015801, y: 0.020111946201806348, z: -0.035883454819152005, height: 1
         */
-        // incorrect SNE: -122.060771, -10.594176600000004, 36.999121, levels: 1
 
         // Set the position of the sprite
         repairIcon.position.set(position[0], position[1] + levels*0.001 + 0.001, position[2]);
