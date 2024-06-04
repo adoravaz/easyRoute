@@ -12,7 +12,7 @@
     "autoprefixer": "^10.4.19",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.3",
-    "vite": "^5.2.12"
+    "vite": "^5.2.11"
   },
   "dependencies": {
     "@mapbox/sphericalmercator": "^1.2.0",
@@ -36,6 +36,7 @@
     "three": "^0.164.1",
     "three-laser-pointer": "^1.2.3",
     "three.js": "^0.77.0",
+    "three.meshline": "^1.4.0",
     "xhr": "^2.6.0"
   }
 }

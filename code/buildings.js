@@ -18,8 +18,6 @@ async function createBuildings() {
         group.add(titles);
         group.add(buildings);
 
-
-
         return group;
     } catch (error) {
         throw error;

@@ -50,6 +50,7 @@
       </select>
     </div>
 
+    <!-- Building cards -->
     <div class="building-cards" data-building-cards-container></div>
     <template data-building-template>
       <div class="card">
@@ -71,8 +72,7 @@
     <button id="calcRoute" class="w-full p-2 bg-blue-500 text-white rounded hover:opacity-50">Calculate
       Route</button>
     <button id="clearRoute" class="w-full p-2 bg-red-500 text-white rounded hover:opacity-50">Clear Route</button>
-
-    <!-- Turn-By-Turn Directions List -->
+  
     <div id="directions-container" class="pt-2 overflow-y-auto max-h-[200px]" style="display: none;">
       <h3 class="text-xl mb-2">Directions:</h3>
       <ul id="directions-list" class="list-disc pl-5 overflow-hidden max-h-[400px]"></ul>
@@ -92,7 +92,7 @@
     <div class="form-popup" id="reportForm">
       <form action="#" class="form-container" id="report-form">
         <button type="button" class="cancel-btn">
-          <img src="/x.png" alt="cancel" id="x-image"/>
+          <img src="/x.png" alt="cancel" id="x-image" />
         </button>
         <h1>Report a Repair</h1>
         <label for="repair-address"><b>Repair Address</b></label>
@@ -109,73 +109,51 @@
   <!-- Buildings Legend -->
   <div class="absolute left-0 z-50 top-20 bg-white rounded-lg shadow-lg p-6">
     <div id="buildings-legend-content" class="legend-content mt-4">
-      <h3 class="text-lg mb-2">Buildings</h3>
+      <h3 class="text-lg mb-2">Legend</h3>
       <ul class="list-disc pl-5">
-        <li><img src="/university.png" alt="" style="width: 20px;"> University</li>
-        <li><img src="/apartment.png" alt="" style="width: 20px;"> Apartments</li>
-        <li><img src="/dorm.png" alt="" style="width: 20px;"> Dormitory</li>
-        <li><img src="/building.png" alt="" style="width: 20px;">Miscellaneous</li>
+        <li class="flex item-center pb-2"><img src="/university.png" alt="University" style="width: 20px;" class="mr-2">
+          University
+        </li>
+        <li class="flex item-center pb-2"><img src="/apartment.png" alt="Apartments" style="width: 20px;" class="mr-2">
+          Apartments
+        </li>
+        <li class="flex item-center pb-2"><img src="/dorm.png" alt="Dormitory" style="width: 20px;" class="mr-2">
+          Dormitory </li>
+        <li class="flex item-center pb-2"><img src="/building.png" alt="Miscellaneous" style="width: 20px;"
+            class="mr-2">
+          Miscellaneous</li>
         <!-- <li style="color: rgb(92, 90, 90);">Miscellaneous</li> -->
       </ul>
     </div>
 
-    <!-- Highways Legend -->
-    <div id="highways-legend-content" class="legend-content mt-4">
-      <h3 class="text-lg mb-2">Highways</h3>
-      <ul class="list-disc pl-5">
-        <li style="color: black;">Pedestrian</li>
-        <li style="color: coral;">Residential</li>
-        <li style="color: lightgreen;">Secondary</li>
-        <li style="color: rgb(150, 150, 150);">Service</li>
-        <li style="color: burlywood;">Footway</li>
-        <li style="color: red;">Steps</li>
-      </ul>
+    <!-- Pop up object -->
+    <div id="popup" class="popup">
+      <div class="popup-header">
+        <h2 id="popup_header"></h2>
+        <button onclick="hidePopup()">✖</button>
+      </div>
+      <p id="popup_address" class="popup-address"></p>
     </div>
-  </div>
 
-  <!-- Pop up object -->
-  <div id="popup" class="popup">
-    <div class="popup-header">
-      <h2 id="popup_header"></h2>
-      <button onclick="hidePopup()">✖</button>
-    </div>
-    <p id="popup_address" class="popup-address"></p>
-    <img id="popup_image" src="" alt="Building Image">
-  </div>
+    <script>
+      const popup = document.getElementById("popup");
 
-  <script>
-    // document.getElementById('toggleAvoidStairs').addEventListener('click', function () {
-    //   const button = document.getElementById('toggleAvoidStairs');
-    //   if (button.classList.contains('bg-gray-500')) {
-    //     button.classList.remove('bg-gray-500');
-    //     button.classList.add('bg-green-500');
-    //     button.textContent = 'Avoid Stairs: On';
-    //   } else {
-    //     button.classList.remove('bg-green-500');
-    //     button.classList.add('bg-gray-500');
-    //     button.textContent = 'Avoid Stairs: Off';
-    //   }
-    // });
+      function hidePopup() {
+        console.log("hi")
+        popup.style.display = 'none';
+      }
+    </script>
 
-    const popup = document.getElementById("popup");
+    <!-- <script type="module" src="/code/search.js"></script> -->
 
-    function hidePopup() {
-      console.log("hi")
-      popup.style.display = 'none';
-    }
-  </script>
+    <script src="./code/deps/three/build/three.min.js"></script>
+    <script src="./code/deps/three/examples/js/controls/OrbitControls.js"></script>
+    <script src="./code/deps/three/examples/js/libs/stats.min.js"></script>
 
-
-  <!-- <script type="module" src="/code/search.js"></script> -->
-
-  <script src="./code/deps/three/build/three.min.js"></script>
-  <script src="./code/deps/three/examples/js/controls/OrbitControls.js"></script>
-  <script src="./code/deps/three/examples/js/libs/stats.min.js"></script>
-
-  <script src="./code/three-geo/three-geo.min.js"></script>
-  <script type="module" src="/main.js"></script>
-  <script type="module" src="/code/search.js"></script>
-  <script type="module" src="/code/form.js"></script>
+    <script src="./code/three-geo/three-geo.min.js"></script>
+    <script type="module" src="/main.js"></script>
+    <script type="module" src="/code/search.js"></script>
+    <script type="module" src="/code/form.js"></script>
 </body>
 
 </html>

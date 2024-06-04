@@ -1,4 +1,3 @@
-import * as THREE from 'three';
 import Openrouteservice from 'openrouteservice-js'
 import createBuildings from './buildings';
 import createHighways from './highways';
@@ -66,7 +65,6 @@ class Map extends THREE.Object3D {
 
     async init() {
         try {
-
             this.tgeo = new ThreeGeo({
                 tokenMapbox: import.meta.env.VITE_MAPBOX_API_TOKEN, // <---- set your Mapbox API token here
             });
@@ -79,30 +77,82 @@ class Map extends THREE.Object3D {
             this.bbox = bbox;
 
             this.add(this.terrain);
-
-            this.buildings = await createBuildings();
-            console.log('Buildings loaded:');
-            this.add(this.buildings);
-            //console.log(this.buildings.children);
-
-            // const routesGroup = await createHighways();
-            // //console.log('Highways loaded', routesGroup);
-            // this.highways = routesGroup;
-            // this.highways.position.y = -0.1
-            // this.add(this.highways);
-
+        
             //added for the entrances and elevators
             const elevandentGroup = await createEntrancesAndElevators();
             console.log('Entrances and Elevators loaded', elevandentGroup);
             this.elevandent = elevandentGroup;
             this.add(this.elevandent);
 
-            this.clickable = findBuildings(this.buildings);
+            this.buildings = await createBuildings();
+            console.log('Buildings loaded:');
+            this.add(this.buildings);
+            this.clickable = findBuildings(this.buildings); // I have sprite and mesh objects in there. 
+
+            // this.highways = await createHighways();
+            // this.add(this.highways);
 
         } catch (error) {
             console.error('Failed to load buildings:', error);
         }
+    }
 
+    // This function takes in a lat and a long and returns an array of points [x, y, z] use these to update objects to the right position. 
+    getRelativePoints(lat, long) {
+
+        if (this.terrain != null) {
+
+            const temp = this.proj([lat, long]);
+
+            const origin = new THREE.Vector3(temp[0], 5, -temp[1]);
+
+            const direction = new THREE.Vector3(0, -1, 0);
+            direction.normalize();
+
+            this.raycaster.set(origin, direction);
+
+            const intersects = this.raycaster.intersectObjects(this.terrain.children, true); // true to check all descendants
+
+            if (intersects.length > 0) {
+                return [origin.x, intersects[0].point.y, origin.z]; // [x, y, z]
+            } else {
+                //console.log('No intersections found.');
+                return [0, 0, 0];
+            }
+        }
+
+        console.log("terrain is still null");
+
+        return [0, 0, 0];
+    }
+
+    // This function takes in a lat and a long and returns an array of points [x, y, z] use these to update objects to the right position. 
+    getRelativePoints(lat, long) {
+
+        if (this.terrain != null) {
+
+            const temp = this.proj([lat, long]);
+
+            const origin = new THREE.Vector3(temp[0], 5, -temp[1]);
+
+            const direction = new THREE.Vector3(0, -1, 0);
+            direction.normalize();
+
+            this.raycaster.set(origin, direction);
+
+            const intersects = this.raycaster.intersectObjects(this.terrain.children, true); // true to check all descendants
+
+            if (intersects.length > 0) {
+                return [origin.x, intersects[0].point.y, origin.z]; // [x, y, z]
+            } else {
+                //console.log('No intersections found.');
+                return [0, 0, 0];
+            }
+        }
+
+        console.log("terrain is still null");
+
+        return [0, 0, 0];
     }
 
     // This function takes in a lat and a long and returns an array of points [x, y, z] use these to update objects to the right position. 
@@ -144,23 +194,20 @@ class Map extends THREE.Object3D {
 
             let from = this.clickedBuildings[0].userData.centroid;
             let to = this.clickedBuildings[1].userData.centroid;
-            console.log("Clicked Buildings", this.clickedBuildings);
 
-            console.log(from)
-            console.log(to)
+            console.log("Clicked Buildings", this.clickedBuildings);
             console.log("Getting Directions from " + from + " and " + to);
 
             // Don't ask lol 
             from = [from[0], from[1]];
             to = [to[0], to[1]];
 
-            let mode = document.getElementById('travelProfile').value;
-            console.log("mode", mode);
-
             let temp = this;
             // customize options based on avoid stairs switch
             const options = avoidStairs ? { avoid_features: ['steps'] } : {};
+            const mode = document.getElementById('travelProfile').value;
 
+            console.log("mode, options", mode, options);
             this.orsDirections.calculate({
                 coordinates: [from, to],
                 profile: mode,
@@ -203,8 +250,9 @@ class Map extends THREE.Object3D {
                         let response = JSON.stringify(error, null, "\t")
                         console.error(response);
                     })
-
-                    const uphillCounter = getUphillCounter(routeCoordinates).then(function (counter) {
+              
+                    getUphillCounter(routeCoordinates).then(function (counter) {
+                        console.log("uphill counter:", counter);
                         temp.routeUphillCounters.push(counter);
 
                         let color = "#000000";
@@ -238,10 +286,6 @@ class Map extends THREE.Object3D {
 
                         return counter;
                     }).catch(function () { });
-
-                    console.log("uphill counter:");
-                    console.log(uphillCounter);
-
                 })
                 .catch(function (err) {
                     let response = JSON.stringify(err, null, "\t")
@@ -376,6 +420,7 @@ async function getUphillCounter(routeCoordinates) {
             if (prev != -1 && elevations[key] > prev) {
                 counter += elevations[key] - prev;
             }
+
             prev = elevations[key];
         }
 
