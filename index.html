@@ -88,7 +88,7 @@
     <div class="form-popup" id="reportForm">
       <form action="#" class="form-container" id="report-form">
         <button type="button" class="cancel-btn">
-          <img src="/x.png" alt="cancel" id="x-image"/>
+          <img src="/x.png" alt="cancel" id="x-image" />
         </button>
         <h1>Report a Repair</h1>
         <label for="repair-address"><b>Repair Address</b></label>
@@ -105,65 +105,60 @@
   <!-- Buildings Legend -->
   <div class="absolute left-0 z-50 top-20 bg-white rounded-lg shadow-lg p-6">
     <div id="buildings-legend-content" class="legend-content mt-4">
-      <h3 class="text-lg mb-2">Buildings</h3>
+      <h3 class="text-lg mb-2">Legend</h3>
       <ul class="list-disc pl-5">
-        <li class="flex item-center pb-2"><img src="/university.png" alt="University" style="width: 20px;"> University</li>
-        <li class="flex item-center pb-2"><img src="/apartment.png" alt="Apartments" style="width: 20px;"> Apartments </li>
-        <li class="flex item-center pb-2"><img src="/dorm.png" alt="Dormitory" style="width: 20px;"> Dormitory </li>
-        <li class="flex item-center pb-2"><img src="/building.png" alt="Miscellaneous" style="width: 20px;"> Miscellaneous</li>
+        <li class="flex item-center pb-2"><img src="/university.png" alt="University" style="width: 20px;" class="mr-2">
+          University
+        </li>
+        <li class="flex item-center pb-2"><img src="/apartment.png" alt="Apartments" style="width: 20px;" class="mr-2">
+          Apartments
+        </li>
+        <li class="flex item-center pb-2"><img src="/dorm.png" alt="Dormitory" style="width: 20px;" class="mr-2">
+          Dormitory </li>
+        <li class="flex item-center pb-2"><img src="/building.png" alt="Miscellaneous" style="width: 20px;"
+            class="mr-2">
+          Miscellaneous</li>
         <!-- <li style="color: rgb(92, 90, 90);">Miscellaneous</li> -->
       </ul>
     </div>
 
-    <!-- Highways Legend -->
-    <div id="highways-legend-content" class="legend-content mt-4">
-      <h3 class="text-lg mb-2">Highways</h3>
-      <ul class="list-disc pl-5">
-        <li style="color: black;">Pedestrian</li>
-        <li style="color: coral;">Residential</li>
-        <li style="color: lightgreen;">Secondary</li>
-        <li style="color: rgb(150, 150, 150);">Service</li>
-        <li style="color: burlywood;">Footway</li>
-        <li style="color: red;">Steps</li>
-      </ul>
-    </div>
 
-      <!-- Uphill Counters -->
+    <!-- Uphill Counters -->
     <div>
       <div id="uphill-counters" style="position:fixed;bottom:20px;left:20px;visibility:hidden;color: white;">
         <label for="uphill" class="w-full p-2 bg-white-500 text-black">For this route, you will have to climb:</label>
         <p id="uphill-counter" class="w-full p-2 bg-white-500 text-black"></p>
       </div>
     </div>
-    
-  <!-- Pop up object -->
-  <div id="popup" class="popup">
-    <div class="popup-header">
-      <h2 id="popup_header"></h2>
-      <button onclick="hidePopup()">✖</button>
+
+    <!-- Pop up object -->
+    <div id="popup" class="popup">
+      <div class="popup-header">
+        <h2 id="popup_header"></h2>
+        <button onclick="hidePopup()">✖</button>
+      </div>
+      <p id="popup_address" class="popup-address"></p>
     </div>
-    <p id="popup_address" class="popup-address"></p>
-  </div>
-  
-  <script>
-    const popup = document.getElementById("popup");
 
-    function hidePopup() {
-      console.log("hi")
-      popup.style.display = 'none';
-    }
-  </script>
+    <script>
+      const popup = document.getElementById("popup");
 
-  <!-- <script type="module" src="/code/search.js"></script> -->
+      function hidePopup() {
+        console.log("hi")
+        popup.style.display = 'none';
+      }
+    </script>
 
-  <script src="./code/deps/three/build/three.min.js"></script>
-  <script src="./code/deps/three/examples/js/controls/OrbitControls.js"></script>
-  <script src="./code/deps/three/examples/js/libs/stats.min.js"></script>
+    <!-- <script type="module" src="/code/search.js"></script> -->
 
-  <script src="./code/three-geo/three-geo.min.js"></script>
-  <script type="module" src="/main.js"></script>
-  <script type="module" src="/code/search.js"></script>
-  <script type="module" src="/code/form.js"></script>
+    <script src="./code/deps/three/build/three.min.js"></script>
+    <script src="./code/deps/three/examples/js/controls/OrbitControls.js"></script>
+    <script src="./code/deps/three/examples/js/libs/stats.min.js"></script>
+
+    <script src="./code/three-geo/three-geo.min.js"></script>
+    <script type="module" src="/main.js"></script>
+    <script type="module" src="/code/search.js"></script>
+    <script type="module" src="/code/form.js"></script>
 </body>
 
 </html>
