@@ -1,8 +1,8 @@
-
 import Openrouteservice from 'openrouteservice-js'
 import createBuildings from './buildings';
 import createHighways from './highways';
 import makeDirection from './makeDirection';
+import createEntrancesAndElevators from './createEntrancesAndElevators'; //added for the elevators
 import { getProfileInfo } from './profiles';
 import { getBuildingMaterial, highlightedMaterial } from './materials';
 
@@ -75,8 +75,13 @@ class Map extends THREE.Object3D {
             const { proj, bbox } = this.tgeo.getProjection(this.center, this.radius);
             this.proj = proj;
             this.bbox = bbox;
-
             this.add(this.terrain);
+        
+            //added for the entrances and elevators
+            const elevandentGroup = await createEntrancesAndElevators();
+            console.log('Entrances and Elevators loaded', elevandentGroup);
+            this.elevandent = elevandentGroup;
+            this.add(this.elevandent);
 
             this.buildings = await createBuildings();
             console.log('Buildings loaded:');
@@ -89,6 +94,35 @@ class Map extends THREE.Object3D {
         } catch (error) {
             console.error('Failed to load buildings:', error);
         }
+    }
+
+    // This function takes in a lat and a long and returns an array of points [x, y, z] use these to update objects to the right position. 
+    getRelativePoints(lat, long) {
+
+        if (this.terrain != null) {
+
+            const temp = this.proj([lat, long]);
+
+            const origin = new THREE.Vector3(temp[0], 5, -temp[1]);
+
+            const direction = new THREE.Vector3(0, -1, 0);
+            direction.normalize();
+
+            this.raycaster.set(origin, direction);
+
+            const intersects = this.raycaster.intersectObjects(this.terrain.children, true); // true to check all descendants
+
+            if (intersects.length > 0) {
+                return [origin.x, intersects[0].point.y, origin.z]; // [x, y, z]
+            } else {
+                //console.log('No intersections found.');
+                return [0, 0, 0];
+            }
+        }
+
+        console.log("terrain is still null");
+
+        return [0, 0, 0];
     }
 
     // This function takes in a lat and a long and returns an array of points [x, y, z] use these to update objects to the right position. 
@@ -138,15 +172,12 @@ class Map extends THREE.Object3D {
             from = [from[0], from[1]];
             to = [to[0], to[1]];
 
-
             let temp = this;
-
             // customize options based on avoid stairs switch
             const options = avoidStairs ? { avoid_features: ['steps'] } : {};
             const mode = document.getElementById('travelProfile').value;
 
             console.log("mode, options", mode, options);
-
             this.orsDirections.calculate({
                 coordinates: [from, to],
                 profile: mode,
@@ -189,10 +220,11 @@ class Map extends THREE.Object3D {
                         let response = JSON.stringify(error, null, "\t")
                         console.error(response);
                     })
-
+              
                     getUphillCounter(routeCoordinates).then(function (counter) {
                         console.log("uphill counter:", counter);
                         temp.routeUphillCounters.push(counter);
+                        document.getElementById('uphill-counters').style.visibility = "visible";
                         document.getElementById('uphill-counter').innerHTML = counter.toString() + " units of elevation.";
 
                         return counter;
@@ -221,6 +253,8 @@ class Map extends THREE.Object3D {
             this.remove(route);
         })
 
+        // clear uphill counter
+        document.getElementById('uphill-counters').style.visibility = "hidden";
         this.routeUphillCounters.forEach((route) => {
             console.log("Route uphill counter cleared")
             this.remove(route);

@@ -1,14 +1,13 @@
-
 import { MapControls } from 'three/examples/jsm/Addons.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import Sun from './code/sun';
 import Stats from 'stats.js'
 import Map from './code/map';
 
-const stats = new Stats()
-stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
+// const stats = new Stats()
+// stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
 
-document.body.appendChild(stats.dom)
+// document.body.appendChild(stats.dom)
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.0001, 120);
@@ -99,6 +98,22 @@ let avoidStairs = false;
 //   avoidStairs = event.target.checked;
 // });
 
+//added
+document.getElementById('toggleAvoidStairs').addEventListener('click', function () {
+  const button = document.getElementById('toggleAvoidStairs');
+  if (button.classList.contains('bg-gray-500')) {
+    button.classList.remove('bg-gray-500');
+    button.classList.add('bg-green-500');
+    button.textContent = 'Avoid Stairs: On';
+    avoidStairs = true;
+  } else {
+    button.classList.remove('bg-green-500');
+    button.classList.add('bg-gray-500');
+    button.textContent = 'Avoid Stairs: Off';
+    avoidStairs = false;
+  }
+});
+
 document.getElementById('calcRoute').addEventListener('click', () => {
   // map.clearRoutes();  // Clear previous routes if any
   map.generateDirections(avoidStairs);
@@ -106,7 +121,15 @@ document.getElementById('calcRoute').addEventListener('click', () => {
 
 document.getElementById('clearRoute').addEventListener('click', () => {
   map.clearRoutes();
-  hideBuildingCards(); //added functionality to hid the building cards
+  //search bar functionality to reset search bar and hide all building cards
+  hideBuildingCards(); // Hide all building cards
+  // document.getElementById('start-search').value = ''; // Clear start search input
+  // document.getElementById('destination-search').value = ''; // Clear destination search input
+  if (window.resetSearchState) {
+    window.resetSearchState(); // Reset search states
+  }
+  resetCardSelection();
+  // hideBuildingCards(); //added functionality to hid the building cards
   // reset avoid stairs switch
   //document.getElementById('avoidStairsSwitch').checked = false;
   avoidStairs = false;
@@ -114,10 +137,17 @@ document.getElementById('clearRoute').addEventListener('click', () => {
 
 // Function to hide all building cards
 function hideBuildingCards() {
-  const cards = document.querySelectorAll('.card');
+  const cards = document.querySelectorAll('.building-cards .card');
   cards.forEach(card => {
-    card.style.display = 'none'; // Hide each card
-    // card.classList.add('hide'); // Add 'hide' class that sets display to none
+      card.classList.add('hide'); // Add 'hide' class that sets display to none
+  });
+}
+
+// Function to reset selection of cards
+function resetCardSelection() {
+  const selectedCards = document.querySelectorAll('.building-cards .card.selected');
+  selectedCards.forEach(card => {
+    card.classList.remove('selected', 'visible'); // Remove 'selected' and 'visible' classes
   });
 }
 
@@ -152,13 +182,13 @@ window.addEventListener('resize', onWindowResize, false);
 const animate = function () {
   requestAnimationFrame(animate);
 
-  stats.begin()
+  // stats.begin()
 
   //controls.update()
 
   renderer.render(scene, camera);
 
-  stats.end();
+  // stats.end();
 };
 
 animate();

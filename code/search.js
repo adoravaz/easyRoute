@@ -1,4 +1,4 @@
-
+import Map from './map';
 import Openrouteservice from 'openrouteservice-js'
 import createBuildings from './buildings';
 import createHighways from './highways';
@@ -13,9 +13,9 @@ const destinationSearchInput = document.querySelector("#destination-search");
 // console.log(destinationSearchInput)
 
 let buildings = [];
-// window.mainMap = map;
+window.mainMap = map;
 
-// console.log("map", map);
+console.log("map", map);
 
 let startPoint = null;
 let endPoint = null;
@@ -67,55 +67,53 @@ destinationSearchInput.addEventListener("focus", () => {
 });
 
 buildingCardcontainer.addEventListener('click', event => {
-    const card = event.target.closest('.card');
-    if (card) {
-        const selectedBuilding = buildings.find(b => b.name === card.querySelector("[data-header]").textContent);
-        buildings.forEach(building => { // Hide all cards initially
-            building.element.classList.add('hide');
-        });
-        if (activeInput === 'start' && startPoint !== selectedBuilding) {
-            if (startPoint) {
-                map.deselectBuildingByCentroid(startPoint.centroid); // Adjust deselection logic
-                // startPoint.element.classList.remove('selected');
-                startPoint.element.classList.remove('selected', 'visible');
-                startPoint.element.classList.add('hide'); // Hide previous start point card
+        const card = event.target.closest('.card');
+        if (card) {
+            const selectedBuilding = buildings.find(b => b.name === card.querySelector("[data-header]").textContent);
+            buildings.forEach(building => { // Hide all cards initially
+                building.element.classList.add('hide');
+            });
+            if (activeInput === 'start' && startPoint !== selectedBuilding) {
+                if (startPoint) {
+                    map.deselectBuildingByCentroid(startPoint.centroid); // Adjust deselection logic
+                    // startPoint.element.classList.remove('selected');
+                    startPoint.element.classList.remove('selected', 'visible');
+                    startPoint.element.classList.add('hide'); // Hide previous start point card
+                }
+                startPoint = selectedBuilding;
+                startPoint.element.classList.add('selected', 'visible'); // Make only the selected card visible
+                // startPoint.element.classList.add('selected');
+                map.selectBuildingByCentroid(startPoint.centroid);
+                startSearchInput.value = selectedBuilding.name; // Autofill the start search input
+                console.log("Setting start point:", startPoint);
+            } else if (activeInput === 'destination' && endPoint !== selectedBuilding) {
+                if (endPoint) {
+                    map.deselectBuildingByCentroid(endPoint.centroid); // Adjust deselection logic
+                    // endPoint.element.classList.remove('selected');
+                    endPoint.element.classList.remove('selected', 'visible');
+                    endPoint.element.classList.add('hide'); // Hide previous destination card
+                }
+                endPoint = selectedBuilding;
+                // endPoint.element.classList.add('selected');
+                endPoint.element.classList.add('selected', 'visible'); // Make only the selected card visible
+                map.selectBuildingByCentroid(endPoint.centroid);
+                destinationSearchInput.value = selectedBuilding.name; // Autofill the destination search input
+                console.log("Setting end point:", endPoint);
             }
-            startPoint = selectedBuilding;
-            startPoint.element.classList.add('selected', 'visible'); // Make only the selected card visible
-            // startPoint.element.classList.add('selected');
-            map.selectBuildingByCentroid(startPoint.centroid);
-            console.log("Setting start point:", startPoint);
-        } else if (activeInput === 'destination' && endPoint !== selectedBuilding) {
-            if (endPoint) {
-                map.deselectBuildingByCentroid(endPoint.centroid); // Adjust deselection logic
-                // endPoint.element.classList.remove('selected');
-                endPoint.element.classList.remove('selected', 'visible');
-                endPoint.element.classList.add('hide'); // Hide previous destination card
-            }
-            endPoint = selectedBuilding;
-            // endPoint.element.classList.add('selected');
-            endPoint.element.classList.add('selected', 'visible'); // Make only the selected card visible
-            map.selectBuildingByCentroid(endPoint.centroid);
-            console.log("Setting end point:", endPoint);
-        }
-        // if (startPoint && endPoint && startPoint !== endPoint) {
-        //     map.generateDirections(startPoint.centroid, endPoint.centroid);
-        // }
-        // Move the start card to the top of the container if it exists
         if (startPoint) {
             startPoint.element.classList.remove('hide');
-            buildingCardcontainer.prepend(startPoint.element); // Ensures start point card is always at the top
+            buildingCardcontainer.prepend(startPoint.element); // Ensures start point card is always at the top 
         }
         // Move the destination card below the start card if both are selected
         if (endPoint) {
             endPoint.element.classList.remove('hide');
-            if (startPoint) {
-                startPoint.element.insertAdjacentElement('afterend', endPoint.element);
-            } else {
-                buildingCardcontainer.prepend(endPoint.element);
-            }
-        }
-    }
+        if (startPoint) {
+            startPoint.element.insertAdjacentElement('afterend', endPoint.element);
+        } else {
+            buildingCardcontainer.prepend(endPoint.element);
+         }
+     }
+ }
     // Ensure selected cards are visible
     // if (startPoint) startPoint.element.classList.remove('hide');
     // if (endPoint) endPoint.element.classList.remove('hide');
@@ -127,10 +125,21 @@ buildingCardcontainer.addEventListener('click', event => {
 // }
 // testHighlight();  // Call this somewhere in your initialization to see if highlighting works in isolation
 
+//added new function to reset start and endpoint
+function resetSearchState() {
+    startPoint = null;
+    endPoint = null;
+    document.getElementById('start-search').value = ''; // clear search inputs here
+    document.getElementById('destination-search').value = ''; // clear search inputs here
+}
+
+
 loadBuildings();
 searchBuildings(startSearchInput);
 searchBuildings(destinationSearchInput);
 
 console.log(startSearchInput)
 console.log(destinationSearchInput)
+
+window.resetSearchState = resetSearchState; //exposing the resetsearchstate globally to be used in new node
 

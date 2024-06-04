@@ -4,6 +4,7 @@ import { Line } from 'three';
 let alltypes = ['pedestrian', 'track', 'crossing', 'secondary', 'steps', 'footway',
     'traffic_signals', 'living_street', 'secondary_link',
     'service', 'cycleway', 'turning_circle', 'proposed', 'tertiary', 'path']
+
 let temp = ['pedestrian', 'service', 'steps', 'cycleway', 'footway']
 let test = ['steps']
 
@@ -58,7 +59,6 @@ function addHighway(data, info) {
 
         let line = new Line(polygon, getHighwayMatrial(info.highway))
         line.geometry.computeBoundingBox();
-
         line.userData.type = "line"
 
         if (line.material.isLineDashedMaterial) {
@@ -82,8 +82,7 @@ function genGeometry(polygon) {
         points.push(new THREE.Vector3(point[0], point[1] + 0.0005, point[2]));
     }
 
-    const geometry = new THREE.BufferGeometry().setFromPoints(points);
-    return geometry;
+    return new THREE.BufferGeometry().setFromPoints(points);
 }
 
 export default createHighways; 

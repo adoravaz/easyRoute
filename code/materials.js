@@ -1,16 +1,17 @@
 import { MeshLineMaterial } from 'three.meshline';
 
 const buildingMaterials = {
-    university: new THREE.MeshBasicMaterial({ color: "lightskyblue" }),
-    apartments: new THREE.MeshBasicMaterial({ color: "greenyellow" }),
-    roof: new THREE.MeshBasicMaterial({ color: "purple" }),
-    dormitory: new THREE.MeshBasicMaterial({ color: "orange" }),
-    house: new THREE.MeshBasicMaterial({ color: "pink" }),
-    trailer: new THREE.MeshBasicMaterial({ color: "khaki" }),
-    greenhouse: new THREE.MeshBasicMaterial({ color: "green" }),
-    farm_auxiliary: new THREE.MeshBasicMaterial({ color: "aquamarine" }),
-    industrial: new THREE.MeshBasicMaterial({ color: "darkblue" }),
-    default: new THREE.MeshBasicMaterial({ color: "deeppink" }),
+    university: new THREE.MeshBasicMaterial({ color: "#3d85c6" }), //dark blue
+    apartments: new THREE.MeshBasicMaterial({ color: "#4C967D" }),
+    dormitory: new THREE.MeshBasicMaterial({ color: "#fba826" }),
+    // Make other buildings less prominent
+    house: new THREE.MeshBasicMaterial({ color: "lightgray" }),
+    trailer: new THREE.MeshBasicMaterial({ color: "lightgray" }),
+    greenhouse: new THREE.MeshBasicMaterial({ color: "lightgray" }),
+    farm_auxiliary: new THREE.MeshBasicMaterial({ color: "lightgray" }),
+    industrial: new THREE.MeshBasicMaterial({ color: "lightgray" }),
+    roof: new THREE.MeshBasicMaterial({ color: "lightgray" }), // include roofs but want them less visible
+    default: new THREE.MeshBasicMaterial({ color: "lightgray" }), // Default for any unspecified building type
 };
 
 const highwayMaterials = {
@@ -37,10 +38,23 @@ const highlightedMaterial = new THREE.MeshStandardMaterial({
     metalness: 0.1
 });
 
-export const routeMaterial = new MeshLineMaterial({
+const routeMaterial = new MeshLineMaterial({
     color: "yellow",
     lineWidth: 0.0003,
 });
+
+//added for materials for the entrances and elevators
+const elevatorMaterials = {
+    accessible: new THREE.MeshBasicMaterial({ color: "green" }),
+    limited_access: new THREE.MeshBasicMaterial({ color: "yellow" }),
+    no_access: new THREE.MeshBasicMaterial({ color: "red" })
+};
+
+const entranceMaterials = {
+    main: new THREE.MeshBasicMaterial({ color: "blue" }),
+    secondary: new THREE.MeshBasicMaterial({ color: "lightblue" }),
+    restricted: new THREE.MeshBasicMaterial({ color: "grey" })
+};
 
 function getHighwayMatrial(type) {
     switch (type) {
@@ -113,6 +127,4 @@ function createShaderMaterial(mapTexture, demTexture) {
     return material;
 }
 
-
-
-export { getBuildingMaterial, getHighwayMatrial, createShaderMaterial, highlightedMaterial };
+export { getBuildingMaterial, getHighwayMatrial, highlightedMaterial, elevatorMaterials, entranceMaterials, routeMaterial };
