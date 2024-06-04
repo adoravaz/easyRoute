@@ -115,6 +115,9 @@ function openForm() {
   // document.getElementById("report-show").innerHTML = '';
   // document.getElementById("report-show").style.display = "block";
   document.getElementById("reportForm").style.display = "block";
+  // const popup_name = document.getElementById('popup_header').innerText;
+  // document.getElementById("repair-address").innerText = popup_name;
+  // console.log("popup_name: " + popup_name);
   console.log('form opened');
 }
 
