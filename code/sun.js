@@ -19,7 +19,7 @@ class Sun extends THREE.Object3D {
                 model.scale.multiplyScalar(.07);
                 model.rotation.z = Math.PI / 10;
                 model.rotation.y = Math.PI;
-                model.position.set(0, .2, .5);
+                model.position.set(0, .2, .45);
                 console.log("model loaded", model);
                 temp.add(model);
             },

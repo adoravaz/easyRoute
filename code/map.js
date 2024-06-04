@@ -3,6 +3,7 @@ import createBuildings from './buildings';
 import createHighways from './highways';
 import makeDirection from './makeDirection';
 import createEntrancesAndElevators from './createEntrancesAndElevators'; //added for the elevators
+
 import { getProfileInfo } from './profiles';
 import { getBuildingMaterial, highlightedMaterial } from './materials';
 
@@ -40,8 +41,8 @@ class Map extends THREE.Object3D {
 
         this.center = [36.9916, -122.0583]
         this.scalar = 1;
-        this.radius = 8;
-        this.zoom = 15;
+        this.radius = 4;
+        this.zoom = 16;
 
         this.routes = [];
         this.routeUphillCounters = [];

@@ -13,9 +13,9 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.0001, 120);
 
 // Position the camera
-camera.position.y = .1;
-camera.position.x = -.05;
-camera.position.z = -.25;
+camera.position.y = 0.128633;
+camera.position.x = -0.290214;
+camera.position.z = -0.093298;
 camera.updateProjectionMatrix();
 
 // Renderer
@@ -32,7 +32,7 @@ document.getElementById("app").appendChild(renderer.domElement);
 // Map Controls 
 const controls = new MapControls(camera, renderer.domElement);
 controls.enableDamping = true;
-controls.maxDistance = 3;
+controls.maxDistance = 1;
 
 // Tool for models.js
 window.gltfLoader = new GLTFLoader();
@@ -44,11 +44,11 @@ const mouse = new THREE.Vector2();
 let light0 = new THREE.AmbientLight(0xfafafa, 1)
 scene.add(light0)
 
-scene.background = new THREE.Color(0xfeffa6);
-scene.fog = new THREE.Fog(0xfeffa6, 0.3, .7);
+scene.background = new THREE.Color(0x6196ff);
+scene.fog = new THREE.Fog(0x6196ff, 0.4, 1);
 
 const hemiLight = new THREE.HemisphereLight(0xffffff, 0x8d8d8d, 3);
-hemiLight.position.set(0, .5, 0);
+hemiLight.position.set(0, .4, 0);
 scene.add(hemiLight);
 
 // scene.add(
@@ -63,7 +63,7 @@ const map = new Map();
 scene.add(map);
 
 const sun = new Sun();
-scene.add(sun);
+// scene.add(sun);
 
 renderer.domElement.addEventListener('click', (event) => {
 
