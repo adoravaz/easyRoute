@@ -17,7 +17,6 @@ async function createBuildings() {
         const group = new THREE.Group();
         group.add(titles);
         group.add(buildings);
-
         return group;
     } catch (error) {
         throw error;

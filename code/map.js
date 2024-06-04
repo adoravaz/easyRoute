@@ -7,6 +7,9 @@ import createEntrancesAndElevators from './createEntrancesAndElevators'; //added
 import { getProfileInfo } from './profiles';
 import { getBuildingMaterial, highlightedMaterial } from './materials';
 
+// repair icon image
+const repairIconTexture = new THREE.TextureLoader().load('/repair_icon.png');
+
 function findBuildings(mesh, result = []) {
     if (mesh.userData && mesh.userData.type === 'building') {
         result.push(mesh);
@@ -96,6 +99,35 @@ class Map extends THREE.Object3D {
         } catch (error) {
             console.error('Failed to load buildings:', error);
         }
+    }
+
+    // This function takes in a lat and a long and returns an array of points [x, y, z] use these to update objects to the right position. 
+    getRelativePoints(lat, long) {
+
+        if (this.terrain != null) {
+
+            const temp = this.proj([lat, long]);
+
+            const origin = new THREE.Vector3(temp[0], 5, -temp[1]);
+
+            const direction = new THREE.Vector3(0, -1, 0);
+            direction.normalize();
+
+            this.raycaster.set(origin, direction);
+
+            const intersects = this.raycaster.intersectObjects(this.terrain.children, true); // true to check all descendants
+
+            if (intersects.length > 0) {
+                return [origin.x, intersects[0].point.y, origin.z]; // [x, y, z]
+            } else {
+                //console.log('No intersections found.');
+                return [0, 0, 0];
+            }
+        }
+
+        console.log("terrain is still null");
+
+        return [0, 0, 0];
     }
 
     // This function takes in a lat and a long and returns an array of points [x, y, z] use these to update objects to the right position. 
@@ -389,10 +421,55 @@ class Map extends THREE.Object3D {
         this.popupAddress.innerText = `${buildingInfo['addr:housenumber']} ${buildingInfo['addr:street']}, ${buildingInfo['addr:city']}, ${buildingInfo['addr:postcode']}`;
 
         this.popup.style.display = 'block';
+
+        // display building's repair details if available
+        const repairDetails = (window.repairDetailsMap[buildingInfo.name]) ? ("Reported Repairs: " + window.repairDetailsMap[buildingInfo.name]) : "";
+        document.getElementById('report-show').innerText = repairDetails; // clear previous details
     }
 
     hidePopup() {
         this.popup.style.display = 'none';
+    }
+
+    // add repair icon based on entered location
+    addIconAtLocation(iconUrl, geoPosition) {
+        if (iconUrl === '/repair_icon.png') {
+            console.log("geoPosition: " + JSON.stringify(geoPosition));
+            this.addRepairIcon(geoPosition);
+        } else {
+            console.log("invalid icon URL: ", iconUrl);
+        }
+    }
+
+    addRepairIcon(geoPosition) {
+        const {longitude, latitude, elevation, levels} = geoPosition;
+        const center = [-122.0583, 36.9916, 36.9941766]; // lon, lat, elev
+        const scale = 10000;
+    
+        // Create material for the repair icon sprite
+        const material = new THREE.SpriteMaterial({ map: repairIconTexture });
+    
+        // Create the sprite
+        const repairIcon = new THREE.Sprite(material);
+    
+        // Scale the sprite to an appropriate size
+        repairIcon.scale.set(0.002, 0.002, 0.002);
+        let position = window.map.getRelativePoints(latitude, longitude);
+        console.log("position from addRepairIcon (lon, lat): " + JSON.stringify(position));
+        /* WHAT WE WANT:
+            Engineering 2 - x: -0.03653762744349004, y: 0.027197348814988715, z: -0.09237682727959462, height: 5 
+            SNE - x: -0.01906323468879839, y: 0.022629188805589746, z: -0.07408626253553885, height: 1
+            Media Theater - x: -0.02611265279015801, y: 0.020111946201806348, z: -0.035883454819152005, height: 1
+        */
+
+        // Set the position of the sprite
+        repairIcon.position.set(position[0], position[1] + levels*0.001 + 0.001, position[2]);
+        console.log("repairIcon position set (x, z, y): " + JSON.stringify(position[0]) + ", " + JSON.stringify(position[1] + levels*0.001) + ", " + JSON.stringify(position[2]) + ", levels: " + levels);
+    
+        // Add the sprite to the scene
+        this.add(repairIcon);
+    
+        console.log("Repair icon added");
     }
 
     update(time) {

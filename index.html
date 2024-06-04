@@ -3,14 +3,19 @@
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/newlogo.svg" />
+  <link rel="icon" type="image/svg+xml" href="/newlogo_transparent.svg" />
   <linK rel="stylesheet" href="style.css" />
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>UCSCMap</title>
+  <title>EasyRoute</title>
 </head>
 
 <body id="app" class="bg-gray-100 flex justify-end items-start h-screen overflow-hidden">
+  <!-- Project Logo & Title -->
+  <div class="logo-title">
+    <img id="logo" src="/newlogo_transparent.svg" alt="EasyRoute Logo" />
+    <p id="project-title">EasyRoute</p>
+  </div>
 
   <div class="flex flex-col justify-center gap-2 bg-white rounded-lg shadow-lg p-6 w-80 fixed top-5 right-5">
     <!-- Search Bar -->
@@ -69,10 +74,12 @@
         Off</button>
     </div>
 
+    <!-- Calculate & Clear Route Buttons -->
     <button id="calcRoute" class="w-full p-2 bg-blue-500 text-white rounded hover:opacity-50">Calculate
       Route</button>
     <button id="clearRoute" class="w-full p-2 bg-red-500 text-white rounded hover:opacity-50">Clear Route</button>
 
+    <!-- Turn-By-Turn Directions List -->
     <div id="directions-container" class="pt-2 overflow-y-auto max-h-[200px]" style="display: none;">
       <h3 class="text-xl mb-2">Directions:</h3>
       <ul id="directions-list" class="list-disc pl-5 overflow-hidden max-h-[400px]"></ul>
@@ -86,54 +93,50 @@
     </div>
   </div>
 
-  <!-- Outline for Reporting Form -->
-  <div class="report-button-container">
-    <button class="open-form-button" id="open-form">Report a Repair</button>
-    <div class="form-popup" id="reportForm">
-      <form action="#" class="form-container" id="report-form">
-        <button type="button" class="cancel-btn">
-          <img src="/x.png" alt="cancel" id="x-image" />
-        </button>
-        <h1>Report a Repair</h1>
-        <label for="repair-address"><b>Repair Address</b></label>
-        <input type="text" id="repair-address" placeholder="Enter Address" name="repair-address" required>
-        <label for="repair-details"><b>Repair Details</b></label>
-        <input type="text" id="repair-details" name="repair-details" required>
-        <button type="submit" class="submit-btn">Submit</button>
-      </form>
-    </div>
-
-    <p id="report-show"></p>
-  </div>
+  <!-- Repair Icons -->
+  <div id="icon-container"></div>
 
   <!-- Buildings Legend -->
-  <div class="absolute left-0 z-50 top-20 bg-white rounded-lg shadow-lg p-6 m-6">
-    <div id="buildings-legend-content" class="legend-content">
-      <h3 class="text-lg mb-2">Legend</h3>
+  <div class="absolute left-0 z-50 top-20 bg-white rounded-lg shadow-lg p-6">
+    <div id="buildings-legend-content" class="legend-content mt-4">
+      <h4 class="text-lg mb-2">Legend</h4>
       <ul class="list-disc pl-5">
-        <li class="flex item-center pb-2"><img src="/university.png" alt="University" style="width: 20px;" class="mr-2">
-          University
-        </li>
-        <li class="flex item-center pb-2"><img src="/apartment.png" alt="Apartments" style="width: 20px;" class="mr-2">
-          Apartments
-        </li>
-        <li class="flex item-center pb-2"><img src="/dorm.png" alt="Dormitory" style="width: 20px;" class="mr-2">
-          Dormitory </li>
-        <li class="flex item-center pb-2"><img src="/building.png" alt="Miscellaneous" style="width: 20px;"
-            class="mr-2">
-          Miscellaneous</li>
-        <!-- <li style="color: rgb(92, 90, 90);">Miscellaneous</li> -->
+        <li class="flex item-center pb-2"><img src="/university.png" alt="University" style="width: 20px;" class="mr-2"> University</li>
+        <li class="flex item-center pb-2"><img src="/apartment.png" alt="Apartments" style="width: 20px;" class="mr-2"> Apartments </li>
+        <li class="flex item-center pb-2"><img src="/dorm.png" alt="Dormitory" style="width: 20px;" class="mr-2"> Dormitory </li>
+        <li class="flex item-center pb-2"><img src="/building.png" alt="Miscellaneous" style="width: 20px;" class="mr-2"> Miscellaneous</li>
+        <br>
+        <li class="flex item-center pb-2"><img src="/repair_icon.png" alt="Repair" style="width: 20px; height:20px;" class="mr-2">Repair Needed</li>
       </ul>
     </div>
+  </div>
 
-    <!-- Pop up object -->
-    <div id="popup" class="popup">
-      <div class="popup-header">
-        <h2 id="popup_header"></h2>
-        <button onclick="hidePopup()">✖</button>
-      </div>
-      <p id="popup_address" class="popup-address"></p>
+  <!-- Pop up object -->
+  <div id="popup" class="popup">
+    <div class="popup-header">
+      <h2 id="popup_header"></h2>
+      <button onclick="hidePopup()">✖</button>
     </div>
+    <p id="popup_address" class="popup-address pb-2"></p>
+    <!-- Outline for Reporting Form -->
+    <div class="report-button-container">
+      <button class="open-form-button" id="open-form">Report a Repair</button>
+      <div class="form-popup" id="reportForm">
+        <form action="#" class="form-container" id="report-form">
+          <button type="button" class="cancel-btn">
+            <img src="/x.png" alt="cancel" id="x-image"/>
+          </button>
+          <h1 id="form-title">Report a Repair</h1>
+          <label for="repair-address"><b>Repair Address</b></label>
+          <p id="repair-address"></p>
+          <label id="repair-details-label" for="repair-details"><b>Repair Details</b></label>
+          <input type="text" id="repair-details" placeholder="What/Where needs to be repaired?" name="repair-details" required>
+          <button type="submit" class="submit-btn">Submit</button>
+        </form>
+      </div>
+      <p id="report-show"></p>
+    </div>
+  </div>
 
     <script>
       const popup = document.getElementById("popup");

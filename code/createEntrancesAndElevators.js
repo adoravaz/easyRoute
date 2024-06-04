@@ -28,6 +28,7 @@ function addEntrance(feature) {
         opacity: 0.5 });
     const entrance = new THREE.Sprite(material);
     entrance.scale.set(0.001, 0.001, 0.001); 
+
     let [x, y, z] = window.map.getRelativePoints(feature.geometry.coordinates[1], feature.geometry.coordinates[0]);
     entrance.position.set(x, y+0.003, z);
 
@@ -35,7 +36,9 @@ function addEntrance(feature) {
 }
 
 async function createEntrancesAndElevators() {
+
     const response = await fetch('/elevatorswithentrances_V4 copy.geojson');
+
     const data = await response.json();
     data.features.forEach(feature => {
         if (feature.properties['highway'] === 'elevator') {

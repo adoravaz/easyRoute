@@ -1,4 +1,3 @@
-
 import { MapControls } from 'three/examples/jsm/Addons.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import Sun from './code/sun';
@@ -98,6 +97,7 @@ let avoidStairs = false;
 // document.getElementById('avoidStairsSwitch').addEventListener('change', (event) => {
 //   avoidStairs = event.target.checked;
 // });
+
 //added
 document.getElementById('toggleAvoidStairs').addEventListener('click', function () {
   const button = document.getElementById('toggleAvoidStairs');
@@ -117,6 +117,7 @@ document.getElementById('toggleAvoidStairs').addEventListener('click', function 
 document.getElementById('calcRoute').addEventListener('click', () => {
   // map.clearRoutes();  // Clear previous routes if any
   map.generateDirections(avoidStairs);
+  document.getElementById('directions-title').style.display = "block";
 });
 
 document.getElementById('clearRoute').addEventListener('click', () => {
