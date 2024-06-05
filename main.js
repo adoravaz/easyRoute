@@ -84,14 +84,6 @@ renderer.domElement.addEventListener('click', (event) => {
 
 });
 
-document.getElementById('calcRoute').addEventListener('click', () => {
-  if (map.clickedBuildings.length >= 2) {
-    map.generateDirections();
-  } else {
-    console.error("Not enough buildings selected for a route.");
-  }
-});
-
 // avoid stairs switch toggled
 let avoidStairs = false;
 // document.getElementById('avoidStairsSwitch').addEventListener('change', (event) => {
@@ -115,9 +107,12 @@ document.getElementById('toggleAvoidStairs').addEventListener('click', function 
 });
 
 document.getElementById('calcRoute').addEventListener('click', () => {
-  // map.clearRoutes();  // Clear previous routes if any
-  map.generateDirections(avoidStairs);
-  document.getElementById('directions-title').style.display = "block";
+  if (map.clickedBuildings.length >= 2) {
+    map.generateDirections(avoidStairs);
+    // document.getElementById('directions-title').style.display = "block";
+  } else {
+    console.error("Not enough buildings selected for a route.");
+  }
 });
 
 document.getElementById('clearRoute').addEventListener('click', () => {
