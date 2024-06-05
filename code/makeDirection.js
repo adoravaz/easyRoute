@@ -7,7 +7,6 @@ function makeDirection(polygon) {
 
     for (let i = 0; i < polygon.length; i++) {
         const temp = window.map.getRelativePoints(polygon[i][1], polygon[i][0]);
-
         const point = new THREE.Vector3(
             temp[0],
             temp[1] + 0.0005,
