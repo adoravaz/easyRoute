@@ -1,13 +1,5 @@
 import { MapControls } from 'three/examples/jsm/Addons.js';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import Sun from './code/sun';
-import Stats from 'stats.js'
 import Map from './code/map';
-
-// const stats = new Stats()
-// stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
-
-// document.body.appendChild(stats.dom)
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.0001, 120);
@@ -34,9 +26,6 @@ const controls = new MapControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.maxDistance = 1;
 
-// Tool for models.js
-window.gltfLoader = new GLTFLoader();
-
 // Mouse 
 const mouse = new THREE.Vector2();
 
@@ -51,19 +40,12 @@ const hemiLight = new THREE.HemisphereLight(0xffffff, 0x8d8d8d, 3);
 hemiLight.position.set(0, .4, 0);
 scene.add(hemiLight);
 
-// scene.add(
-//   new THREE.AxesHelper(1)
-// )
-
 // Raycaster 
 const raycast = new THREE.Raycaster();
 
-//Our Map 
+// Map 
 const map = new Map();
 scene.add(map);
-
-const sun = new Sun();
-// scene.add(sun);
 
 renderer.domElement.addEventListener('click', (event) => {
 
@@ -86,9 +68,6 @@ renderer.domElement.addEventListener('click', (event) => {
 
 // avoid stairs switch toggled
 let avoidStairs = false;
-// document.getElementById('avoidStairsSwitch').addEventListener('change', (event) => {
-//   avoidStairs = event.target.checked;
-// });
 
 //added
 document.getElementById('toggleAvoidStairs').addEventListener('click', function () {
@@ -135,7 +114,7 @@ document.getElementById('clearRoute').addEventListener('click', () => {
 function hideBuildingCards() {
   const cards = document.querySelectorAll('.building-cards .card');
   cards.forEach(card => {
-      card.classList.add('hide'); // Add 'hide' class that sets display to none
+    card.classList.add('hide'); // Add 'hide' class that sets display to none
   });
 }
 
