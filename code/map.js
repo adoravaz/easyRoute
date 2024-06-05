@@ -313,7 +313,6 @@ class Map extends THREE.Object3D {
                             }
                             document.getElementById('uphill-counter').style.color = color;
 
-                            route.material.color = new THREE.Color(color);
                         }).catch(function () { });
                     }).catch((error) => {
                         let response = JSON.stringify(error, null, "\t")
@@ -442,16 +441,16 @@ class Map extends THREE.Object3D {
     }
 
     addRepairIcon(geoPosition) {
-        const {longitude, latitude, elevation, levels} = geoPosition;
+        const { longitude, latitude, elevation, levels } = geoPosition;
         const center = [-122.0583, 36.9916, 36.9941766]; // lon, lat, elev
         const scale = 10000;
-    
+
         // Create material for the repair icon sprite
         const material = new THREE.SpriteMaterial({ map: repairIconTexture });
-    
+
         // Create the sprite
         const repairIcon = new THREE.Sprite(material);
-    
+
         // Scale the sprite to an appropriate size
         repairIcon.scale.set(0.002, 0.002, 0.002);
         let position = window.map.getRelativePoints(latitude, longitude);
@@ -463,12 +462,12 @@ class Map extends THREE.Object3D {
         */
 
         // Set the position of the sprite
-        repairIcon.position.set(position[0], position[1] + levels*0.001 + 0.001, position[2]);
-        console.log("repairIcon position set (x, z, y): " + JSON.stringify(position[0]) + ", " + JSON.stringify(position[1] + levels*0.001) + ", " + JSON.stringify(position[2]) + ", levels: " + levels);
-    
+        repairIcon.position.set(position[0], position[1] + levels * 0.001 + 0.001, position[2]);
+        console.log("repairIcon position set (x, z, y): " + JSON.stringify(position[0]) + ", " + JSON.stringify(position[1] + levels * 0.001) + ", " + JSON.stringify(position[2]) + ", levels: " + levels);
+
         // Add the sprite to the scene
         this.add(repairIcon);
-    
+
         console.log("Repair icon added");
     }
 

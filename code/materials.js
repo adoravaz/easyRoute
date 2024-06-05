@@ -1,4 +1,5 @@
 import { MeshLineMaterial } from 'three.meshline';
+import { metalness, roughness } from 'three/examples/jsm/nodes/Nodes.js';
 
 const buildingMaterials = {
     university: new THREE.MeshBasicMaterial({ color: "#3d85c6" }), //dark blue
