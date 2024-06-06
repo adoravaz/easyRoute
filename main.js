@@ -72,17 +72,17 @@ let avoidStairs = false;
 //added
 document.getElementById('toggleAvoidStairs').addEventListener('click', function () {
   const button = document.getElementById('toggleAvoidStairs');
-  if (button.classList.contains('bg-gray-500')) {
+  if (!avoidStairs) {
     button.classList.remove('bg-gray-500');
     button.classList.add('bg-green-500');
     button.textContent = 'Avoid Stairs: On';
-    avoidStairs = true;
   } else {
     button.classList.remove('bg-green-500');
     button.classList.add('bg-gray-500');
     button.textContent = 'Avoid Stairs: Off';
-    avoidStairs = false;
   }
+
+  avoidStairs = !avoidStairs;
 });
 
 document.getElementById('calcRoute').addEventListener('click', () => {
@@ -107,7 +107,6 @@ document.getElementById('clearRoute').addEventListener('click', () => {
   // hideBuildingCards(); //added functionality to hid the building cards
   // reset avoid stairs switch
   //document.getElementById('avoidStairsSwitch').checked = false;
-  avoidStairs = false;
 })
 
 // Function to hide all building cards

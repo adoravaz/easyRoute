@@ -240,7 +240,7 @@ class Map extends THREE.Object3D {
             const options = avoidStairs ? { avoid_features: ['steps'] } : {};
             const mode = document.getElementById('travelProfile').value;
 
-            console.log("mode, options", mode, options);
+            console.log("mode, options", mode, options.avoid_features);
             this.orsDirections.calculate({
                 coordinates: [from, to],
                 profile: mode,
@@ -340,11 +340,6 @@ class Map extends THREE.Object3D {
             console.log("Route cleared")
             this.remove(route);
         })
-
-        // this.routeUphillCounters.forEach((route) => {
-        //     console.log("Route uphill counter cleared")
-        //     this.remove(route);
-        // })
 
         // clear uphill counter
         this.routeUphillCounters.forEach((route) => {
